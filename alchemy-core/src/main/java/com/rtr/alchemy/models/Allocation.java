@@ -6,15 +6,15 @@ import com.google.common.base.Objects;
  * Represents a contiguous allocation block of a single treatment in an experiment
  */
 public class Allocation {
-    private final Treatment treatment;
+    private final String treatment;
     private final int size;
 
-    public Allocation(Treatment treatment, int size) {
+    public Allocation(String treatment, int size) {
         this.treatment = treatment;
         this.size = size;
     }
 
-    public Treatment getTreatment() {
+    public String getTreatment() {
         return treatment;
     }
 

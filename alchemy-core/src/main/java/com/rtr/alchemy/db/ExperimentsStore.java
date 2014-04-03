@@ -3,6 +3,7 @@ package com.rtr.alchemy.db;
 import com.rtr.alchemy.models.Allocation;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Treatment;
+import com.rtr.alchemy.models.TreatmentOverride;
 
 /**
  * An interface for defining basic CRUD operations around experiments, treatments and allocations.  These operations do
@@ -63,6 +64,20 @@ public interface ExperimentsStore {
      * @return Filtered list of treatments for given experiment
      */
     Iterable<Treatment> getTreatments(String experiment, Filter filter);
+
+    /**
+     * Adds an override for a given experiment, allowing assignment of treatment to an identity
+     * @param experiment The name of the experiment to add the override to
+     * @param override The override, which contains the identity and treatment to assign to the identity
+     */
+    void addTreatmentOverride(String experiment, TreatmentOverride override);
+
+    /**
+     * Removes an override for a given experiment
+     * @param experiment The name of the experiment to remove the override from
+     * @param hash The hash of the identity to remove override for
+     */
+    void removeTreatmentOverride(String experiment, long hash);
 
     /**
      * Retrieves current allocation of treatments for an experiment

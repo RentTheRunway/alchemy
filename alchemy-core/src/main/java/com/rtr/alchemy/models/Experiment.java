@@ -1,5 +1,7 @@
 package com.rtr.alchemy.models;
 
+import com.google.common.base.Objects;
+import com.rtr.alchemy.identities.Identity;
 import org.joda.time.DateTime;
 
 import java.util.Set;
@@ -10,7 +12,7 @@ import java.util.Set;
 public class Experiment {
     private final String name;
     private final String description;
-    private final String scope;
+    private final Class<? extends Identity> type;
     private final boolean active;
     private final DateTime created;
     private final DateTime modified;
@@ -22,7 +24,7 @@ public class Experiment {
 
     public Experiment(String name,
                       String description,
-                      String scope,
+                      Class<? extends Identity> type,
                       boolean active,
                       DateTime created,
                       DateTime modified,
@@ -33,7 +35,7 @@ public class Experiment {
                       Set<String> allocationGroups) {
         this.name = name;
         this.description = description;
-        this.scope = scope;
+        this.type = type;
         this.active = active;
         this.created = created;
         this.modified = modified;
@@ -52,8 +54,8 @@ public class Experiment {
         return description;
     }
 
-    public String getScope() {
-        return scope;
+    public Class<? extends Identity> getType() {
+        return type;
     }
 
     public boolean isActive() {
@@ -86,5 +88,40 @@ public class Experiment {
 
     public Set<String> getAllocationGroups() {
         return allocationGroups;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Experiment)) {
+            return false;
+        }
+
+        Experiment other = (Experiment) obj;
+        return
+            Objects.equal(name, other.name);
+    }
+
+    @Override
+    public String toString() {
+        return
+            Objects
+                .toStringHelper(this)
+                .add("name", name)
+                .add("description", description)
+                .add("type", type)
+                .add("active", active)
+                .add("created", created)
+                .add("modified", modified)
+                .add("owner", owner)
+                .add("activated", activated)
+                .add("deactivated", deactivated)
+                .add("groups", groups)
+                .add("allocationGroups", allocationGroups)
+                .toString();
     }
 }

@@ -13,6 +13,8 @@
     <module>alchemy-service</module>
     <module>alchemy-api</module>
     <module>alchemy-client</module>
+    <module>alchemy-mapping</module>
+    <module>alchemy-mapping-orika</module>
   </modules>
   <name>Alchemy Project</name>
 
@@ -21,11 +23,14 @@
   </description>
 
   <properties>
-    <dropwizard.version>0.7.0-rc2</dropwizard.version>
+    <dropwizard.version>0.7.0-rc3</dropwizard.version>
     <joda-time.version>2.3</joda-time.version>
     <guava.version>16.0.1</guava.version>
+    <guice.version>3.0</guice.version>
+    <slf4j.version>1.7.6</slf4j.version>
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
+    <orika.version>1.4.5</orika.version>
   </properties>
 
   <dependencyManagement>
@@ -36,6 +41,11 @@
         <version>${joda-time.version}</version>
       </dependency>
       <dependency>
+        <groupId>ma.glasnost.orika</groupId>
+        <artifactId>orika-core</artifactId>
+        <version>${orika.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
@@ -44,6 +54,21 @@
         <groupId>io.dropwizard</groupId>
         <artifactId>dropwizard-core</artifactId>
         <version>${dropwizard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dropwizard</groupId>
+        <artifactId>dropwizard-jackson</artifactId>
+        <version>${dropwizard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

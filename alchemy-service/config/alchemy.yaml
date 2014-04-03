@@ -5,3 +5,16 @@ server:
   adminConnectors:
     - type: http
       port: 8001
+
+identityTypes:
+  -
+    dto: com.rtr.alchemy.dto.identities.UserDto
+    identity: com.rtr.alchemy.identities.User
+  -
+    dto: com.rtr.alchemy.dto.identities.DeviceDto
+    identity: com.rtr.alchemy.identities.Device
+  -
+    dto: com.rtr.alchemy.dto.identities.GeoLocationDto
+    identity: com.rtr.alchemy.identities.GeoLocation
+
+mapper: com.rtr.alchemy.mapping.OrikaMapperBuilder

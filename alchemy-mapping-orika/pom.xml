@@ -7,22 +7,20 @@
     <groupId>com.rtr.alchemy</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  <name>Core Alchemy Library</name>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>alchemy-core</artifactId>
+
+  <artifactId>alchemy-mapping-orika</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
+      <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-mapping</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
+      <groupId>ma.glasnost.orika</groupId>
+      <artifactId>orika-core</artifactId>
     </dependency>
   </dependencies>
+
 </project>

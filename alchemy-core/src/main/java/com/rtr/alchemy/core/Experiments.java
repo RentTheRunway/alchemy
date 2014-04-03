@@ -1,13 +1,19 @@
 package com.rtr.alchemy.core;
 
+import com.google.inject.Inject;
+import com.rtr.alchemy.db.ExperimentsCache;
+import com.rtr.alchemy.db.ExperimentsStore;
+
 /**
  * The main class for accessing experiments
  */
 public class Experiments {
-    public static Builder newBuilder() {
-        return new Experiments().new Builder();
-    }
+    private final ExperimentsStore store;
+    private final ExperimentsCache cache;
 
-    public class Builder {
+    @Inject
+    public Experiments(ExperimentsStore store, ExperimentsCache cache) {
+        this.store = store;
+        this.cache = cache;
     }
 }
