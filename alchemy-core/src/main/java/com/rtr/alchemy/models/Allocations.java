@@ -14,14 +14,14 @@ public class Allocations {
     public static final int NUM_BINS = 100;
     private final List<Allocation> allocations;
     private final Byte[] allocationMap;
-    private final Treatment[] treatmentsMap;
+    private final String[] treatmentsMap;
     private final int size;
 
     public Allocations(Iterable<Allocation> allocations) {
         this.allocations = ImmutableList.copyOf(allocations);
         this.allocationMap = new Byte[NUM_BINS];
 
-        Map<Treatment, Integer> treatments = Maps.newHashMap();
+        Map<String, Integer> treatments = Maps.newHashMap();
         int index = 0;
         for (Allocation allocation : allocations) {
             Integer treatment = treatments.get(allocation.getTreatment());
@@ -36,13 +36,13 @@ public class Allocations {
         }
 
         this.size = index;
-        this.treatmentsMap = new Treatment[treatments.size()];
-        for (Entry<Treatment, Integer> entry : treatments.entrySet()) {
+        this.treatmentsMap = new String[treatments.size()];
+        for (Entry<String, Integer> entry : treatments.entrySet()) {
             this.treatmentsMap[entry.getValue()] = entry.getKey();
         }
     }
 
-    public Treatment getTreatment(int index) {
+    public String getTreatment(int index) {
         Byte treatmentIndex = allocationMap[index];
 
         if (treatmentIndex == null) {

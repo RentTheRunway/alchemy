@@ -22,6 +22,25 @@
       <artifactId>alchemy-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-mapping</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-mapping-orika</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

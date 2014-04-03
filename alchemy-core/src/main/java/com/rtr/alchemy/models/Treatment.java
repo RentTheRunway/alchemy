@@ -24,7 +24,7 @@ public class Treatment {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, description);
+        return Objects.hashCode(name);
     }
 
     @Override
@@ -35,8 +35,7 @@ public class Treatment {
 
         Treatment other = (Treatment) obj;
         return
-            Objects.equal(name, other.name) &&
-            Objects.equal(description, other.description);
+            Objects.equal(name, other.name);
     }
 
     @Override

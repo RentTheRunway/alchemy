@@ -10,10 +10,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class AllocationsTest {
-    private static Allocation allocation(String name, int size) {
-        return new Allocation(new Treatment(name, null), size);
-    }
-
     @Test
     public void testEmptyAllocations() {
         Allocations allocations = new Allocations(Lists.<Allocation>newArrayList());
@@ -29,9 +25,9 @@ public class AllocationsTest {
     @Test
     public void testSimpleAllocation() {
         List<Allocation> allocationList = Lists.newArrayList(
-            allocation("control", 20),
-            allocation("with_login", 30),
-            allocation("without_login", 40)
+            new Allocation("control", 20),
+            new Allocation("with_login", 30),
+            new Allocation("without_login", 40)
         );
 
         Allocations allocations = new Allocations(allocationList);
@@ -45,11 +41,11 @@ public class AllocationsTest {
         }
 
         for (int i=20; i<50; i++) {
-            assertEquals("second set of 30 should be control", allocationList.get(1).getTreatment(), allocations.getTreatment(i));
+            assertEquals("second set of 30 should be with_login", allocationList.get(1).getTreatment(), allocations.getTreatment(i));
         }
 
         for (int i=50; i<90; i++) {
-            assertEquals("third set of 40 should be control", allocationList.get(2).getTreatment(), allocations.getTreatment(i));
+            assertEquals("third set of 40 should be without_login", allocationList.get(2).getTreatment(), allocations.getTreatment(i));
         }
 
         for (int i=90; i<Allocations.NUM_BINS - 90; i++) {
