@@ -63,7 +63,11 @@
             <div class="span3" id="sidebar">
                 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Manual</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="">Alchemy Core</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Alchemy Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#identities-that-exist">Identities that exist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#allocation-info">Allocation Info</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="client.html">Alchemy Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="example.html">Alchemy Example, Step by Step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Alchemy Configuration Reference</a></li>
@@ -83,6 +87,26 @@
 <span id="man-core"></span><h1>Alchemy Core<a class="headerlink" href="#alchemy-core" title="Permalink to this headline">¶</a></h1>
 <p class="rubric">The <tt class="docutils literal"><span class="pre">alchemy-core</span></tt> module provides you with everything you&#8217;ll need to write A/B
 experiments applications.</p>
+<p>It includes models for:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Experiment</span></tt> - A collection of treatments which are assigned via an allocation and identity</li>
+<li><tt class="docutils literal"><span class="pre">Treatment</span></tt> - Represents a possible user experience in an experiment</li>
+<li><tt class="docutils literal"><span class="pre">Allocation</span></tt> - Represents a contiguous allocation block of a single treatment in an experiment</li>
+<li><tt class="docutils literal"><span class="pre">Allocations</span></tt> - A collection of Allocation</li>
+<li><tt class="docutils literal"><span class="pre">Identity</span></tt> - Requests are assigned to an allocation via an identity, which generates a uniq hash for a request which is used for treatment allocation</li>
+</ul>
+<div class="section" id="identities-that-exist">
+<h2>Identities that exist<a class="headerlink" href="#identities-that-exist" title="Permalink to this headline">¶</a></h2>
+<p>All Indentity generate a hash. What varies from identity to identity are the elements being hashed. The list of items included the hash are listed below. Common to all is a seeding integer, which provides for generating a more random assignemnt across experiments &amp; treatments.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Device</span></tt> - [deviceId]</li>
+<li><tt class="docutils literal"><span class="pre">GeoLocation</span></tt> - [country,region,city,zip,lat,long,metroCode,areaCode]</li>
+<li><tt class="docutils literal"><span class="pre">User</span></tt> - [userId]</li>
+</ul>
+</div>
+<div class="section" id="allocation-info">
+<h2>Allocation Info<a class="headerlink" href="#allocation-info" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 

@@ -13,7 +13,6 @@ Since it's on Dropwizard, it's uses **stable**, **mature** libraries from the Ja
 **simple**, **light-weight** package that lets you focus on *getting things done*.
 
 It also built with an operations first mindset!
-tion-quality* web service in the shortest time possible.
 
 .. toctree::
    :maxdepth: 1
