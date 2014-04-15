@@ -1,12 +1,12 @@
 package com.rtr.alchemy.service;
 
+import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import com.rtr.alchemy.service.config.IdentityMapping;
 import com.rtr.alchemy.service.guice.AlchemyModule;
 import com.rtr.alchemy.service.health.HelloWorldCheck;
-import com.rtr.alchemy.service.resources.DummyResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -17,16 +17,18 @@ import io.dropwizard.setup.Environment;
 public class AlchemyService extends Application<AlchemyServiceConfiguration> {
 
     private static final Class<?>[] RESOURCES = {
-        DummyResource.class
     };
 
     @Override
     public void initialize(final Bootstrap<AlchemyServiceConfiguration> bootstrap) {
+        bootstrap.getObjectMapper().registerModule(new MrBeanModule());
     }
 
     @Override
     public void run(final AlchemyServiceConfiguration configuration, final Environment environment) throws Exception {
-        Injector injector = Guice.createInjector(new AlchemyModule(configuration));
+        environment.jersey().disable(); // until we have resources
+
+        final Injector injector = Guice.createInjector(new AlchemyModule(configuration));
 
         for (Class<?> resource : RESOURCES) {
             environment.jersey().register(injector.getInstance(resource));

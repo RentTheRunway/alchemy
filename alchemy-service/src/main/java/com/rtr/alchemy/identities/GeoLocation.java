@@ -3,6 +3,7 @@ package com.rtr.alchemy.identities;
 /**
  * Represents a specific location on Earth
  */
+@IdentityType("geoLocation")
 public class GeoLocation extends Identity {
     private final String country;
     private final String region;
@@ -29,21 +30,6 @@ public class GeoLocation extends Identity {
         this.longitude = longitude;
         this.metroCode = metroCode;
         this.areaCode = areaCode;
-    }
-
-    @Override
-    public long getHash(int seed) {
-        return
-            identity(seed)
-                .putString(country)
-                .putString(region)
-                .putString(city)
-                .putString(postalCode)
-                .putFloat(latitude)
-                .putFloat(longitude)
-                .putString(metroCode)
-                .putString(areaCode)
-                .hash();
     }
 
     public String getCountry() {
@@ -76,5 +62,20 @@ public class GeoLocation extends Identity {
 
     public String getAreaCode() {
         return areaCode;
+    }
+
+    @Override
+    public long getHash(int seed) {
+        return
+            identity(seed)
+                .putString(country)
+                .putString(region)
+                .putString(city)
+                .putString(postalCode)
+                .putFloat(latitude)
+                .putFloat(longitude)
+                .putString(metroCode)
+                .putString(areaCode)
+                .hash();
     }
 }

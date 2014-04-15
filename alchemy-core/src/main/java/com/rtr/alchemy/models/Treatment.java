@@ -7,7 +7,11 @@ import com.google.common.base.Objects;
  */
 public class Treatment {
     private final String name;
-    private final String description;
+    private String description;
+
+    public Treatment(String name) {
+        this(name, null);
+    }
 
     public Treatment(String name, String description) {
         this.name = name;
@@ -22,6 +26,10 @@ public class Treatment {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(name);
@@ -33,7 +41,7 @@ public class Treatment {
             return false;
         }
 
-        Treatment other = (Treatment) obj;
+        final Treatment other = (Treatment) obj;
         return
             Objects.equal(name, other.name);
     }

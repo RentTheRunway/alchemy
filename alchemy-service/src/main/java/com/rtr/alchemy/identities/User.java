@@ -3,6 +3,8 @@ package com.rtr.alchemy.identities;
 /**
  * Represents a specific user given by a numerical id
  */
+
+@IdentityType("user")
 public class User extends Identity {
     private final Long userId;
 

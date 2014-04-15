@@ -21,14 +21,14 @@ public class AlchemyModule extends AbstractModule {
     @Override
     protected void configure() {
         try {
-            Mapper mapper = buildMapper();
+            final Mapper mapper = buildMapper();
             bind(Mapper.class).toInstance(mapper);
         } catch (InstantiationException | IllegalAccessException e) {
             addError("failed to configure mapper", e);
         }
     }
 
-    private Mapper buildMapper() throws InstantiationException, IllegalAccessException{
+    private Mapper buildMapper() throws InstantiationException, IllegalAccessException {
         MapperBuilder mapperBuilder = configuration.getMapper().newInstance();
 
         // custom identity types
@@ -40,7 +40,6 @@ public class AlchemyModule extends AbstractModule {
         }
 
         // fixed domain types
-        mapperBuilder = mapperBuilder.register(ExperimentDto.class, Experiment.class);
         mapperBuilder = mapperBuilder.register(Experiment.class, ExperimentDto.class);
 
         return mapperBuilder.build();

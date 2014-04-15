@@ -6,7 +6,7 @@ import ma.glasnost.orika.MapperFacade;
  * Defines a mapper that uses the Orika framework to do object mapping
  */
 public class OrikaMapper implements Mapper {
-    private MapperFacade mapper;
+    private final MapperFacade mapper;
 
     public OrikaMapper(MapperFacade mapper) {
         this.mapper = mapper;
