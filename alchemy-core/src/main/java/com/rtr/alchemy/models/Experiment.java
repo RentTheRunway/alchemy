@@ -12,8 +12,10 @@ import org.apache.commons.math3.util.FastMath;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Represents a collection of user experiences being tested
@@ -32,7 +34,6 @@ public class Experiment {
     private DateTime modified;
     private DateTime activated;
     private DateTime deactivated;
-
 
     // used by Builder when loading experiment from store
     private Experiment(ExperimentsStore store,
@@ -82,70 +83,70 @@ public class Experiment {
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
     }
 
-    public String getName() {
+    public synchronized String getName() {
         return name;
     }
 
-    public String getDescription() {
+    public synchronized String getDescription() {
         return description;
     }
 
-    public Experiment setDescription(String description) {
+    public synchronized Experiment setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public String getIdentityType() {
+    public synchronized String getIdentityType() {
         return identityType;
     }
 
-    public Experiment setIdentityType(String identityType) {
+    public synchronized Experiment setIdentityType(String identityType) {
         this.identityType = identityType;
         return this;
     }
 
-    public boolean isActive() {
+    public synchronized boolean isActive() {
         return active;
     }
 
-    public DateTime getCreated() {
+    public synchronized DateTime getCreated() {
         return created;
     }
 
-    public DateTime getModified() {
+    public synchronized DateTime getModified() {
         return modified;
     }
 
-    protected void setModified(DateTime modified) {
+    protected synchronized void setModified(DateTime modified) {
         this.modified = modified;
     }
 
-    public DateTime getActivated() {
+    public synchronized DateTime getActivated() {
         return activated;
     }
 
-    public DateTime getDeactivated() {
+    public synchronized DateTime getDeactivated() {
         return deactivated;
     }
 
     /**
      * Gets all allocations defined on this experiment
      */
-    public Iterable<Allocation> getAllocations() {
+    public synchronized Iterable<Allocation> getAllocations() {
         return ImmutableList.copyOf(allocations.getAllocations());
     }
 
     /**
      * Gets all treatments defined on this experiment
      */
-    public Iterable<Treatment> getTreatments() {
+    public synchronized Iterable<Treatment> getTreatments() {
         return ImmutableList.copyOf(treatments.values());
     }
 
     /**
      * Gets all overrides defined on this experiment
      */
-    public Iterable<TreatmentOverride> getOverrides() {
+    public synchronized Iterable<TreatmentOverride> getOverrides() {
         return ImmutableList.copyOf(overrides.values());
     }
 
@@ -153,14 +154,14 @@ public class Experiment {
      * Gets the assigned override for a given identity
      * @param identity The identity
      */
-    public TreatmentOverride getOverride(Identity identity) {
+    public synchronized TreatmentOverride getOverride(Identity identity) {
         return overrides.get(identity.getHash(seed));
     }
 
     /**
      * Activates the experiments, enabling all treatments
      */
-    public Experiment activate() {
+    public synchronized Experiment activate() {
         if (active) {
             return this;
         }
@@ -173,7 +174,7 @@ public class Experiment {
     /**
      * Deactivates the experiment, disabling all treatments
      */
-    public Experiment deactivate() {
+    public synchronized Experiment deactivate() {
         if (!active) {
             return this;
         }
@@ -187,7 +188,7 @@ public class Experiment {
      * Adds a treatment
      * @param name The name
      */
-    public Experiment addTreatment(String name) {
+    public synchronized Experiment addTreatment(String name) {
         treatments.put(name, new Treatment(name));
         return this;
     }
@@ -197,7 +198,7 @@ public class Experiment {
      * @param name The name
      * @param description The description
      */
-    public Experiment addTreatment(String name, String description) {
+    public synchronized Experiment addTreatment(String name, String description) {
         treatments.put(name, new Treatment(name, description));
         return this;
     }
@@ -207,7 +208,7 @@ public class Experiment {
      * @param treatmentName The treatment an identity should receive
      * @param identity The identity
      */
-    public Experiment addOverride(String treatmentName, Identity identity) {
+    public synchronized Experiment addOverride(String treatmentName, Identity identity) {
         final Long hash = identity.getHash(seed);
         overrides.put(hash, new TreatmentOverride(identity.toString(), hash, treatment(treatmentName)));
         return this;
@@ -217,9 +218,31 @@ public class Experiment {
      * Remove an override
      * @param identity The identity to remove the override for
      */
-    public Experiment removeOverride(Identity identity) {
+    public synchronized Experiment removeOverride(Identity identity) {
         final Long hash = identity.getHash(seed);
         overrides.remove(hash);
+        return this;
+    }
+
+    /**
+     * Removes all overrides for a given treatment
+     * @param treatmentName The treatment to remove overrides for
+     */
+    public synchronized Experiment removeOverrides(String treatmentName) {
+        final Treatment treatment = treatments.get(treatmentName);
+
+        if (treatment == null) {
+            return this;
+        }
+
+        final Iterator<Entry<Long, TreatmentOverride>> iterator = overrides.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final Entry<Long, TreatmentOverride> entry = iterator.next();
+            if (entry.getValue().getTreatment().equals(treatment)) {
+                iterator.remove();
+            }
+        }
+
         return this;
     }
 
@@ -227,7 +250,14 @@ public class Experiment {
      * Removes a treatment
      * @param name The treatment
      */
-    public Experiment removeTreatment(String name) {
+    public synchronized Experiment removeTreatment(String name) {
+        final Treatment treatment = treatments.get(name);
+        if (treatment == null) {
+            return this;
+        }
+
+        removeOverrides(name);
+        allocations.deallocate(treatment, Allocations.NUM_BINS);
         treatments.remove(name);
         return this;
     }
@@ -241,7 +271,7 @@ public class Experiment {
     /**
      * Saves the experiment and all changes made to it
      */
-    public Experiment save() {
+    public synchronized Experiment save() {
         if (created == null) {
             created = DateTime.now(DateTimeZone.UTC);
             modified = created;
@@ -255,7 +285,7 @@ public class Experiment {
     /**
      * Deletes the experiment and all things associated with it
      */
-    public void delete() {
+    public synchronized void delete() {
         store.delete(name);
     }
 
@@ -264,7 +294,7 @@ public class Experiment {
      * @param treatmentName The treatment
      * @param size The number of bins
      */
-    public Experiment allocate(String treatmentName, int size) {
+    public synchronized Experiment allocate(String treatmentName, int size) {
         allocations.allocate(treatment(treatmentName), size);
         return this;
     }
@@ -274,7 +304,7 @@ public class Experiment {
      * @param treatmentName The treatment
      * @param size The number of bins
      */
-    public Experiment deallocate(String treatmentName, int size) {
+    public synchronized Experiment deallocate(String treatmentName, int size) {
         allocations.deallocate(treatment(treatmentName), size);
         return this;
     }
@@ -285,7 +315,7 @@ public class Experiment {
      * @param destinationTreatmentName The destination treatment
      * @param size The number of bins
      */
-    public Experiment reallocate(String sourceTreatmentName, String destinationTreatmentName, int size) {
+    public synchronized Experiment reallocate(String sourceTreatmentName, String destinationTreatmentName, int size) {
         allocations.reallocate(
             treatment(sourceTreatmentName),
             treatment(destinationTreatmentName),
@@ -304,7 +334,7 @@ public class Experiment {
      * @param identity The identity
      * @return the treatment assigned to given identity
      */
-    public Treatment getTreatment(Identity identity) {
+    public synchronized Treatment getTreatment(Identity identity) {
         return allocations.getTreatment(identityToBin(identity));
     }
 

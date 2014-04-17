@@ -24,7 +24,7 @@ public class Experiments {
         Preconditions.checkNotNull(cache, "cache cannot be null");
     }
 
-    public Treatment getActiveTreatment(String experimentName, Identity identity) {
+    public synchronized Treatment getActiveTreatment(String experimentName, Identity identity) {
         final Experiment experiment = cache.getActiveExperiments().get(experimentName);
         if (experiment == null) {
             return null;
@@ -41,11 +41,11 @@ public class Experiments {
         return experiment.getTreatment(identity);
     }
 
-    public Iterable<Experiment> getActiveExperiments() {
+    public synchronized Iterable<Experiment> getActiveExperiments() {
         return cache.getActiveExperiments().values();
     }
 
-    public Map<Experiment, Treatment> getActiveTreatments(Identity ... identities) {
+    public synchronized Map<Experiment, Treatment> getActiveTreatments(Identity ... identities) {
         final Map<String, Identity> identitiesByType = Maps.newHashMap();
         for (Identity identity : identities) {
             identitiesByType.put(identity.getType(), identity);
@@ -81,26 +81,26 @@ public class Experiments {
         return result;
     }
 
-    public Iterable<Experiment> find(Filter filter) {
+    public synchronized Iterable<Experiment> find(Filter filter) {
         return store.find(filter);
     }
 
-    public Iterable<Experiment> find() {
+    public synchronized Iterable<Experiment> find() {
         return store.find(Filter.criteria().build());
     }
 
-    public Experiment get(String experimentName) {
+    public synchronized Experiment get(String experimentName) {
         return store.load(
             experimentName,
             new Experiment.Builder(store, experimentName)
         );
     }
 
-    public void delete(String experimentName) {
+    public synchronized void delete(String experimentName) {
         store.delete(experimentName);
     }
 
-    public Experiment create(String name) {
+    public synchronized Experiment create(String name) {
         return new Experiment(store, name);
     }
 }
