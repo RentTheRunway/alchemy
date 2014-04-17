@@ -1,9 +1,6 @@
 package com.rtr.alchemy.db;
 
-import com.rtr.alchemy.models.Allocation;
 import com.rtr.alchemy.models.Experiment;
-import com.rtr.alchemy.models.Treatment;
-import com.rtr.alchemy.models.TreatmentOverride;
 
 /**
  * An interface for defining basic CRUD operations around experiments, treatments and allocations.  These operations do
@@ -11,85 +8,34 @@ import com.rtr.alchemy.models.TreatmentOverride;
  */
 public interface ExperimentsStore {
     /**
-     * Create or update an experiment
+     * Save an experiment, creating or updating it
      * @param experiment The experiment to create or update
      */
-    void putExperiment(Experiment experiment);
+    void save(Experiment experiment);
 
     /**
      * Retrieves an experiment
-     * @param name The name of the experiment
+     * @param experimentName The name of the experiment
+     * @param builder The builder to use to construct the experiment
      * @return The experiment with the given name
      */
-    Experiment getExperiment(String name);
+    Experiment load(String experimentName, Experiment.Builder builder);
 
     /**
-     * Removes an experiment and its treatments
-     * @param name The name of the experiment
+     * Deletes an experiment and its associated data
+     * @param experimentName The name of the experiment
      */
-    void removeExperiment(String name);
+    void delete(String experimentName);
 
     /**
-     * Retrieves experiments
+     * Finds experiments with given criteria
      * @param filter Criteria for pagination and filtering
      * @return Filtered list of experiments
      */
-    Iterable<Experiment> getExperiments(Filter filter);
+    Iterable<Experiment> find(Filter filter);
 
     /**
-     * Adds a treatment to an experiment
-     * @param experiment The name of the experiment to add treatment to
-     * @param treatment The treatment to add
+     * Disposes any resources this object may be using
      */
-    void addTreatment(String experiment, Treatment treatment);
-
-    /**
-     * Retrieves a treatment from an experiment
-     * @param experiment The name of the experiment to retrieve treatment from
-     * @param name The name of the treatment to retrieve
-     */
-    void getTreatment(String experiment, String name);
-
-    /**
-     * Removes a treatment from an experiment
-     * @param experiment The name of the experiment to remove treatment from
-     * @param name The name of the treatment to remove
-     */
-    void removeTreatment(String experiment, String name);
-
-    /**
-     * Retrieves treatments
-     * @param experiment The name of the experiment to retrieve treatments from
-     * @param filter Criteria for pagination and filtering
-     * @return Filtered list of treatments for given experiment
-     */
-    Iterable<Treatment> getTreatments(String experiment, Filter filter);
-
-    /**
-     * Adds an override for a given experiment, allowing assignment of treatment to an identity
-     * @param experiment The name of the experiment to add the override to
-     * @param override The override, which contains the identity and treatment to assign to the identity
-     */
-    void addTreatmentOverride(String experiment, TreatmentOverride override);
-
-    /**
-     * Removes an override for a given experiment
-     * @param experiment The name of the experiment to remove the override from
-     * @param hash The hash of the identity to remove override for
-     */
-    void removeTreatmentOverride(String experiment, long hash);
-
-    /**
-     * Retrieves current allocation of treatments for an experiment
-     * @param experiment The experiment to retrieve allocations for
-     * @return List of allocations
-     */
-    Iterable<Allocation> getAllocations(String experiment);
-
-    /**
-     * Set current allocation of treatments for an experiment
-     * @param experiment The experiment to set allocations for
-     * @param allocations The allocations
-     */
-    void setAllocations(String experiment, Iterable<Allocation> allocations);
+    void close();
 }

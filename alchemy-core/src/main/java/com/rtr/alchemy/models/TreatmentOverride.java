@@ -8,9 +8,9 @@ import com.google.common.base.Objects;
 public class TreatmentOverride {
     private final String identity;
     private final long hash;
-    private final String treatment;
+    private final Treatment treatment;
 
-    public TreatmentOverride(String identity, long hash, String treatment) {
+    public TreatmentOverride(String identity, long hash, Treatment treatment) {
         this.identity = identity;
         this.hash = hash;
         this.treatment = treatment;
@@ -24,7 +24,7 @@ public class TreatmentOverride {
         return hash;
     }
 
-    public String getTreatment() {
+    public Treatment getTreatment() {
         return treatment;
     }
 
@@ -39,7 +39,7 @@ public class TreatmentOverride {
             return false;
         }
 
-        TreatmentOverride other = (TreatmentOverride) obj;
+        final TreatmentOverride other = (TreatmentOverride) obj;
 
         return
             Objects.equal(identity, other.identity) &&

@@ -64,8 +64,12 @@
                 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Manual</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">Alchemy Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#terminology">Terminology</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#identities-that-exist">Identities that exist</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#allocation-info">Allocation Info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-a-custom-identity">Implementing a custom identity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-a-custom-database-provider">Implementing a custom database provider</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#allocation">Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-example">Code Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="client.html">Alchemy Client</a></li>
@@ -85,27 +89,121 @@
                 
   <div class="section" id="alchemy-core">
 <span id="man-core"></span><h1>Alchemy Core<a class="headerlink" href="#alchemy-core" title="Permalink to this headline">¶</a></h1>
-<p class="rubric">The <tt class="docutils literal"><span class="pre">alchemy-core</span></tt> module provides you with everything you&#8217;ll need to write A/B
-experiments applications.</p>
-<p>It includes models for:</p>
+<p class="rubric">The <tt class="docutils literal"><span class="pre">alchemy-core</span></tt> module is the core module required to create and configure A/B experiments and to query which treaments a given identity is assigned to.</p>
+<div class="section" id="terminology">
+<h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">Experiment</span></tt> - A collection of treatments which are assigned via an allocation and identity</li>
-<li><tt class="docutils literal"><span class="pre">Treatment</span></tt> - Represents a possible user experience in an experiment</li>
-<li><tt class="docutils literal"><span class="pre">Allocation</span></tt> - Represents a contiguous allocation block of a single treatment in an experiment</li>
-<li><tt class="docutils literal"><span class="pre">Allocations</span></tt> - A collection of Allocation</li>
-<li><tt class="docutils literal"><span class="pre">Identity</span></tt> - Requests are assigned to an allocation via an identity, which generates a uniq hash for a request which is used for treatment allocation</li>
+<li><tt class="docutils literal"><span class="pre">Treatment</span></tt> - Represents a possible user experience or outcome of an experiment</li>
+<li><tt class="docutils literal"><span class="pre">Identity</span></tt> - A unique representation of an entity that is mapped to a random treatment in an experiment, such as a user</li>
+<li><tt class="docutils literal"><span class="pre">Bin</span></tt> - a numbered bucket which is assigned a treatment and to which identities are mapped to in equal distribution</li>
+<li><tt class="docutils literal"><span class="pre">Allocation</span></tt> - Represents a contiguous block of bins assigned to a treatment</li>
+<li><tt class="docutils literal"><span class="pre">Allocations</span></tt> - A collection of allocations that defines which bins are assigned to which treatments</li>
+<li><tt class="docutils literal"><span class="pre">TreatmentOverride</span></tt> - Assignment of a specific treatment to a specific identity, which overrides allocations</li>
+<li><tt class="docutils literal"><span class="pre">Experiment</span></tt> - A collection of treatments, allocations, and overrides</li>
 </ul>
+</div>
 <div class="section" id="identities-that-exist">
 <h2>Identities that exist<a class="headerlink" href="#identities-that-exist" title="Permalink to this headline">¶</a></h2>
-<p>All Indentity generate a hash. What varies from identity to identity are the elements being hashed. The list of items included the hash are listed below. Common to all is a seeding integer, which provides for generating a more random assignemnt across experiments &amp; treatments.</p>
+<p>All identities generate a hash. What varies from identity to identity are the elements being hashed. The list of items included the hash are listed below. Common to all is a seeding integer, which provides for generating a more random assignment across experiments &amp; treatments.</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">Device</span></tt> - [deviceId]</li>
 <li><tt class="docutils literal"><span class="pre">GeoLocation</span></tt> - [country,region,city,zip,lat,long,metroCode,areaCode]</li>
 <li><tt class="docutils literal"><span class="pre">User</span></tt> - [userId]</li>
 </ul>
 </div>
-<div class="section" id="allocation-info">
-<h2>Allocation Info<a class="headerlink" href="#allocation-info" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="implementing-a-custom-identity">
+<h2>Implementing a custom identity<a class="headerlink" href="#implementing-a-custom-identity" title="Permalink to this headline">¶</a></h2>
+<p>The built-in identities are merely there for demonstration purposes.  New identities can be implemented as needed.  You only need to extend the Identity class, implement <tt class="docutils literal"><span class="pre">getHash()</span></tt> and add an <tt class="docutils literal"><span class="pre">&#64;IdentityType</span></tt> annotation:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@IdentityType</span><span class="o">(</span><span class="s">&quot;fullName&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FullName</span> <span class="kd">extends</span> <span class="n">Identity</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">firstName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">lastName</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">FullName</span><span class="o">(</span><span class="n">String</span> <span class="n">firstName</span><span class="o">,</span> <span class="n">String</span> <span class="n">lastName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">firstName</span> <span class="o">=</span> <span class="n">firstName</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">lastName</span> <span class="o">=</span> <span class="n">lastName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getFirstName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">firstName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getLastName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">lastName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getHash</span><span class="o">(</span><span class="kt">int</span> <span class="n">seed</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span>
+            <span class="nf">identity</span><span class="o">(</span><span class="n">seed</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">firstName</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">lastName</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">hash</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>It is recommended that the built-in hash builder be used by calling <tt class="docutils literal"><span class="pre">identity()</span></tt> with the seed value and then specifying the individual fields to be used to generate the hash.  If your identity contains an object reference to another class, you can have it implement Identity as well, and add it to the hash builder to propagate building the hash down the object hierarchy.  The current implementation of the hash builder uses mumur_128 to ensure good distribution and few collisions.
+The <tt class="docutils literal"><span class="pre">&#64;IdentityType</span></tt> annotation is used to identify which experiments are intended for this identity type.</p>
+</div>
+<div class="section" id="implementing-a-custom-database-provider">
+<h2>Implementing a custom database provider<a class="headerlink" href="#implementing-a-custom-database-provider" title="Permalink to this headline">¶</a></h2>
+<p>In alchemy, the regular CRUD methods and querying what treatment an identity is assigned to is separated into two storage components: <tt class="docutils literal"><span class="pre">ExperimentStore</span></tt> and <tt class="docutils literal"><span class="pre">ExperimentCache</span></tt>.
+An <tt class="docutils literal"><span class="pre">Experiment</span></tt> object contains all the data it needs to define an experiment, treatments, and which identities are assigned to which users.  As a result, all CRUD operations
+in <tt class="docutils literal"><span class="pre">ExperimentStore</span></tt> are on the <tt class="docutils literal"><span class="pre">Experiment</span></tt> object level.  The <tt class="docutils literal"><span class="pre">ExperimentCache</span></tt> object is responsible for being able to quickly fetch a cached copy of only active <tt class="docutils literal"><span class="pre">Experiment</span></tt> objects.  It must always be highly performant.
+A <tt class="docutils literal"><span class="pre">ExperimentDatabaseProvider</span></tt> is a simple factory for creating the store and cache, given some common configuration, since generally, the cache must load experiments from the same place as the store.
+The <tt class="docutils literal"><span class="pre">alchemy-db-memory</span></tt> module contains an example implementation of a database provider that features a cache and store that stores experiments in memory.  This is great to use for testing as well.</p>
+</div>
+<div class="section" id="allocation">
+<h2>Allocation<a class="headerlink" href="#allocation" title="Permalink to this headline">¶</a></h2>
+<p>In Alchemy, treatments are allocated and assigned to bins. By default, there are 100 bins to correspond to percentages when allocating treatments. Identities are also assigned to bins by computing a hash and mapping that number to a bin number.</p>
+<p>Allocations of treatments are performed in such a way that when allocations are modified, a best effort is made to keep users assigned to the same previously assigned treatments.  Also, during allocation, the user need not know which bin an allocation actually ends up being assigned to.</p>
+<p>For example, let&#8217;s say you have two treatments: &#8220;control&#8221; and &#8220;new_banner&#8221;.  You might at first <strong>allocate</strong> 20% to &#8220;control&#8221; and 20% to &#8220;new_banner&#8221;.</p>
+<p>If you later decide you would like &#8220;new_banner&#8221; to be 30%, you can <strong>allocate</strong> an additional 10%, and users who had &#8220;control&#8221; would still have &#8220;control&#8221;.</p>
+<p>If you decide that you would like to reduce &#8220;new_banner&#8221; to 10%, you could <strong>deallocate</strong> 10%.  This would, naturally, cause half of the users with the &#8220;new_banner&#8221; treatment to no longer receive this treatment, but, users who had &#8220;control&#8221; will still have &#8220;control&#8221;.</p>
+<p>Lastly, you can <strong>reallocate</strong> a given amount from one treatment to another.  For example, you could <strong>reallocate</strong> 5% from &#8220;control&#8221; to &#8220;new_banner&#8221;.  The end result would be that 5% of all users who were assigned to &#8220;control&#8221; are now assigned to &#8220;new_banner&#8221;, but all other treatment associations are left intact.</p>
+</div>
+<div class="section" id="code-example">
+<h2>Code Example<a class="headerlink" href="#code-example" title="Permalink to this headline">¶</a></h2>
+<p>In order to interact with experiments or query what treatments identities are assigned to, you will first need to create an instance of <tt class="docutils literal"><span class="pre">Experiments</span></tt>.  In the example below, we create our <tt class="docutils literal"><span class="pre">Experiments</span></tt> using a database that stores experiments in memory:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">MemoryDatabaseProvider</span> <span class="n">provider</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MemoryDatabaseProvider</span><span class="o">();</span>
+<span class="n">Experiments</span> <span class="n">experiments</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Experiments</span><span class="o">(</span><span class="n">provider</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Creating and configuring an experiment is easy to do with Alchemy&#8217;s fluent API:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Identity</span> <span class="n">identity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="mi">42L</span><span class="o">);</span>
+
+<span class="n">Experiment</span> <span class="n">experiment</span> <span class="o">=</span>
+    <span class="n">experiments</span>
+        <span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">&quot;experiment&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">&quot;my first experiment&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setIdentityType</span><span class="o">(</span><span class="s">&quot;user&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">addTreatment</span><span class="o">(</span><span class="s">&quot;control&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">addTreatment</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">addTreatment</span><span class="o">(</span><span class="s">&quot;pie&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">addOverride</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">,</span> <span class="n">identity</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="s">&quot;control&quot;</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">,</span> <span class="mi">20</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="s">&quot;pie&quot;</span><span class="o">,</span> <span class="mi">30</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">activate</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">save</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>If we want to figure out what treatment we have:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Identity</span> <span class="n">identity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="mi">42L</span><span class="o">);</span>
+<span class="n">Treatment</span> <span class="n">treatment</span> <span class="o">=</span> <span class="n">experiments</span><span class="o">.</span><span class="na">getActiveTreatment</span><span class="o">(</span><span class="s">&quot;experiment&quot;</span><span class="o">,</span> <span class="n">identity</span><span class="o">);</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">treatment</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// user is not allocated to any treatment</span>
+<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">treatment</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;control&quot;</span><span class="o">))</span> <span class="o">{</span>
+    <span class="c1">// user is assigned to the &quot;control&quot; treatment</span>
+<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">treatment</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">))</span> <span class="o">{</span>
+    <span class="c1">// user is assigned to the &quot;cake&quot; treatment</span>
+<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">treatment</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;pie&quot;</span><span class="o">))</span> <span class="o">{</span>
+    <span class="c1">// user is assigned to the &quot;pie&quot; treatment</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>In this case, because of the override we added, the treatment the user receives should be &#8220;cake&#8221;.  It&#8217;s also important to note that had we not called <tt class="docutils literal"><span class="pre">activate()</span></tt> when creating the experiment, <tt class="docutils literal"><span class="pre">getActiveTreatment()</span></tt> will always return null until the experiment is actually active.</p>
 </div>
 </div>
 
@@ -116,7 +214,7 @@ experiments applications.</p>
         <footer>
             &copy; Copyright 2014, RentTheRunway, Gene Trog, Carlo Barbara.
             Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>
-            1.2b2.
+            1.2.2.
         </footer>
     </div>
 </body>

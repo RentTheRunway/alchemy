@@ -44,7 +44,7 @@ public class OrikaMapperBuilderTest {
     }
 
     public static class Bar extends Foo {
-        private int value;
+        private final int value;
 
         public Bar(String name, int value) {
             super(name);
@@ -58,8 +58,8 @@ public class OrikaMapperBuilderTest {
 
     @Test
     public void testMappingWithoutRegister() {
-        Mapper mapper = new OrikaMapperBuilder().build();
-        Foo foo = mapper.map(new BarDto("bar", 1), Foo.class);
+        final Mapper mapper = new OrikaMapperBuilder().build();
+        final Foo foo = mapper.map(new BarDto("bar", 1), Foo.class);
         assertNotEquals("should not have been mapped to unregistered type", Bar.class, foo.getClass());
         assertEquals("base class value should have been mapped", "bar", foo.getName());
     }
@@ -68,12 +68,12 @@ public class OrikaMapperBuilderTest {
     public void testMapping() {
         MapperBuilder builder = new OrikaMapperBuilder();
         builder = builder.register(BarDto.class, Bar.class);
-        Mapper mapper = builder.build();
+        final Mapper mapper = builder.build();
 
-        Foo foo = mapper.map(new BarDto("bar", 1), Foo.class);
+        final Foo foo = mapper.map(new BarDto("bar", 1), Foo.class);
         assertEquals("should have been mapped to registered type", Bar.class, foo.getClass());
 
-        Bar bar = (Bar) foo;
+        final Bar bar = (Bar) foo;
         assertEquals("value should have been mapped", "bar", bar.getName());
         assertEquals("value should have been mapped", 1, bar.getValue());
     }

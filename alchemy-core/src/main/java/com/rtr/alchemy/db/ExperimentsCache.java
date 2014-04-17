@@ -1,5 +1,7 @@
 package com.rtr.alchemy.db;
 
+import com.rtr.alchemy.models.Experiment;
+
 import java.util.Map;
 
 /**
@@ -8,25 +10,18 @@ import java.util.Map;
  */
 public interface ExperimentsCache {
     /**
-     * Returns whether an experiment is active
-     * @param experiment The experiment to test
-     * @return true if experiment is active, otherwise false
+     * Return active experiments
+     * @return all active experiments
      */
-    boolean isExperimentActive(String experiment);
-
+    public abstract Map<String, Experiment> getActiveExperiments();
 
     /**
-     * Returns the currently assigned treatment
-     * @param bin The bin to return assigned treatment for
-     * @param experiment The experiment to return treatment for
-     * @return The currently allocated treatment for a given bin
+     * Forces cache to reload all data from storage
      */
-    String getActiveTreatment(int bin, String experiment);
+    public abstract void invalidate();
 
     /**
-     * Returns assigned treatments for a given bin
-     * @param bin The bin to return map of treatments for
-     * @return A map of experiment -> treatment, null treatment means unallocated
+     * Disposes any resources this object may be using
      */
-    Map<String, String> getActiveTreatments(int bin);
+    public abstract void close();
 }

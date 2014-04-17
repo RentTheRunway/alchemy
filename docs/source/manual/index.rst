@@ -1,11 +1,11 @@
-.. _manual-index:
+.. _man-index:
 
 ###########
 User Manual
 ###########
 
 .. rubric:: This goal of this document is to provide you with all the information required to build,
-            and run you're experiments.
+            and run your experiments.
 
 .. toctree::
     :maxdepth: 1

@@ -5,9 +5,10 @@
   <parent>
     <artifactId>alchemy-parent</artifactId>
     <groupId>com.rtr.alchemy</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
-  <name>Representations for Alchemy service</name>
+  <name>Alchemy API Library</name>
+  <description>Representations for Alchemy Service</description>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>alchemy-api</artifactId>
 

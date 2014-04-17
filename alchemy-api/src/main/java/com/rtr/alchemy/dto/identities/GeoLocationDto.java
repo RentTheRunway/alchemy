@@ -1,5 +1,6 @@
 package com.rtr.alchemy.dto.identities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -14,6 +15,7 @@ public class GeoLocationDto extends IdentityDto {
     private final String metroCode;
     private final String areaCode;
 
+    @JsonCreator
     public GeoLocationDto(@JsonProperty("country") String country,
                           @JsonProperty("region") String region,
                           @JsonProperty("city") String city,

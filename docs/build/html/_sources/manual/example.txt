@@ -6,5 +6,4 @@ Alchemy Example, Step by Step
 
 .. highlight:: text
 
-.. rubric:: The ``example`` provides you with example experiments
-
+.. rubric:: The ``alchemy-example`` module provides you with an example application that uses the ``alchemy-core`` module to create, configure and query experiments.

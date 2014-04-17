@@ -2,6 +2,7 @@ package com.rtr.alchemy.service.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
+import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
 import com.rtr.alchemy.identities.Device;
 import com.rtr.alchemy.identities.GeoLocation;
 import com.rtr.alchemy.identities.User;
@@ -12,6 +13,7 @@ import com.rtr.alchemy.dto.identities.UserDto;
 import com.rtr.alchemy.mapping.OrikaMapperBuilder;
 import io.dropwizard.Configuration;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -40,5 +42,12 @@ public class AlchemyServiceConfiguration extends Configuration {
     private final Class<? extends MapperBuilder> mapper = OrikaMapperBuilder.class;
     public Class<? extends MapperBuilder> getMapper() {
         return mapper;
+    }
+
+    @JsonProperty
+    @NotNull
+    private final ExperimentsDatabaseProvider provider = null;
+    public ExperimentsDatabaseProvider getProvider() {
+        return provider;
     }
 }

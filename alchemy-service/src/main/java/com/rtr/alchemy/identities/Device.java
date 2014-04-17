@@ -3,6 +3,7 @@ package com.rtr.alchemy.identities;
 /**
  * Represents a device with a free form id
  */
+@IdentityType("device")
 public class Device extends Identity {
     private final String deviceId;
 
