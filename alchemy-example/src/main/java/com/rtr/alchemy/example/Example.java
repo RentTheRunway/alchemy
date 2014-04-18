@@ -3,7 +3,7 @@ package com.rtr.alchemy.example;
 import com.google.common.collect.Lists;
 import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
 import com.rtr.alchemy.db.memory.MemoryDatabaseProvider;
-import com.rtr.alchemy.example.identity.User;
+import com.rtr.alchemy.example.identities.User;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
 import com.rtr.alchemy.models.Treatment;
@@ -41,7 +41,7 @@ public class Example {
 
             System.out.println(
                 String.format(
-                    "User %s has %s",
+                    "UserDto %s has %s",
                     user.getName(),
                     treatmentName
                 )
@@ -49,6 +49,9 @@ public class Example {
         }
     }
 
+    /**
+     * This example performs some basic operations on an instance of Experiments directly
+     */
     public static void main(String[] args) {
         final ExperimentsDatabaseProvider provider = new MemoryDatabaseProvider();
         final Experiments experiments = new Experiments(provider);
@@ -63,22 +66,28 @@ public class Example {
             .allocate(CONTROL, 25)
             .allocate(PIE, 25)
             .allocate(CAKE, 25)
-            .addOverride(CONTROL, USERS.get(0))
+            .addOverride("override", CONTROL, USERS.get(0))
             .activate()
             .save();
 
         System.out.println("initial allocation:");
         printUserTreatments(experiments);
 
-        experiment.allocate(CONTROL, 15);
+        experiment
+            .allocate(CONTROL, 15)
+            .save();
+
         System.out.println();
         System.out.println("after additional allocation:");
         printUserTreatments(experiments);
 
-        experiment.reallocate(CONTROL, PIE, 20);
-        experiment.reallocate(CONTROL, CAKE, 20);
-        experiment.allocate(PIE, 5);
-        experiment.allocate(CAKE, 5);
+        experiment
+            .reallocate(CONTROL, PIE, 20)
+            .reallocate(CONTROL, CAKE, 20)
+            .allocate(PIE, 5)
+            .allocate(CAKE, 5)
+            .save();
+
         System.out.println();
         System.out.println("after re-allocation:");
         printUserTreatments(experiments);

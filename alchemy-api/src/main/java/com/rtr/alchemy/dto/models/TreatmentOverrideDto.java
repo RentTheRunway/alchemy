@@ -1,0 +1,43 @@
+package com.rtr.alchemy.dto.models;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
+
+/**
+ * Represents a treatment override
+ */
+public class TreatmentOverrideDto {
+    private final String name;
+    private final String treatment;
+
+    public TreatmentOverrideDto(@JsonProperty("name") String name,
+                                @JsonProperty("treatment") String treatment) {
+        this.name = name;
+        this.treatment = treatment;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTreatment() {
+        return treatment;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, treatment);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TreatmentOverrideDto)) {
+            return false;
+        }
+
+        final TreatmentOverrideDto other = (TreatmentOverrideDto) obj;
+        return
+            Objects.equal(name, other.name) &&
+            Objects.equal(treatment, other.treatment);
+    }
+}

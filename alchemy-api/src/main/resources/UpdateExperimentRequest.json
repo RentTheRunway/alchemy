@@ -1,0 +1,35 @@
+{
+    "description": "my new experiment",
+    "identityType": "user",
+    "active": true,
+    "treatments": [
+        {
+            "name": "control",
+            "description": "the base case"
+        },
+        {
+            "name": "x",
+            "description": "some other condition"
+        }
+    ],
+    "allocations": [
+        {
+            "treatment": "control",
+            "size": 5
+        },
+        {
+            "treatment": "x",
+            "size": 10
+        }
+    ],
+    "overrides": [
+        {
+            "name": "qa_override",
+            "identity": {
+                "type": "mock",
+                "value": "foo"
+            },
+            "treatment": "control"
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "name": "my_experiment",
+    "description": "my new experiment",
+    "identityType": "user",
+    "active": true,
+    "created": 0,
+    "modified": 1,
+    "activated": 2,
+    "deactivated": 3,
+    "treatments": [
+        {
+            "name": "control",
+            "description": "the base case"
+        },
+        {
+            "name": "x",
+            "description": "some other condition"
+        }
+    ],
+    "allocations": [
+        {
+            "treatment": "control",
+            "offset": 0,
+            "size": 5
+        },
+        {
+            "treatment": "x",
+            "offset": 5,
+            "size": 10
+        }
+    ],
+    "overrides": [
+        {
+            "name": "qa_override",
+            "treatment": "control"
+        }
+    ]
+}

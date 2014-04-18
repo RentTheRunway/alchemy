@@ -11,4 +11,8 @@ public class MemoryDatabase {
     public Map<String, Experiment> getExperiments() {
         return experiments;
     }
+
+    public void resetDatabase() {
+        experiments.clear();
+    }
 }

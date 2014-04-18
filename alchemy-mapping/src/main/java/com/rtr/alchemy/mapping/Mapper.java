@@ -1,8 +1,9 @@
 package com.rtr.alchemy.mapping;
 
 /**
- * Defines how to map an object to a destination type
+ * Defines how to map an object to and from DTO and business object
  */
-public interface Mapper {
-    <T> T map(Object source, Class<T> destinationType);
+public interface Mapper<TDto, TBo> {
+    TDto toDto(TBo source);
+    TBo fromDto(TDto source);
 }

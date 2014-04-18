@@ -240,4 +240,9 @@ public class Allocations {
     public int getUnallocatedSize() {
         return NUM_BINS - size;
     }
+
+    public void clear() {
+        allocations.clear();
+        rebuildAllocationTables();
+    }
 }

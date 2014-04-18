@@ -1,53 +1,34 @@
 package com.rtr.alchemy.service.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Lists;
-import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
-import com.rtr.alchemy.identities.Device;
-import com.rtr.alchemy.identities.GeoLocation;
-import com.rtr.alchemy.identities.User;
-import com.rtr.alchemy.mapping.MapperBuilder;
-import com.rtr.alchemy.dto.identities.DeviceDto;
-import com.rtr.alchemy.dto.identities.GeoLocationDto;
-import com.rtr.alchemy.dto.identities.UserDto;
-import com.rtr.alchemy.mapping.OrikaMapperBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.collect.Maps;
+import com.rtr.alchemy.identities.Identity;
+import com.rtr.alchemy.service.jackson.ClassKeyDeserializer;
 import io.dropwizard.Configuration;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Map;
 
 /**
- * The base configuration for the Alchemy dropwizard service
+ * The base configuration for the Alchemy Dropwizard service
  */
 public class AlchemyServiceConfiguration extends Configuration {
     /**
      * Defines a list of known identity types, which are used for assigning users to a treatment
      */
     @SuppressWarnings("unchecked")
-    @JsonProperty
-    private final List<IdentityMapping> identityTypes = Lists.newArrayList(
-        new IdentityMapping(DeviceDto.class, Device.class),
-        new IdentityMapping(GeoLocationDto.class, GeoLocation.class),
-        new IdentityMapping(UserDto.class, User.class)
-    );
+    @JsonDeserialize(keyUsing = ClassKeyDeserializer.class)
+    private final Map<Class<? extends Identity>, IdentityMapping> identities = Maps.newHashMap();
 
-    public List<IdentityMapping> getIdentityTypes() {
-        return identityTypes;
-    }
-
-    /**
-     * Defines a mapper implementation to use for mapping DTOs to Domain Objects
-     */
-    @JsonProperty
-    private final Class<? extends MapperBuilder> mapper = OrikaMapperBuilder.class;
-    public Class<? extends MapperBuilder> getMapper() {
-        return mapper;
+    public Map<Class<? extends Identity>, IdentityMapping> getIdentities() {
+        return identities;
     }
 
     @JsonProperty
     @NotNull
-    private final ExperimentsDatabaseProvider provider = null;
-    public ExperimentsDatabaseProvider getProvider() {
+    private final DatabaseProviderConfiguration provider = null;
+    public DatabaseProviderConfiguration getProvider() {
         return provider;
     }
 }

@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Alchemy REST API | Alchemy</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
+    <link rel="stylesheet" href="../_static/alchemy.css" type="text/css"/>
+    <link rel="top" title="Alchemy" href="../index.html"/>
+    <link rel="up" title="User Manual" href="index.html"/>
+    <link rel="next" title="About Alchemy" href="../about/index.html"/>
+    <link rel="prev" title="Alchemy Example, Step by Step" href="example.html"/>
+    <style lang="text/css">
+        #top-bar, #top-bar small, #top-bar a {
+            text-shadow: 0px -1px 0px #182127;
+            color: #ffffff;
+        }
+        
+        #top-bar {
+            background-color: #363F45;
+            background-image: -moz-linear-gradient(top, #545d63, #182127);
+            background-image: -ms-linear-gradient(top, #545d63, #182127);
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#545d63), to(#182127));
+            background-image: -webkit-linear-gradient(top, #545d63, #182127);
+            background-image: -o-linear-gradient(top, #545d63, #182127);
+            background-image: linear-gradient(top, #545d63, #182127);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#545d63', endColorstr = '#182127', GradientType = 0);
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+        }
+
+
+        .hero-unit {
+            background-image: url("../_static/alchemy.jpg") !important;
+            background-repeat: no-repeat !important;
+            background-position: 30px 50px;
+        }
+
+        .hero-unit div.section {
+            padding-left: 250px !important;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://github.com/RentTheRunway2/alchemy">
+        <img style="position: absolute; top: 0; right: 0; border: 0;"
+             src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"
+             alt="Fork me on GitHub"></a>
+    <div class="navbar">
+        <div class="navbar-inner container-fluid" id="top-bar">
+            <header class="row-fluid">
+                <h1 class="span12" id="title"><img class="logo" src="../_static/alchemy-logo.jpg" alt="Logo"/>
+                    <a href="../index.html">Alchemy</a>
+                    <small>Always be experimentin&#39;</small>
+                </h1>
+            </header>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span3" id="sidebar">
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="core.html">Alchemy Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html">Alchemy Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html">Alchemy Example, Step by Step</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Alchemy REST API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#experiments">Experiments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#treatments">Treatments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#treatment-overrides">Treatment Overrides</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#active-treatments">Active Treatments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/index.html">About Alchemy</a></li>
+</ul>
+
+                <hr/>
+                <ul>
+                    <li><a href="https://groups.google.com/forum/#!forum/alchemy-user">Mailing List</a></li>
+                </ul>
+            </div>
+            <div class="span9" id="body">
+                
+  <div class="section" id="alchemy-rest-api">
+<span id="man-rest-api"></span><h1>Alchemy REST API<a class="headerlink" href="#alchemy-rest-api" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">The <tt class="docutils literal"><span class="pre">alchemy-service</span></tt> module provides you with a baseline dropwizard service, that given an appropriate configuration, will host a RESTful API that can be used to interact with experiments.</p>
+<p>These are the currently implemented endpoints:</p>
+<div class="section" id="experiments">
+<h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments</span></tt></p>
+<p><strong>Response:</strong> <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie_vs_cake&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;My experiment&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;identityType&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;active&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nt">&quot;created&quot;</span><span class="p">:</span> <span class="mi">1398347307568</span><span class="p">,</span>
+        <span class="nt">&quot;modified&quot;</span><span class="p">:</span> <span class="mi">1398347517914</span><span class="p">,</span>
+        <span class="nt">&quot;activated&quot;</span><span class="p">:</span> <span class="mi">1398347307553</span><span class="p">,</span>
+        <span class="nt">&quot;deactivated&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;treatments&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want cake&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want pie&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;the default case&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="nt">&quot;allocations&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">40</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+                <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">40</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_cake&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments/{experimentName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie_vs_cake&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;My experiment&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityType&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;active&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;created&quot;</span><span class="p">:</span> <span class="mi">1398347307568</span><span class="p">,</span>
+    <span class="nt">&quot;modified&quot;</span><span class="p">:</span> <span class="mi">1398347517914</span><span class="p">,</span>
+    <span class="nt">&quot;activated&quot;</span><span class="p">:</span> <span class="mi">1398347307553</span><span class="p">,</span>
+    <span class="nt">&quot;deactivated&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;treatments&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want cake&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want pie&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;the default case&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;allocations&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">40</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">40</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/experiments</span></tt></p>
+<p><strong>Response:</strong> <em>201 Created</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie_vs_cake&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;My experiment&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identityType&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;active&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;treatments&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;the default case&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want cake&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want pie&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;allocations&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa&quot;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/experiments/{experimentName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>204 No Content</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;new description&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;active&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;identityType&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;treatments&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;changing description&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;the cake is a lie&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pi&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;3.141&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;allocations&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa&quot;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/experiments/{experimentName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>204 No Content</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="treatments">
+<h2>Treatments<a class="headerlink" href="#treatments" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments/{experimentName}/treatments</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;the cake is a lie&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;changing description&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pi&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;3.141&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments/{experimentName}/treatments/{treatmentName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment or treatment not found, otherwise <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;the cake is a lie&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/experiments/{experimentName}/treatments</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>201 Created</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;new_treatment&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;my new treatment&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/experiments/{experimentName}/treatments</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>204 No Content</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/experiments/{experimentName}/treatments/{treatmentName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment or treatment not found, otherwise <em>204 No Content</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="allocations">
+<h2>Allocations<a class="headerlink" href="#allocations" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments/{experimentName}/allocations</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+        <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/experiments/{experimentName}/allocations</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>204 No Content</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;allocate&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">20</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;deallocate&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">10</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;reallocate&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="mi">5</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/experiments/{experimentName}/allocations</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>204 No Content</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="treatment-overrides">
+<h2>Treatment Overrides<a class="headerlink" href="#treatment-overrides" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments/{experimentName}/overrides</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_cake&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/experiments/{experimentName}/overrides/{overrideName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>200 OK</em></p>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_cake&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/experiments/{experimentName}/overrides</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>201 Created</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa_override&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;treatment&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/experiments/{experimentName}/overrides</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment not found, otherwise <em>204 No Content</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/experiments/{experimentName}/overrides/{overrideName}</span></tt></p>
+<p><strong>Response:</strong> <em>404 Not Found</em> if experiment or override not found, otherwise <em>204 No Content</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="active-treatments">
+<h2>Active Treatments<a class="headerlink" href="#active-treatments" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/active/experiments/{experimentName}/treatment</span></tt></p>
+<p><strong>Response:</strong> <em>204 Not Content</em> if no treatment assigned to identity, otherwise <em>200 OK</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want pie&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/active/treatments</span></tt></p>
+<p><strong>Response:</strong> <em>200 OK</em></p>
+<p><strong>Example Payload:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;qa&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;device&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;10efb20abe0ff1ec&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Example Response:</strong></p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;pie_vs_cake&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cake&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;people want cake&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            </div>
+        </div>
+        <hr/>
+        <footer>
+            &copy; Copyright 2014, RentTheRunway, Gene Trog, Carlo Barbara.
+            Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>
+            1.2.2.
+        </footer>
+    </div>
+</body>
+</html>
+
+

@@ -1,0 +1,6 @@
+{
+    "action": "reallocate",
+    "treatment": "control",
+    "target": "other",
+    "size": 10
+}

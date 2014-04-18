@@ -5,6 +5,7 @@ import com.google.common.base.Objects;
 /**
  * Represents a possible user experience in an experiment
  */
+
 public class Treatment {
     private final String name;
     private String description;
@@ -37,7 +38,7 @@ public class Treatment {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Treatment)) {
+        if (!(obj instanceof Treatment)) {
             return false;
         }
 

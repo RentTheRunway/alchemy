@@ -19,8 +19,19 @@
     </dependency>
     <dependency>
       <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-service</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rtr.alchemy</groupId>
       <artifactId>alchemy-db-memory</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-testing</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

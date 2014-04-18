@@ -20,7 +20,6 @@ public abstract class Identity {
             IdentityType.class.getSimpleName()
         );
 
-
         type = typeAnnotation.value();
     }
 

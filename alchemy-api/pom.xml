@@ -17,5 +17,17 @@
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-jackson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson</groupId>
+      <artifactId>jackson-datatype-guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-mrbean</artifactId>
+    </dependency>
   </dependencies>
 </project>

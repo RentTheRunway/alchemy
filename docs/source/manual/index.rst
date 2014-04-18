@@ -13,5 +13,5 @@ User Manual
     core
     client
     example
-    configuration
+    rest_api
 
