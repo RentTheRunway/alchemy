@@ -16,21 +16,21 @@ public class MemoryExperimentsStore implements ExperimentsStore {
 
     @Override
     public void save(Experiment experiment) {
-        synchronized (db.lock()) {
+        synchronized (db) {
             db.getExperiments().put(experiment.getName(), experiment);
         }
     }
 
     @Override
     public Experiment load(String experimentName, Experiment.Builder builder) {
-        synchronized (db.lock()) {
+        synchronized (db) {
             return db.getExperiments().get(experimentName);
         }
     }
 
     @Override
     public void delete(String experimentName) {
-        synchronized (db.lock()) {
+        synchronized (db) {
             db.getExperiments().remove(experimentName);
         }
     }
@@ -60,7 +60,7 @@ public class MemoryExperimentsStore implements ExperimentsStore {
         int offset = 0;
         final List<Experiment> result = Lists.newArrayList();
 
-        synchronized (db.lock()) {
+        synchronized (db) {
             for (Experiment experiment : db.getExperiments().values()) {
                 if (filter.getOffset() != null && offset++ < filter.getOffset()) {
                     continue;

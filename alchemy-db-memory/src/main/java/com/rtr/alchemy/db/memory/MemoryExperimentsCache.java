@@ -16,7 +16,7 @@ public class MemoryExperimentsCache implements ExperimentsCache {
 
     @Override
     public Map<String, Experiment> getActiveExperiments() {
-        synchronized (db.lock()) {
+        synchronized (db) {
             return Maps.filterEntries(
                 db.getExperiments(),
                 new Predicate<Map.Entry<String, Experiment>>() {
