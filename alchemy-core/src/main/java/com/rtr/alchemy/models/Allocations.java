@@ -75,7 +75,7 @@ public class Allocations {
      * Get treatment assigned to a specific bin
      * @param bin The bin
      */
-    public synchronized Treatment getTreatment(int bin) {
+    public Treatment getTreatment(int bin) {
         final Byte treatmentIndex = allocationMap[bin];
 
         if (treatmentIndex == null) {
@@ -120,7 +120,7 @@ public class Allocations {
      * @param treatment The treatment
      * @param size The number of bins
      */
-    public synchronized void allocate(Treatment treatment, int size) {
+    public void allocate(Treatment treatment, int size) {
         Preconditions.checkState(
             getUnallocatedSize() >= size,
             "not enough free bins to allocate treatment %s with size %s given %s unallocated bin(s)",
@@ -162,7 +162,7 @@ public class Allocations {
      * @param treatment The treatment
      * @param size The number of bins
      */
-    public synchronized void deallocate(Treatment treatment, int size) {
+    public void deallocate(Treatment treatment, int size) {
         final Iterator<Allocation> iter = allocations.iterator();
         int sizeLeft = size;
 
@@ -192,7 +192,7 @@ public class Allocations {
      * @param destination The destination treatment
      * @param size The number of bins
      */
-    public synchronized void reallocate(Treatment source, Treatment destination, int size) {
+    public void reallocate(Treatment source, Treatment destination, int size) {
         final Iterator<Allocation> iter = allocations.iterator();
         final List<Allocation> pieces = Lists.newArrayList();
         int sizeLeft = size;
@@ -229,7 +229,7 @@ public class Allocations {
         rebuildAllocationTables();
     }
 
-    public synchronized List<Allocation> getAllocations() {
+    public List<Allocation> getAllocations() {
         return ImmutableList.copyOf(allocations);
     }
 
