@@ -17,14 +17,14 @@ public class MemoryExperimentsStore implements ExperimentsStore {
     @Override
     public void save(Experiment experiment) {
         synchronized (db) {
-            db.getExperiments().put(experiment.getName(), experiment);
+            db.getExperiments().put(experiment.getName(), Experiment.copyOf(experiment));
         }
     }
 
     @Override
     public Experiment load(String experimentName, Experiment.Builder builder) {
         synchronized (db) {
-            return db.getExperiments().get(experimentName);
+            return Experiment.copyOf(db.getExperiments().get(experimentName));
         }
     }
 
@@ -75,7 +75,7 @@ public class MemoryExperimentsStore implements ExperimentsStore {
                         break;
                     }
 
-                    result.add(experiment);
+                    result.add(Experiment.copyOf(experiment));
                 }
             }
         }
@@ -85,5 +85,6 @@ public class MemoryExperimentsStore implements ExperimentsStore {
 
     @Override
     public void close() {
+
     }
 }

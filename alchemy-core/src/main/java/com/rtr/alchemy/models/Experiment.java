@@ -20,14 +20,16 @@ import java.util.Map.Entry;
 /**
  * Represents a collection of user experiences being tested
  */
+
 public class Experiment {
+    private final Object lock = new Object();
     private final ExperimentsStore store;
     private final String name;
     private final Allocations allocations;
     private final Map<String, Treatment> treatments;
-    private final Map<Long, TreatmentOverride> overrides;
+    private final Map<String, TreatmentOverride> overrides;
+    private final Map<Long, TreatmentOverride> overridesByHash;
     private final int seed;
-    private final Object lock = new Object();
     private volatile String description;
     private volatile String identityType;
     private volatile boolean active;
@@ -65,8 +67,10 @@ public class Experiment {
         }
 
         this.overrides = Maps.newConcurrentMap();
+        this.overridesByHash = Maps.newConcurrentMap();
         for (TreatmentOverride override : overrides) {
-            this.overrides.put(override.getHash(), override);
+            this.overridesByHash.put(override.getHash(), override);
+            this.overrides.put(override.getName(), override);
         }
 
         this.allocations = new Allocations(allocations);
@@ -81,7 +85,48 @@ public class Experiment {
         this.allocations = new Allocations();
         this.treatments = Maps.newConcurrentMap();
         this.overrides = Maps.newConcurrentMap();
+        this.overridesByHash = Maps.newConcurrentMap();
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
+    }
+
+    public static Experiment copyOf(Experiment experiment) {
+        return  experiment != null ? new Experiment(experiment) : null;
+    }
+
+    private Experiment(Experiment toCopy) {
+        this.store = toCopy.store;
+        this.name = toCopy.name;
+
+        this.treatments = Maps.newConcurrentMap();
+        for (Treatment treatment : toCopy.getTreatments()) {
+            this.treatments.put(treatment.getName(), new Treatment(treatment.getName(), treatment.getDescription()));
+        }
+
+        final List<Allocation> allocations = Lists.newArrayList();
+        for (Allocation allocation : toCopy.getAllocations()) {
+            final Treatment treatment = this.treatments.get(allocation.getTreatment().getName());
+            allocations.add(new Allocation(treatment, allocation.getOffset(), allocation.getSize()));
+        }
+
+        this.allocations = new Allocations(allocations);
+
+        this.overrides = Maps.newConcurrentMap();
+        this.overridesByHash = Maps.newConcurrentMap();
+        for (TreatmentOverride override : toCopy.getOverrides()) {
+            final Treatment treatment = this.treatments.get(override.getTreatment().getName());
+            final TreatmentOverride newOverride =  new TreatmentOverride(override.getName(), override.getHash(), treatment);
+            overrides.put(override.getName(), newOverride);
+            overridesByHash.put(override.getHash(), newOverride);
+        }
+
+        this.seed = toCopy.seed;
+        this.description = toCopy.description;
+        this.identityType = toCopy.identityType;
+        this.active = toCopy.active;
+        this.created = toCopy.created;
+        this.modified = toCopy.modified;
+        this.activated = toCopy.activated;
+        this.deactivated = toCopy.deactivated;
     }
 
     public String getName() {
@@ -133,7 +178,7 @@ public class Experiment {
     /**
      * Gets all allocations defined on this experiment
      */
-    public Iterable<Allocation> getAllocations() {
+    public List<Allocation> getAllocations() {
         synchronized (lock) {
             return ImmutableList.copyOf(allocations.getAllocations());
         }
@@ -142,16 +187,25 @@ public class Experiment {
     /**
      * Gets all treatments defined on this experiment
      */
-    public Iterable<Treatment> getTreatments() {
+    public List<Treatment> getTreatments() {
         synchronized (lock) {
             return ImmutableList.copyOf(treatments.values());
         }
     }
 
     /**
+     * Get a treatment with the given name
+     */
+    public Treatment getTreatment(String treatmentName) {
+        synchronized (lock) {
+            return treatments.get(treatmentName);
+        }
+    }
+
+    /**
      * Gets all overrides defined on this experiment
      */
-    public Iterable<TreatmentOverride> getOverrides() {
+    public List<TreatmentOverride> getOverrides() {
         synchronized (lock) {
             return ImmutableList.copyOf(overrides.values());
         }
@@ -163,7 +217,17 @@ public class Experiment {
      */
     public TreatmentOverride getOverride(Identity identity) {
         synchronized (lock) {
-            return overrides.get(identity.getHash(seed));
+            return overridesByHash.get(identity.getHash(seed));
+        }
+    }
+
+    /**
+     * Gets the assigned override for a given name
+     * @param overrideName The name
+     */
+    public TreatmentOverride getOverride(String overrideName) {
+        synchronized (lock) {
+            return overrides.get(overrideName);
         }
     }
 
@@ -217,26 +281,75 @@ public class Experiment {
     }
 
     /**
+     * Removes all treatments
+     */
+    public Experiment clearTreatments() {
+        synchronized (lock) {
+            final List<Treatment> toRemove = Lists.newArrayList(treatments.values());
+            for (Treatment treatment : toRemove) {
+                removeTreatment(treatment.getName());
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Removes all overrides
+     */
+    public Experiment clearOverrides() {
+        synchronized (lock) {
+            overrides.clear();
+            overridesByHash.clear();
+        }
+
+        return this;
+    }
+
+    /**
      * Add a treatment override for an identity
      * @param treatmentName The treatment an identity should receive
+     * @param overrideName The name of the override
      * @param identity The identity
      */
-    public Experiment addOverride(String treatmentName, Identity identity) {
+    public Experiment addOverride(String overrideName, String treatmentName, Identity identity) {
         synchronized (lock) {
             final Long hash = identity.getHash(seed);
-            overrides.put(hash, new TreatmentOverride(identity.toString(), hash, treatment(treatmentName)));
+            final TreatmentOverride override = new TreatmentOverride(overrideName, hash, treatment(treatmentName));
+            final TreatmentOverride replaced = overridesByHash.put(hash, override);
+            if (replaced != null) {
+                overrides.remove(replaced.getName());
+            }
+            overrides.put(overrideName, override);
         }
         return this;
     }
 
     /**
      * Remove an override
-     * @param identity The identity to remove the override for
+     * @param identity The identities to remove the override for
      */
     public Experiment removeOverride(Identity identity) {
         synchronized (lock) {
-            final Long hash = identity.getHash(seed);
-            overrides.remove(hash);
+            final TreatmentOverride removed = overridesByHash.remove(identity.getHash(seed));
+            if (removed != null) {
+                overrides.remove(removed.getName());
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Remove an override
+     * @param overrideName The name of the override to remove
+     */
+    public Experiment removeOverride(String overrideName) {
+        synchronized (lock) {
+            final  TreatmentOverride removed = overrides.remove(overrideName);
+            if (removed != null) {
+                overridesByHash.remove(removed.getHash());
+            }
         }
         return this;
     }
@@ -253,11 +366,12 @@ public class Experiment {
                 return this;
             }
 
-            final Iterator<Entry<Long, TreatmentOverride>> iterator = overrides.entrySet().iterator();
+            final Iterator<Entry<Long, TreatmentOverride>> iterator = overridesByHash.entrySet().iterator();
             while (iterator.hasNext()) {
                 final Entry<Long, TreatmentOverride> entry = iterator.next();
                 if (entry.getValue().getTreatment().equals(treatment)) {
                     iterator.remove();
+                    overrides.remove(entry.getValue().getName());
                 }
             }
         }
@@ -354,6 +468,16 @@ public class Experiment {
         return this;
     }
 
+    /**
+     * Removes all allocations
+     */
+    public Experiment deallocateAll() {
+        synchronized (lock) {
+            allocations.clear();
+        }
+        return this;
+    }
+
     private int identityToBin(Identity identity) {
         return (int) (FastMath.abs(identity.getHash(seed)) % Allocations.NUM_BINS);
     }
@@ -376,7 +500,7 @@ public class Experiment {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Experiment)) {
+        if (!(obj instanceof Experiment)) {
             return false;
         }
 

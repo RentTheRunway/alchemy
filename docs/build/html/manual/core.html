@@ -65,7 +65,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Manual</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">Alchemy Core</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#terminology">Terminology</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#identities-that-exist">Identities that exist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#identities">Identities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#implementing-a-custom-identity">Implementing a custom identity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#implementing-a-custom-database-provider">Implementing a custom database provider</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#allocation">Allocation</a></li>
@@ -74,7 +74,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="client.html">Alchemy Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="example.html">Alchemy Example, Step by Step</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html">Alchemy Configuration Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_api.html">Alchemy REST API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../about/index.html">About Alchemy</a></li>
@@ -102,14 +102,9 @@
 <li><tt class="docutils literal"><span class="pre">Experiment</span></tt> - A collection of treatments, allocations, and overrides</li>
 </ul>
 </div>
-<div class="section" id="identities-that-exist">
-<h2>Identities that exist<a class="headerlink" href="#identities-that-exist" title="Permalink to this headline">¶</a></h2>
-<p>All identities generate a hash. What varies from identity to identity are the elements being hashed. The list of items included the hash are listed below. Common to all is a seeding integer, which provides for generating a more random assignment across experiments &amp; treatments.</p>
-<ul class="simple">
-<li><tt class="docutils literal"><span class="pre">Device</span></tt> - [deviceId]</li>
-<li><tt class="docutils literal"><span class="pre">GeoLocation</span></tt> - [country,region,city,zip,lat,long,metroCode,areaCode]</li>
-<li><tt class="docutils literal"><span class="pre">User</span></tt> - [userId]</li>
-</ul>
+<div class="section" id="identities">
+<h2>Identities<a class="headerlink" href="#identities" title="Permalink to this headline">¶</a></h2>
+<p>All identities generate a hash. What varies from identity to identity are the elements being hashed.</p>
 </div>
 <div class="section" id="implementing-a-custom-identity">
 <h2>Implementing a custom identity<a class="headerlink" href="#implementing-a-custom-identity" title="Permalink to this headline">¶</a></h2>
@@ -171,29 +166,29 @@ The <tt class="docutils literal"><span class="pre">alchemy-db-memory</span></tt>
 </pre></div>
 </div>
 <p>Creating and configuring an experiment is easy to do with Alchemy&#8217;s fluent API:</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="n">Identity</span> <span class="n">identity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="mi">42L</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre>Identity identity = new User(&quot;bob);
 
-<span class="n">Experiment</span> <span class="n">experiment</span> <span class="o">=</span>
-    <span class="n">experiments</span>
-        <span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">&quot;experiment&quot;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">&quot;my first experiment&quot;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">setIdentityType</span><span class="o">(</span><span class="s">&quot;user&quot;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">addTreatment</span><span class="o">(</span><span class="s">&quot;control&quot;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">addTreatment</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">addTreatment</span><span class="o">(</span><span class="s">&quot;pie&quot;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">addOverride</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">,</span> <span class="n">identity</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="s">&quot;control&quot;</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">,</span> <span class="mi">20</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="s">&quot;pie&quot;</span><span class="o">,</span> <span class="mi">30</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">activate</span><span class="o">()</span>
-        <span class="o">.</span><span class="na">save</span><span class="o">();</span>
+Experiment experiment =
+    experiments
+        .create(&quot;experiment&quot;)
+        .setDescription(&quot;my first experiment&quot;)
+        .setIdentityType(&quot;user&quot;)
+        .addTreatment(&quot;control&quot;)
+        .addTreatment(&quot;cake&quot;)
+        .addTreatment(&quot;pie&quot;)
+        .addOverride(&quot;cake&quot;, identity)
+        .allocate(&quot;control&quot;, 10)
+        .allocate(&quot;cake&quot;, 20)
+        .allocate(&quot;pie&quot;, 30)
+        .activate()
+        .save();
 </pre></div>
 </div>
 <p>If we want to figure out what treatment we have:</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="n">Identity</span> <span class="n">identity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="mi">42L</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Identity</span> <span class="n">identity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="s">&quot;jane&quot;</span><span class="o">);</span>
 <span class="n">Treatment</span> <span class="n">treatment</span> <span class="o">=</span> <span class="n">experiments</span><span class="o">.</span><span class="na">getActiveTreatment</span><span class="o">(</span><span class="s">&quot;experiment&quot;</span><span class="o">,</span> <span class="n">identity</span><span class="o">);</span>
 <span class="k">if</span> <span class="o">(</span><span class="n">treatment</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// user is not allocated to any treatment</span>
+    <span class="c1">// user is not assigned to any treatment</span>
 <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">treatment</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;control&quot;</span><span class="o">))</span> <span class="o">{</span>
     <span class="c1">// user is assigned to the &quot;control&quot; treatment</span>
 <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">treatment</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;cake&quot;</span><span class="o">))</span> <span class="o">{</span>

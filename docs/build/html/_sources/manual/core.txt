@@ -19,13 +19,9 @@ Terminology
 * ``TreatmentOverride`` - Assignment of a specific treatment to a specific identity, which overrides allocations
 * ``Experiment`` - A collection of treatments, allocations, and overrides
 
-Identities that exist
-=====================
-All identities generate a hash. What varies from identity to identity are the elements being hashed. The list of items included the hash are listed below. Common to all is a seeding integer, which provides for generating a more random assignment across experiments & treatments.
-
-* ``Device`` - [deviceId]
-* ``GeoLocation`` - [country,region,city,zip,lat,long,metroCode,areaCode]
-* ``User`` - [userId]
+Identities
+==========
+All identities generate a hash. What varies from identity to identity are the elements being hashed.
 
 Implementing a custom identity
 ==============================
@@ -99,7 +95,7 @@ Creating and configuring an experiment is easy to do with Alchemy's fluent API:
 
 .. code-block:: java
 
-    Identity identity = new User(42L);
+    Identity identity = new User("bob);
 
     Experiment experiment =
         experiments
@@ -120,10 +116,10 @@ If we want to figure out what treatment we have:
 
 .. code-block:: java
 
-    Identity identity = new User(42L);
+    Identity identity = new User("jane");
     Treatment treatment = experiments.getActiveTreatment("experiment", identity);
     if (treatment == null) {
-        // user is not allocated to any treatment
+        // user is not assigned to any treatment
     } else if (treatment.getName().equals("control")) {
         // user is assigned to the "control" treatment
     } else if (treatment.getName().equals("cake")) {

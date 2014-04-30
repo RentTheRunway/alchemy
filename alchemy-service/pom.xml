@@ -40,11 +40,6 @@
     </dependency>
     <dependency>
       <groupId>com.rtr.alchemy</groupId>
-      <artifactId>alchemy-mapping-orika</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.rtr.alchemy</groupId>
       <artifactId>alchemy-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -53,8 +48,10 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-mrbean</artifactId>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-testing</artifactId>
+      <version>${dropwizard.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

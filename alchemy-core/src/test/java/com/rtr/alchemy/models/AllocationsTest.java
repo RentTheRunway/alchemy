@@ -257,4 +257,22 @@ public class AllocationsTest {
             allocations.getAllocations()
         );
     }
+
+    @Test
+    public void testClear() {
+        final Treatment t1 = new Treatment("control");
+        final Treatment t2 = new Treatment("other");
+        final  Allocations allocations = new Allocations(Lists.newArrayList(
+            new Allocation(t1, 0, 5),
+            new Allocation(t2, 5, 5)
+        ));
+
+        assertEquals(2, allocations.getAllocations().size());
+        assertEquals(10, allocations.getSize());
+
+        allocations.clear();
+
+        assertEquals(0, allocations.getAllocations().size());
+        assertEquals(0, allocations.getSize());
+    }
 }

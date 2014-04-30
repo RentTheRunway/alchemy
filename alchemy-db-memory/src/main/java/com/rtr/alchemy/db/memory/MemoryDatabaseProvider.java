@@ -16,4 +16,10 @@ public class MemoryDatabaseProvider implements ExperimentsDatabaseProvider {
     public ExperimentsStore createStore() {
         return new MemoryExperimentsStore(db);
     }
+
+    public void resetDatabase() {
+        synchronized (db) {
+            db.resetDatabase();
+        }
+    }
 }

@@ -30,7 +30,7 @@ public class Allocation {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Allocation)) {
+        if (!(obj instanceof Allocation)) {
             return false;
         }
 

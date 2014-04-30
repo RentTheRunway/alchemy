@@ -5,6 +5,8 @@ import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityType;
+import com.rtr.alchemy.models.Allocations;
+import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 /**
  * The purpose of this class is to provide a base class for testing whether an implementation of a provider
@@ -290,7 +293,7 @@ public abstract class ExperimentsDatabaseProviderTest {
             .setIdentityType("bar")
             .save();
 
-        assertEquals("should have one because identity type", 1, experiments.getActiveTreatments(identity).size());
+        assertEquals("should have one because of identity type", 1, experiments.getActiveTreatments(identity).size());
 
         final Identity identity2 = new TestIdentity("bar");
 
@@ -311,5 +314,43 @@ public abstract class ExperimentsDatabaseProviderTest {
             .save();
 
         assertTrue("should have an active experiment", experiments.getActiveExperiments().iterator().hasNext());
+    }
+
+    @Test
+    public void testExperimentObjectReference() {
+        final Experiment obj1 = experiments
+            .create("foo")
+            .addTreatment("control")
+            .allocate("control", Allocations.NUM_BINS)
+            .activate()
+            .save();
+
+        final Experiment obj2 = experiments.get("foo");
+
+        assertFalse(
+            "saved experiment object reference should not be same object reference from get()",
+            obj1 == obj2
+        );
+
+        final Experiment obj3 = experiments.find().iterator().next();
+
+        assertFalse(
+            "saved experiment object reference should not be same object reference from find()",
+            obj1 == obj3
+        );
+
+        final Experiment obj4 = experiments.getActiveExperiments().iterator().next();
+
+        assertFalse(
+            "saved experiment object reference should not be same object reference from getActiveExperiments()",
+            obj1 == obj4
+        );
+
+        final Experiment obj5 = experiments.getActiveTreatments(mock(Identity.class)).keySet().iterator().next();
+
+        assertFalse(
+            "saved experiment object reference should not be same object reference from getActiveTreatments()",
+            obj1 == obj5
+        );
     }
 }

@@ -17,7 +17,7 @@ public class MemoryExperimentsCache implements ExperimentsCache {
     @Override
     public Map<String, Experiment> getActiveExperiments() {
         synchronized (db) {
-            return Maps.filterEntries(
+            final Map<String, Experiment> filtered = Maps.filterEntries(
                 db.getExperiments(),
                 new Predicate<Map.Entry<String, Experiment>>() {
                     @Override
@@ -26,6 +26,14 @@ public class MemoryExperimentsCache implements ExperimentsCache {
                     }
                 }
             );
+
+            // copy each experiment
+            return Maps.transformEntries(filtered, new Maps.EntryTransformer<String, Experiment, Experiment>() {
+                @Override
+                public Experiment transformEntry(String key, Experiment value) {
+                    return Experiment.copyOf(value);
+                }
+            });
         }
     }
 
