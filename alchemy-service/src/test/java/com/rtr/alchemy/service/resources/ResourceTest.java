@@ -2,12 +2,12 @@ package com.rtr.alchemy.service.resources;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
 import com.rtr.alchemy.db.memory.MemoryDatabaseProvider;
 import com.rtr.alchemy.dto.identities.IdentityDto;
-import com.rtr.alchemy.dto.jackson.AlchemyJacksonModule;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityType;
 import com.rtr.alchemy.mapping.Mapper;
@@ -18,6 +18,7 @@ import com.rtr.alchemy.service.mapping.CoreMappings;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
+import io.dropwizard.jackson.Jackson;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
@@ -71,8 +72,8 @@ public abstract class ResourceTest {
         MAPPER.register(UserDto.class, User.class, new UserMapper());
         MAPPER.register(DeviceDto.class, Device.class, new DeviceMapper());
         CoreMappings.configure(MAPPER);
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new AlchemyJacksonModule());
+        final ObjectMapper mapper = Jackson.newObjectMapper();
+        mapper.registerModule(new MrBeanModule());
         mapper.registerSubtypes(UserDto.class, DeviceDto.class);
 
         RESOURCES =

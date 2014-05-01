@@ -1,5 +1,6 @@
 package com.rtr.alchemy.models;
 
+import com.google.common.collect.ImmutableMap;
 import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
 import com.rtr.alchemy.db.ExperimentsStore;
@@ -34,17 +35,27 @@ public class ExperimentsTest {
     @Test
     public void testGetActiveTreatment() {
         final Identity identity = mock(Identity.class);
-        doReturn(0L).when(identity).getHash(anyInt());
+        final Experiment experiment = mock(Experiment.class);
+        doReturn(ImmutableMap.of("foo", experiment))
+            .when(cache)
+            .getActiveExperiments();
         experiments.getActiveTreatment("foo", identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
+        verify(experiment).getOverride(eq(identity));
     }
 
     @Test
     public void testGetActiveTreatments() {
-        experiments.getActiveTreatments();
+        final Experiment experiment = mock(Experiment.class);
+        final Identity identity = mock(Identity.class);
+        doReturn(ImmutableMap.of("foo", experiment))
+            .when(cache)
+            .getActiveExperiments();
+        experiments.getActiveTreatments(identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
+        verify(experiment).getOverride(eq(identity));
     }
 
     @Test
