@@ -1,8 +1,8 @@
 package com.rtr.alchemy.service;
 
+import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.rtr.alchemy.dto.jackson.AlchemyJacksonModule;
 import com.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import com.rtr.alchemy.service.config.IdentityMapping;
 import com.rtr.alchemy.service.exceptions.RuntimeExceptionMapper;
@@ -33,7 +33,7 @@ public class AlchemyService extends Application<AlchemyServiceConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<AlchemyServiceConfiguration> bootstrap) {
-        bootstrap.getObjectMapper().registerModule(new AlchemyJacksonModule());
+        bootstrap.getObjectMapper().registerModule(new MrBeanModule());
     }
 
     @Override

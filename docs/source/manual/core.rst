@@ -25,7 +25,7 @@ All identities generate a hash. What varies from identity to identity are the el
 
 Implementing a custom identity
 ==============================
-The built-in identities are merely there for demonstration purposes.  New identities can be implemented as needed.  You only need to extend the Identity class, implement ``getHash()`` and add an ``@IdentityType`` annotation:
+New identities can be implemented as needed.  You only need to extend the Identity class, implement ``getHash()`` and add an ``@IdentityType`` annotation:
 
 .. code-block:: java
 
@@ -59,6 +59,53 @@ The built-in identities are merely there for demonstration purposes.  New identi
 
 It is recommended that the built-in hash builder be used by calling ``identity()`` with the seed value and then specifying the individual fields to be used to generate the hash.  If your identity contains an object reference to another class, you can have it implement Identity as well, and add it to the hash builder to propagate building the hash down the object hierarchy.  The current implementation of the hash builder uses mumur_128 to ensure good distribution and few collisions.
 The ``@IdentityType`` annotation is used to identify which experiments are intended for this identity type.
+
+If you wish to also make the Identity usable from Alchemy Service, you will need to implement a matching DTO and a mapper.  To implement the DTO, simple extend from IdentityDTO:
+
+.. code-block:: java
+
+    public class FullNameDto extends IdentityDto {
+        private final String firstName;
+        private final String lastName;
+
+        public FullName(String firstName, String lastName) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+    }
+
+Alchemy uses the MrBeanModule, so if desired, this DTO can also be written in a more concise manner:
+
+.. code-block:: java
+
+    public abstract class FullNameDto extends IdentityDto {
+        public abstract String getFirstName();
+        public abstract String getLastName();
+    }
+
+Lastly, you will need to implement a mapper that maps to/from your identity DTO and business object:
+
+.. code-block:: java
+
+    public class FullNameMapper implements Mapper<FullNameDto, FullName> {
+        @Override
+        public FullNameDto toDto(FullName source) {
+            return new FullNameDto(source.getFirstName(), source.getLastName());
+        }
+
+        @Override
+        public FullName fromDto(FullNameDto source) {
+            return new FullName(source.getFirstName(), source.getLastName());
+        }
+    }
 
 Implementing a custom database provider
 =======================================
@@ -95,7 +142,7 @@ Creating and configuring an experiment is easy to do with Alchemy's fluent API:
 
 .. code-block:: java
 
-    Identity identity = new User("bob);
+    Identity identity = new User("bob");
 
     Experiment experiment =
         experiments

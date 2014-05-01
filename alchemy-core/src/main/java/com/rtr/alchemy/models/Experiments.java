@@ -35,10 +35,7 @@ public class Experiments {
         }
 
         final TreatmentOverride override = experiment.getOverride(identity);
-        if (override != null) {
-            return override.getTreatment();
-        }
-        return experiment.getTreatment(identity);
+        return override != null ? override.getTreatment() : experiment.getTreatment(identity);
     }
 
     public synchronized Iterable<Experiment> getActiveExperiments() {
@@ -55,7 +52,8 @@ public class Experiments {
         for (Experiment experiment : getActiveExperiments()) {
             if (experiment.getIdentityType() == null) {
                 for (Identity identity : identities) {
-                    final Treatment treatment = experiment.getTreatment(identity);
+                    final TreatmentOverride override = experiment.getOverride(identity);
+                    final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
 
                     if (treatment != null) {
                         result.put(experiment, treatment);
@@ -68,7 +66,8 @@ public class Experiments {
                     continue;
                 }
 
-                final Treatment treatment = experiment.getTreatment(identity);
+                final TreatmentOverride override = experiment.getOverride(identity);
+                final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
 
                 if (treatment == null) {
                     continue;

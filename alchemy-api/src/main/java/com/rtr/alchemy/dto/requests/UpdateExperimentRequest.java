@@ -1,5 +1,6 @@
 package com.rtr.alchemy.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Optional;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Represents a request for updating an experiment
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class UpdateExperimentRequest {
     public abstract Optional<String> getDescription();
     public abstract Optional<String> getIdentityType();
