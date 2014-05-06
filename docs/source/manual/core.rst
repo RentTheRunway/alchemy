@@ -60,7 +60,7 @@ New identities can be implemented as needed.  You only need to extend the Identi
 It is recommended that the built-in hash builder be used by calling ``identity()`` with the seed value and then specifying the individual fields to be used to generate the hash.  If your identity contains an object reference to another class, you can have it implement Identity as well, and add it to the hash builder to propagate building the hash down the object hierarchy.  The current implementation of the hash builder uses mumur_128 to ensure good distribution and few collisions.
 The ``@IdentityType`` annotation is used to identify which experiments are intended for this identity type.
 
-If you wish to also make the Identity usable from Alchemy Service, you will need to implement a matching DTO and a mapper.  To implement the DTO, simple extend from IdentityDTO:
+If you wish to also make the Identity usable from Alchemy Service, you will need to implement a matching DTO and a mapper.  To implement the DTO, simply extend from IdentityDTO:
 
 .. code-block:: java
 

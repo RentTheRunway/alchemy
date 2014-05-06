@@ -1,5 +1,6 @@
 package com.rtr.alchemy.client;
 
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.google.common.collect.Sets;
 import com.rtr.alchemy.client.dto.UserDto;
 import com.rtr.alchemy.dto.identities.IdentityDto;
@@ -35,7 +36,7 @@ public class AlchemyClientTest {
             final URL resourceUrl = AlchemyClientTest.class.getClassLoader().getResource(resourceName);
             assertNotNull(resourceUrl);
             return (new File(resourceUrl.toURI())).getAbsolutePath();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new AssertionError(e.getMessage());
         }
     }
@@ -118,7 +119,7 @@ public class AlchemyClientTest {
         try {
             client.getExperiment("exp");
             fail("should have throw an exception");
-        } catch (UniformInterfaceException e) {
+        } catch (final UniformInterfaceException e) {
             assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getResponse().getStatus());
         }
     }
@@ -313,5 +314,28 @@ public class AlchemyClientTest {
         assertEquals(1, treatments.size());
         assertTrue(treatments.containsKey("exp"));
         assertEquals("control", treatments.get("exp").getName());
+    }
+
+    @Test
+    public void testGetIdentityTypes() {
+        final Map<String, Class<? extends IdentityDto>> map = client.getIdentityTypes();
+        final Class<? extends IdentityDto> userType = map.get("user");
+
+        assertNotNull(userType);
+        assertEquals(1, map.size());
+        assertEquals(UserDto.class, userType);
+    }
+
+    @Test
+    public void testGetIdentitySchema() {
+        final JsonSchema map = client.getIdentitySchema("user");
+        assertNotNull(map);
+        assertTrue(
+            map
+                .asObjectSchema()
+                .getProperties()
+                .get("name")
+                .isStringSchema()
+        );
     }
 }

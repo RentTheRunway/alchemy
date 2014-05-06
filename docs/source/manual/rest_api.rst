@@ -1,8 +1,8 @@
 .. _man-rest-api:
 
-################################
+################
 Alchemy REST API
-################################
+################
 
 .. highlight:: text
 
@@ -532,3 +532,44 @@ Active Treatments
             "description": "people want cake"
         }
     }
+
+|
+|
+|
+
+Metadata
+--------
+
+``GET /metadata/identityTypes``
+
+**Response:** *200 OK*
+
+**Example Response:**
+
+.. code-block:: json
+
+    {
+        "user": "com.rtr.alchemy.example.dto.UserDto"
+    }
+
+|
+|
+|
+
+``GET /metadata/identityTypes/{identityType}``
+
+**Response:** *404* Not Found if type was not found, otherwise *200 OK*
+
+**Example Response:**
+
+.. code-block:: json
+
+    {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            }
+        }
+    }
+

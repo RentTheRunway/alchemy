@@ -2,7 +2,9 @@ package com.rtr.alchemy.client;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.mrbean.MrBeanModule;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.rtr.alchemy.client.builder.CreateExperimentRequestBuilder;
@@ -22,6 +24,7 @@ import io.dropwizard.jackson.Jackson;
 import io.dropwizard.setup.Environment;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.lang.reflect.Type;
@@ -42,6 +45,7 @@ public class AlchemyClient {
     private static final String PARAM_EXPERIMENT_NAME = "experimentName";
     private static final String PARAM_TREATMENT_NAME = "treatmentName";
     private static final String PARAM_OVERRIDE_NAME = "overrideName";
+    private static final String PARAM_IDENTITY_TYPE_NAME = "identityType";
 
     private static final String ENDPOINT_EXPERIMENTS = "/experiments";
     private static final String ENDPOINT_EXPERIMENT = "/experiments/{experimentName}";
@@ -52,6 +56,8 @@ public class AlchemyClient {
     private static final String ENDPOINT_OVERRIDE = "/experiments/{experimentName}/overrides/{overrideName}";
     private static final String ENDPOINT_ACTIVE_TREATMENT = "/active/experiments/{experimentName}/treatment";
     private static final String ENDPOINT_ACTIVE_TREATMENTS = "/active/treatments";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPES = "/metadata/identityTypes";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPE = "/metadata/identityTypes/{identityType}";
 
     /**
      * Constructs a client with the given dropwizard environment
@@ -334,5 +340,25 @@ public class AlchemyClient {
                 PARAM_OVERRIDE_NAME, overrideName
             )
         ).delete();
+    }
+
+    public Map<String, Class<? extends IdentityDto>> getIdentityTypes() {
+        final Map<String, Class> map = resource(ENDPOINT_METADATA_IDENTITY_TYPES).get(map(String.class, Class.class));
+
+        return Maps.transformValues(map, new Function<Class, Class<? extends IdentityDto>>() {
+            @Nullable
+            @Override
+            @SuppressWarnings("unchecked")
+            public Class<? extends IdentityDto> apply(@Nullable Class input) {
+                return input;
+            }
+        });
+    }
+
+    public JsonSchema getIdentitySchema(String identityType) {
+        return resource(
+            ENDPOINT_METADATA_IDENTITY_TYPE,
+            ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
+        ).get(JsonSchema.class);
     }
 }
