@@ -15,10 +15,13 @@ import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
 import com.rtr.alchemy.service.mapping.CoreMappings;
+import com.rtr.alchemy.service.metadata.IdentitiesMetadata;
+import com.rtr.alchemy.service.metadata.IdentityMetadata;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import io.dropwizard.jackson.Jackson;
+import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +38,8 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.assertEquals;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 public abstract class ResourceTest {
@@ -75,6 +80,11 @@ public abstract class ResourceTest {
         final ObjectMapper mapper = Jackson.newObjectMapper();
         mapper.registerModule(new MrBeanModule());
         mapper.registerSubtypes(UserDto.class, DeviceDto.class);
+        final Environment environment = mock(Environment.class);
+        doReturn(mapper).when(environment).getObjectMapper();
+        final IdentitiesMetadata metadata = new IdentitiesMetadata();
+        metadata.put("user", new IdentityMetadata("user", User.class, UserDto.class, UserMapper.class));
+        metadata.put("device", new IdentityMetadata("device", Device.class, DeviceDto.class, DeviceMapper.class));
 
         RESOURCES =
             ResourceTestRule
@@ -85,6 +95,7 @@ public abstract class ResourceTest {
                 .addResource(new TreatmentOverridesResource(EXPERIMENTS, MAPPER))
                 .addResource(new ExperimentsResource(EXPERIMENTS, MAPPER))
                 .addResource(new ActiveTreatmentsResource(EXPERIMENTS, MAPPER))
+                .addResource(new MetadataResource(environment, metadata))
                 .build();
     }
 
@@ -133,7 +144,7 @@ public abstract class ResourceTest {
 
     @After
     public void tearDown() {
-        for (ClientResponse response : openResponses) {
+        for (final ClientResponse response : openResponses) {
             response.close();
         }
     }
