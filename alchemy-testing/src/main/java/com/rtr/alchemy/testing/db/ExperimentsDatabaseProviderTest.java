@@ -1,7 +1,7 @@
 package com.rtr.alchemy.testing.db;
 
 import com.google.common.collect.Iterables;
-import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityType;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mock;
 public abstract class ExperimentsDatabaseProviderTest {
     private Experiments experiments;
 
-    protected abstract ExperimentsDatabaseProvider createProvider();
+    protected abstract ExperimentsStoreProvider createProvider();
 
     @IdentityType("test")
     private static class TestIdentity extends Identity {
@@ -54,7 +54,7 @@ public abstract class ExperimentsDatabaseProviderTest {
 
     @Before
     public void setUp() {
-        final ExperimentsDatabaseProvider provider = createProvider();
+        final ExperimentsStoreProvider provider = createProvider();
         assertNotNull("provider cannot be null", provider);
         experiments = new Experiments(provider);
     }

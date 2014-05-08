@@ -3,7 +3,7 @@ package com.rtr.alchemy.models;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.rtr.alchemy.db.ExperimentsCache;
-import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
@@ -17,9 +17,9 @@ public class Experiments {
     private final ExperimentsStore store;
     private final ExperimentsCache cache;
 
-    public Experiments(ExperimentsDatabaseProvider provider) {
-        store = provider.createStore();
-        cache = provider.createCache();
+    public Experiments(ExperimentsStoreProvider provider) {
+        store = provider.getStore();
+        cache = provider.getCache();
         Preconditions.checkNotNull(store, "store cannot be null");
         Preconditions.checkNotNull(cache, "cache cannot be null");
     }
@@ -44,14 +44,14 @@ public class Experiments {
 
     public synchronized Map<Experiment, Treatment> getActiveTreatments(Identity ... identities) {
         final Map<String, Identity> identitiesByType = Maps.newHashMap();
-        for (Identity identity : identities) {
+        for (final Identity identity : identities) {
             identitiesByType.put(identity.getType(), identity);
         }
 
         final Map<Experiment, Treatment> result = Maps.newHashMap();
-        for (Experiment experiment : getActiveExperiments()) {
+        for (final Experiment experiment : getActiveExperiments()) {
             if (experiment.getIdentityType() == null) {
-                for (Identity identity : identities) {
+                for (final Identity identity : identities) {
                     final TreatmentOverride override = experiment.getOverride(identity);
                     final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
 
@@ -81,17 +81,17 @@ public class Experiments {
     }
 
     public synchronized Iterable<Experiment> find(Filter filter) {
-        return store.find(filter);
+        return store.find(filter, new Experiment.BuilderFactory(this));
     }
 
     public synchronized Iterable<Experiment> find() {
-        return store.find(Filter.criteria().build());
+        return find(Filter.criteria().build());
     }
 
     public synchronized Experiment get(String experimentName) {
         return store.load(
             experimentName,
-            new Experiment.Builder(store, experimentName)
+            new Experiment.Builder(this, experimentName)
         );
     }
 
@@ -99,7 +99,11 @@ public class Experiments {
         store.delete(experimentName);
     }
 
+    public synchronized void save(Experiment experiment) {
+        store.save(experiment);
+    }
+
     public synchronized Experiment create(String name) {
-        return new Experiment(store, name);
+        return new Experiment(this, name);
     }
 }

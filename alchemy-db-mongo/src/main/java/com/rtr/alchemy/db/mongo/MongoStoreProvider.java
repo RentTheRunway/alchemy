@@ -2,13 +2,14 @@ package com.rtr.alchemy.db.mongo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
-import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStore;
 
+import java.io.IOException;
 import java.util.List;
 
-public class MongoDatabaseProvider implements ExperimentsDatabaseProvider {
+public class MongoStoreProvider implements ExperimentsStoreProvider {
     @JsonProperty
     private final List<String> host = Lists.newArrayList("localhost");
 
@@ -31,12 +32,17 @@ public class MongoDatabaseProvider implements ExperimentsDatabaseProvider {
     }
 
     @Override
-    public ExperimentsStore createStore() {
+    public ExperimentsStore getStore() {
         return new MongoExperimentsStore();
     }
 
     @Override
-    public ExperimentsCache createCache() {
+    public ExperimentsCache getCache() {
         return new MongoExperimentsCache();
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }

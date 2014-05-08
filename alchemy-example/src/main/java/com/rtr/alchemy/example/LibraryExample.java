@@ -3,8 +3,8 @@ package com.rtr.alchemy.example;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Iterables;
-import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
-import com.rtr.alchemy.db.memory.MemoryDatabaseProvider;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
+import com.rtr.alchemy.db.memory.MemoryStoreProvider;
 import com.rtr.alchemy.example.identities.User;
 import com.rtr.alchemy.models.Allocation;
 import com.rtr.alchemy.models.Experiment;
@@ -35,7 +35,7 @@ public class LibraryExample {
     public static void main(String[] args) {
         disableLogging();
 
-        final ExperimentsDatabaseProvider provider = new MemoryDatabaseProvider();
+        final ExperimentsStoreProvider provider = new MemoryStoreProvider();
         final Experiments experiments = new Experiments(provider);
 
         // Let's create our experiment

@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityBuilder;
 import org.apache.commons.math3.util.FastMath;
@@ -23,7 +22,7 @@ import java.util.Map.Entry;
 
 public class Experiment {
     private final Object lock = new Object();
-    private final ExperimentsStore store;
+    private final Experiments owner;
     private final String name;
     private final Allocations allocations;
     private final Map<String, Treatment> treatments;
@@ -39,7 +38,7 @@ public class Experiment {
     private volatile DateTime deactivated;
 
     // used by Builder when loading experiment from store
-    private Experiment(ExperimentsStore store,
+    private Experiment(Experiments owner,
                        String name,
                        String description,
                        String identityType,
@@ -51,7 +50,7 @@ public class Experiment {
                        Map<String, Treatment> treatments,
                        Iterable<TreatmentOverride> overrides,
                        Iterable<Allocation> allocations) {
-        this.store = store;
+        this.owner = owner;
         this.name = name;
         this.description = description;
         this.identityType = identityType;
@@ -62,13 +61,13 @@ public class Experiment {
         this.deactivated = deactivated;
 
         this.treatments = treatments;
-        for (Treatment treatment : treatments.values()) {
+        for (final Treatment treatment : treatments.values()) {
             this.treatments.put(treatment.getName(), treatment);
         }
 
         this.overrides = Maps.newConcurrentMap();
         this.overridesByHash = Maps.newConcurrentMap();
-        for (TreatmentOverride override : overrides) {
+        for (final TreatmentOverride override : overrides) {
             this.overridesByHash.put(override.getHash(), override);
             this.overrides.put(override.getName(), override);
         }
@@ -78,9 +77,9 @@ public class Experiment {
     }
 
     // used when creating a new experiment
-    protected Experiment(ExperimentsStore store,
+    protected Experiment(Experiments owner,
                          String name) {
-        this.store = store;
+        this.owner = owner;
         this.name = name;
         this.allocations = new Allocations();
         this.treatments = Maps.newConcurrentMap();
@@ -94,16 +93,16 @@ public class Experiment {
     }
 
     private Experiment(Experiment toCopy) {
-        this.store = toCopy.store;
+        this.owner = toCopy.owner;
         this.name = toCopy.name;
 
         this.treatments = Maps.newConcurrentMap();
-        for (Treatment treatment : toCopy.getTreatments()) {
+        for (final Treatment treatment : toCopy.getTreatments()) {
             this.treatments.put(treatment.getName(), new Treatment(treatment.getName(), treatment.getDescription()));
         }
 
         final List<Allocation> allocations = Lists.newArrayList();
-        for (Allocation allocation : toCopy.getAllocations()) {
+        for (final Allocation allocation : toCopy.getAllocations()) {
             final Treatment treatment = this.treatments.get(allocation.getTreatment().getName());
             allocations.add(new Allocation(treatment, allocation.getOffset(), allocation.getSize()));
         }
@@ -112,7 +111,7 @@ public class Experiment {
 
         this.overrides = Maps.newConcurrentMap();
         this.overridesByHash = Maps.newConcurrentMap();
-        for (TreatmentOverride override : toCopy.getOverrides()) {
+        for (final TreatmentOverride override : toCopy.getOverrides()) {
             final Treatment treatment = this.treatments.get(override.getTreatment().getName());
             final TreatmentOverride newOverride =  new TreatmentOverride(override.getName(), override.getHash(), treatment);
             overrides.put(override.getName(), newOverride);
@@ -286,7 +285,7 @@ public class Experiment {
     public Experiment clearTreatments() {
         synchronized (lock) {
             final List<Treatment> toRemove = Lists.newArrayList(treatments.values());
-            for (Treatment treatment : toRemove) {
+            for (final Treatment treatment : toRemove) {
                 removeTreatment(treatment.getName());
             }
         }
@@ -414,7 +413,7 @@ public class Experiment {
         } else {
             modified = DateTime.now(DateTimeZone.UTC);
         }
-        store.save(this);
+        owner.save(this);
 
         return this;
     }
@@ -423,7 +422,7 @@ public class Experiment {
      * Deletes the experiment and all things associated with it
      */
     public void delete() {
-        store.delete(name);
+        owner.delete(name);
     }
 
     /**
@@ -526,11 +525,23 @@ public class Experiment {
                 .toString();
     }
 
+    public static class BuilderFactory {
+        private final Experiments owner;
+
+        BuilderFactory(Experiments owner) {
+            this.owner = owner;
+        }
+
+        public Builder createBuilder(String experimentName) {
+            return new Builder(owner, experimentName);
+        }
+    }
+
     /**
      * Builder for building Experiment inside store
      */
     public static class Builder {
-        private final ExperimentsStore store;
+        private final Experiments owner;
         private final String name;
         private String description;
         private String identityType;
@@ -543,8 +554,8 @@ public class Experiment {
         private final List<TreatmentOverride> overrides;
         private final List<Allocation> allocations;
 
-        Builder(ExperimentsStore store, String name) {
-            this.store = store;
+        Builder(Experiments owner, String name) {
+            this.owner = owner;
             this.name = name;
             treatments = Maps.newHashMap();
             overrides = Lists.newArrayList();
@@ -609,7 +620,7 @@ public class Experiment {
 
         public Experiment build() {
             return new Experiment(
-                store,
+                owner,
                 name,
                 description,
                 identityType,

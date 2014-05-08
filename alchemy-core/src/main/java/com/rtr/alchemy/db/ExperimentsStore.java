@@ -32,10 +32,5 @@ public interface ExperimentsStore {
      * @param filter Criteria for pagination and filtering
      * @return Filtered list of experiments
      */
-    Iterable<Experiment> find(Filter filter);
-
-    /**
-     * Disposes any resources this object may be using
-     */
-    void close();
+    Iterable<Experiment> find(Filter filter, Experiment.BuilderFactory factory);
 }
