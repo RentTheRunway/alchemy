@@ -2,10 +2,7 @@ package com.rtr.alchemy.db.mongo;
 
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.Filter;
-import com.rtr.alchemy.models.Allocation;
 import com.rtr.alchemy.models.Experiment;
-import com.rtr.alchemy.models.Treatment;
-import com.rtr.alchemy.models.TreatmentOverride;
 
 public class MongoExperimentsStore implements ExperimentsStore {
     @Override
@@ -24,12 +21,7 @@ public class MongoExperimentsStore implements ExperimentsStore {
     }
 
     @Override
-    public Iterable<Experiment> find(Filter filter) {
+    public Iterable<Experiment> find(Filter filter, Experiment.BuilderFactory factory) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void close() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
-import com.rtr.alchemy.db.memory.MemoryDatabaseProvider;
+import com.rtr.alchemy.db.memory.MemoryStoreProvider;
 import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityType;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 public abstract class ResourceTest {
-    private static final MemoryDatabaseProvider PROVIDER;
+    private static final MemoryStoreProvider PROVIDER;
     protected static final Experiments EXPERIMENTS;
     protected static final Mappers MAPPER;
     protected static final String EXPERIMENT_1 = "pie_vs_cake";
@@ -71,7 +71,7 @@ public abstract class ResourceTest {
     public static final ResourceTestRule RESOURCES;
 
     static {
-        PROVIDER = new MemoryDatabaseProvider();
+        PROVIDER = new MemoryStoreProvider();
         EXPERIMENTS = spy(new Experiments(PROVIDER));
         MAPPER = new Mappers();
         MAPPER.register(UserDto.class, User.class, new UserMapper());

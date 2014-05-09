@@ -2,7 +2,6 @@ package com.rtr.alchemy.models;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.identities.Identity;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
@@ -19,7 +18,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 public class ExperimentTest {
-    private final ExperimentsStore store = mock(ExperimentsStore.class);
     private final Identity identity = mock(Identity.class);
 
     @Test
@@ -34,7 +32,7 @@ public class ExperimentTest {
     public void testAddTreatment() {
         final Treatment treatment = new Treatment("bar");
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("bar");
 
         assertEquals(treatment, experiment.getTreatments().iterator().next());
@@ -45,7 +43,7 @@ public class ExperimentTest {
         final Treatment treatment = new Treatment("bar");
         final TreatmentOverride override = new TreatmentOverride("override", 0, treatment);
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("bar")
                 .addOverride("override", "bar", identity);
 
@@ -58,7 +56,7 @@ public class ExperimentTest {
         final Treatment treatment = new Treatment("bar");
         final TreatmentOverride override = new TreatmentOverride("override", 0, treatment);
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("bar")
                 .addOverride("override", "bar", identity);
 
@@ -69,7 +67,7 @@ public class ExperimentTest {
     @Test
     public void testClearTreatments() {
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("bar")
                 .allocate("bar", 10)
                 .addOverride("override", "bar", identity);
@@ -88,7 +86,7 @@ public class ExperimentTest {
     @Test
     public void testClearOverrides() {
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("bar")
                 .addOverride("override", "bar", identity);
 
@@ -104,7 +102,7 @@ public class ExperimentTest {
     @Test
     public void testDeallocateAll() {
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("bar")
                 .allocate("bar", 10);
 
@@ -123,7 +121,7 @@ public class ExperimentTest {
         doReturn(0L).when(identity).getHash(anyInt());
 
         final Experiment experiment =
-            new Experiment(store, "foo")
+            new Experiment(null, "foo")
                 .addTreatment("control")
                 .addTreatment("cake")
                 .addTreatment("pie")
@@ -171,7 +169,7 @@ public class ExperimentTest {
     @Test
     public void testImmutableAllocations() {
         final  Experiment experiment =
-            new Experiment(store, "experiment")
+            new Experiment(null, "experiment")
                 .addTreatment("foo")
                 .allocate("foo", 10);
 
@@ -181,7 +179,7 @@ public class ExperimentTest {
     @Test
     public void testImmutableTreatments() {
         final  Experiment experiment =
-            new Experiment(store, "experiment")
+            new Experiment(null, "experiment")
                 .addTreatment("foo");
 
         assertTrue(ImmutableList.class.isAssignableFrom(experiment.getTreatments().getClass()));
@@ -190,7 +188,7 @@ public class ExperimentTest {
     @Test
     public void testImmutableOverrides() {
         final  Experiment experiment =
-            new Experiment(store, "experiment")
+            new Experiment(null, "experiment")
                 .addTreatment("foo")
                 .addOverride("override", "foo", identity);
 
@@ -202,7 +200,7 @@ public class ExperimentTest {
         assertNull(Experiment.copyOf(null));
 
         final Experiment original =
-            new Experiment(store, "experiment")
+            new Experiment(null, "experiment")
                 .activate()
                 .addTreatment("foo")
                 .addOverride("override", "foo", identity)

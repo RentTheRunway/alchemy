@@ -6,33 +6,28 @@ import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.models.Experiment;
 
 import java.util.List;
+import java.util.Map;
 
 public class MemoryExperimentsStore implements ExperimentsStore {
-    private final MemoryDatabase db;
+    private final Map<String, Experiment> db;
 
-    public MemoryExperimentsStore(MemoryDatabase db) {
+    public MemoryExperimentsStore(Map<String, Experiment> db) {
         this.db = db;
     }
 
     @Override
     public void save(Experiment experiment) {
-        synchronized (db) {
-            db.getExperiments().put(experiment.getName(), Experiment.copyOf(experiment));
-        }
+        db.put(experiment.getName(), Experiment.copyOf(experiment));
     }
 
     @Override
     public Experiment load(String experimentName, Experiment.Builder builder) {
-        synchronized (db) {
-            return Experiment.copyOf(db.getExperiments().get(experimentName));
-        }
+        return Experiment.copyOf(db.get(experimentName));
     }
 
     @Override
     public void delete(String experimentName) {
-        synchronized (db) {
-            db.getExperiments().remove(experimentName);
-        }
+        db.remove(experimentName);
     }
 
     private static boolean filterMatches(String filter, Object ... values) {
@@ -40,7 +35,7 @@ public class MemoryExperimentsStore implements ExperimentsStore {
             return true;
         }
 
-        for (Object obj : values) {
+        for (final Object obj : values) {
             if (obj == null) {
                 continue;
             }
@@ -55,36 +50,29 @@ public class MemoryExperimentsStore implements ExperimentsStore {
     }
 
     @Override
-    public Iterable<Experiment> find(Filter filter) {
+    public Iterable<Experiment> find(Filter filter, Experiment.BuilderFactory factory) {
         int limit = 0;
         int offset = 0;
         final List<Experiment> result = Lists.newArrayList();
 
-        synchronized (db) {
-            for (Experiment experiment : db.getExperiments().values()) {
-                if (filter.getOffset() != null && offset++ < filter.getOffset()) {
-                    continue;
+        for (final Experiment experiment : db.values()) {
+            if (filter.getOffset() != null && offset++ < filter.getOffset()) {
+                continue;
+            }
+
+            if (filterMatches(
+                filter.getFilter(),
+                experiment.getName(),
+                experiment.getDescription()
+            )) {
+                if (filter.getLimit() != null && ++limit > filter.getLimit()) {
+                    break;
                 }
 
-                if (filterMatches(
-                    filter.getFilter(),
-                    experiment.getName(),
-                    experiment.getDescription()
-                )) {
-                    if (filter.getLimit() != null && ++limit > filter.getLimit()) {
-                        break;
-                    }
-
-                    result.add(Experiment.copyOf(experiment));
-                }
+                result.add(Experiment.copyOf(experiment));
             }
         }
 
         return result;
-    }
-
-    @Override
-    public void close() {
-
     }
 }

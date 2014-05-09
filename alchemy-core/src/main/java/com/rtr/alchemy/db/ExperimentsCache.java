@@ -1,7 +1,6 @@
 package com.rtr.alchemy.db;
 
 import com.rtr.alchemy.models.Experiment;
-
 import java.util.Map;
 
 /**
@@ -13,15 +12,35 @@ public interface ExperimentsCache {
      * Return active experiments
      * @return all active experiments
      */
-    public abstract Map<String, Experiment> getActiveExperiments();
+    Map<String, Experiment> getActiveExperiments();
 
     /**
      * Forces cache to reload all data from storage
      */
-    public abstract void invalidate();
+    void invalidateAll(Experiment.BuilderFactory factory);
 
     /**
-     * Disposes any resources this object may be using
+     * Forces cache to reload a specific experiment from storage
      */
-    public abstract void close();
+    void invalidate(String experimentName, Experiment.Builder builder);
+
+    /**
+     * Updates the cache with a newly loaded experiment
+     */
+    void update(Experiment experiment);
+
+    /**
+     * Updates the cache with a recently deleted experiment
+     */
+    void delete(String experimentName);
+
+    /**
+     * Checks whether any experiments are stale
+     */
+    boolean checkIfAnyStale();
+
+    /**
+     * Checks whether a given experiment is stale
+     */
+    boolean checkIfStale(String experimentName);
 }

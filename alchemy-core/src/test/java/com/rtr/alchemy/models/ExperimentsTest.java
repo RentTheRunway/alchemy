@@ -2,14 +2,14 @@ package com.rtr.alchemy.models;
 
 import com.google.common.collect.ImmutableMap;
 import com.rtr.alchemy.db.ExperimentsCache;
-import com.rtr.alchemy.db.ExperimentsDatabaseProvider;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -23,11 +23,11 @@ public class ExperimentsTest {
 
     @Before
     public void setUp() {
-        final ExperimentsDatabaseProvider provider = mock(ExperimentsDatabaseProvider.class);
+        final ExperimentsStoreProvider provider = mock(ExperimentsStoreProvider.class);
         store = mock(ExperimentsStore.class);
         cache = mock(ExperimentsCache.class);
-        doReturn(store).when(provider).createStore();
-        doReturn(cache).when(provider).createCache();
+        doReturn(store).when(provider).getStore();
+        doReturn(cache).when(provider).getCache();
         experiments = new Experiments(provider);
     }
 
@@ -82,7 +82,7 @@ public class ExperimentsTest {
     @Test
     public void testFind() {
         experiments.find();
-        verify(store).find(eq(Filter.NONE));
+        verify(store).find(eq(Filter.NONE), any(Experiment.BuilderFactory.class));
         verifyZeroInteractions(cache);
     }
 
@@ -90,7 +90,7 @@ public class ExperimentsTest {
     public void testFindFiltered() {
         final Filter filter = Filter.criteria().filter("foo").offset(1).limit(2).build();
         experiments.find(filter);
-        verify(store).find(eq(filter));
+        verify(store).find(eq(filter), any(Experiment.BuilderFactory.class));
         verifyZeroInteractions(cache);
     }
 
