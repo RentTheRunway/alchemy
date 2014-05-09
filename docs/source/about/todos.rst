@@ -3,5 +3,3 @@
 ###################
 Documentation TODOs
 ###################
-
-.. todolist::

@@ -56,7 +56,7 @@ public abstract class ExperimentsDatabaseProviderTest {
     public void setUp() {
         final ExperimentsStoreProvider provider = createProvider();
         assertNotNull("provider cannot be null", provider);
-        experiments = new Experiments(provider);
+        experiments = Experiments.using(provider).build();
     }
 
     @Test

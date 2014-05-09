@@ -72,7 +72,7 @@ public abstract class ResourceTest {
 
     static {
         PROVIDER = new MemoryStoreProvider();
-        EXPERIMENTS = spy(new Experiments(PROVIDER));
+        EXPERIMENTS = spy(Experiments.using(PROVIDER).build());
         MAPPER = new Mappers();
         MAPPER.register(UserDto.class, User.class, new UserMapper());
         MAPPER.register(DeviceDto.class, Device.class, new DeviceMapper());
