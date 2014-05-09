@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.rtr.alchemy.identities.Identity;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -14,11 +15,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class ExperimentTest {
     private final Identity identity = mock(Identity.class);
+    private Experiments experiments;
+
+    @Before
+    public void setUp() {
+        experiments = mock(Experiments.class);
+    }
 
     @Test
     public void testEqualsHashCode() {
@@ -214,5 +223,18 @@ public class ExperimentTest {
         assertFalse(original.getOverrides().get(0) == copy.getOverrides().get(0));
         assertTrue(copy.getAllocations().get(0).getTreatment() == copy.getTreatments().get(0));
         assertTrue(copy.getOverrides().get(0).getTreatment() == copy.getTreatments().get(0));
+    }
+
+    @Test
+    public void testSave() {
+        final Experiment experiment = new Experiment(experiments, "foo").save();
+        verify(experiments).save(eq(experiment));
+    }
+
+    @Test
+    public void testDelete() {
+        final Experiment experiment = new Experiment(experiments, "foo");
+        experiment.delete();
+        verify(experiments).delete(eq(experiment.getName()));
     }
 }

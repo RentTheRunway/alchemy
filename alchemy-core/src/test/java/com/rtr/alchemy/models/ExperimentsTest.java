@@ -1,6 +1,7 @@
 package com.rtr.alchemy.models;
 
 import com.google.common.collect.ImmutableMap;
+import com.rtr.alchemy.db.CacheStrategy;
 import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsStore;
@@ -28,9 +29,12 @@ public class ExperimentsTest {
         cache = mock(ExperimentsCache.class);
         doReturn(store).when(provider).getStore();
         doReturn(cache).when(provider).getCache();
-        experiments = new Experiments(provider);
+        experiments =
+            Experiments
+                .using(provider)
+                .using(mock(CacheStrategy.class))
+                .build();
     }
-
 
     @Test
     public void testGetActiveTreatment() {

@@ -1,8 +1,8 @@
 .. _man-core:
 
-###############
+############
 Alchemy Core
-###############
+############
 
 .. highlight:: text
 
@@ -136,7 +136,7 @@ In order to interact with experiments or query what treatments identities are as
 .. code-block:: java
 
     MemoryDatabaseProvider provider = new MemoryDatabaseProvider();
-    Experiments experiments = new Experiments(provider);
+    Experiments experiments = Experiments.using(provider).build();
 
 Creating and configuring an experiment is easy to do with Alchemy's fluent API:
 
