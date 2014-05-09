@@ -14,6 +14,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -34,6 +35,9 @@ public class ExperimentsTest {
                 .using(provider)
                 .using(mock(CacheStrategy.class))
                 .build();
+
+        // suppress initial invalidateAll() call
+        reset(cache);
     }
 
     @Test
