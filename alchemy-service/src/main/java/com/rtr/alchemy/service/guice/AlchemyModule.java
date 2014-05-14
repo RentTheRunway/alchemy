@@ -1,6 +1,7 @@
 package com.rtr.alchemy.service.guice;
 
 import com.google.inject.AbstractModule;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.mapping.Mapper;
 import com.rtr.alchemy.mapping.Mappers;
@@ -9,6 +10,7 @@ import com.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import com.rtr.alchemy.service.config.IdentityMapping;
 import com.rtr.alchemy.service.mapping.CoreMappings;
 import com.rtr.alchemy.service.metadata.IdentitiesMetadata;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 
 import java.util.Map.Entry;
@@ -16,10 +18,12 @@ import java.util.Map.Entry;
 /**
  * Guice module for the service
  */
-public class AlchemyModule extends AbstractModule {
+public class AlchemyModule extends AbstractModule implements Managed {
     private final AlchemyServiceConfiguration configuration;
     private final Environment environment;
     private final IdentitiesMetadata metadata;
+    private ExperimentsStoreProvider provider;
+    private Experiments experiments;
 
     public AlchemyModule(AlchemyServiceConfiguration configuration,
                          Environment environment,
@@ -44,7 +48,8 @@ public class AlchemyModule extends AbstractModule {
         final Mappers mappers = buildMappers();
         bind(Mappers.class).toInstance(mappers);
 
-        final Experiments experiments = Experiments.using(configuration.getProvider().createProvider()).build();
+        provider = configuration.getProvider().createProvider();
+        experiments = Experiments.using(provider).build();
         bind(Experiments.class).toInstance(experiments);
     }
 
@@ -60,5 +65,15 @@ public class AlchemyModule extends AbstractModule {
         CoreMappings.configure(mappers);
 
         return mappers;
+    }
+
+    @Override
+    public void start() throws Exception {
+    }
+
+    @Override
+    public void stop() throws Exception {
+        provider.close();
+        experiments.close();
     }
 }

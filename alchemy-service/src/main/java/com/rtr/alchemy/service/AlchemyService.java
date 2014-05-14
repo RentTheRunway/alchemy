@@ -48,17 +48,22 @@ public class AlchemyService extends Application<AlchemyServiceConfiguration> {
     @Override
     public void run(final AlchemyServiceConfiguration configuration, final Environment environment) throws Exception {
         final IdentitiesMetadata metadata = collectIdentityMetadata(configuration);
-        final Injector injector = Guice.createInjector(new AlchemyModule(configuration, environment, metadata));
+        final AlchemyModule module = new AlchemyModule(configuration, environment, metadata);
+        final Injector injector = Guice.createInjector(module);
 
         for (final Class<?> resource : RESOURCES) {
             environment.jersey().register(injector.getInstance(resource));
         }
 
         environment.healthChecks().register("database", injector.getInstance(ExperimentsDatabaseProviderCheck.class));
+
         environment.jersey().register(new RuntimeExceptionMapper());
         environment.lifecycle().manage(new JmxMetricsManaged(environment));
+        environment.lifecycle().manage(module);
+
         registerIdentitySubTypes(configuration, environment);
     }
+
     private IdentitiesMetadata collectIdentityMetadata(AlchemyServiceConfiguration configuration) {
         final IdentitiesMetadata metadata = new IdentitiesMetadata();
 

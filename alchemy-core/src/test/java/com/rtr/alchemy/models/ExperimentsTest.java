@@ -1,7 +1,7 @@
 package com.rtr.alchemy.models;
 
 import com.google.common.collect.ImmutableMap;
-import com.rtr.alchemy.db.CacheStrategy;
+import com.rtr.alchemy.caching.CacheStrategy;
 import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsStore;

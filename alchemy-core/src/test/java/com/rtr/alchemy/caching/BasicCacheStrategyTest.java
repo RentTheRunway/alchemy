@@ -1,7 +1,13 @@
-package com.rtr.alchemy.db;
+package com.rtr.alchemy.caching;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.rtr.alchemy.caching.BasicCacheStrategy;
+import com.rtr.alchemy.caching.CacheStrategy;
+import com.rtr.alchemy.db.ExperimentsCache;
+import com.rtr.alchemy.db.ExperimentsStore;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
+import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
 import org.junit.Before;

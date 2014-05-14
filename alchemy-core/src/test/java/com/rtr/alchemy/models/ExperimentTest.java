@@ -33,6 +33,7 @@ public class ExperimentTest {
     public void testEqualsHashCode() {
         EqualsVerifier
             .forClass(Experiment.class)
+            .withPrefabValues(Experiments.class, mock(Experiments.class), mock(Experiments.class))
             .suppress(Warning.STRICT_INHERITANCE)
             .verify();
     }

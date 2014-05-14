@@ -1,7 +1,11 @@
-package com.rtr.alchemy.db;
+package com.rtr.alchemy.caching;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.rtr.alchemy.db.ExperimentsCache;
+import com.rtr.alchemy.db.ExperimentsStore;
+import com.rtr.alchemy.db.ExperimentsStoreProvider;
+import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
@@ -68,7 +72,7 @@ public class CacheStrategyTest {
         verifyZeroInteractions(strategy);
 
         experiments.get(experiment1.getName());
-        verify(strategy).onLoad(eq(experiment1), eq(cache));
+        verify(strategy).onLoad(eq(experiment1), any(CachingContext.class));
 
         reset(strategy);
         final Iterable<Experiment> result = experiments.find();
@@ -80,7 +84,7 @@ public class CacheStrategyTest {
 
         assertTrue("expected valid experiment name", experimentNames.remove(iterator.next().getName()));
         assertTrue("expected valid experiment name", experimentNames.remove(iterator.next().getName()));
-        verify(strategy, times(2)).onLoad(any(Experiment.class), eq(cache));
+        verify(strategy, times(2)).onLoad(any(Experiment.class), any(CachingContext.class));
 
         assertFalse("should have no more results", iterator.hasNext());
     }
@@ -88,13 +92,13 @@ public class CacheStrategyTest {
     @Test
     public void testOnSave() {
         experiments.save(experiment1);
-        verify(strategy).onSave(eq(experiment1), eq(cache));
+        verify(strategy).onSave(eq(experiment1), any(CachingContext.class));
     }
 
     @Test
     public void testOnDelete() {
         experiments.delete(experiment1.getName());
-        verify(strategy).onDelete(eq(experiment1.getName()), eq(cache));
+        verify(strategy).onDelete(eq(experiment1.getName()), any(CachingContext.class));
     }
 
     @Test
@@ -102,28 +106,28 @@ public class CacheStrategyTest {
         // only triggered when reading from cache
 
         experiments.get(experiment1.getName());
-        verify(strategy, never()).onCacheRead(anyString(), any(ExperimentsCache.class));
+        verify(strategy, never()).onCacheRead(anyString(), any(CachingContext.class));
 
         experiments.find();
-        verify(strategy, never()).onCacheRead(any(ExperimentsCache.class));
+        verify(strategy, never()).onCacheRead(any(CachingContext.class));
 
         // many read
         experiments.getActiveExperiments();
-        verify(strategy).onCacheRead(any(ExperimentsCache.class));
-        verify(strategy, never()).onCacheRead(anyString(), any(ExperimentsCache.class));
+        verify(strategy).onCacheRead(any(CachingContext.class));
+        verify(strategy, never()).onCacheRead(anyString(), any(CachingContext.class));
 
         reset(strategy);
 
         // single read
         experiments.getActiveTreatment(experiment1.getName(), mock(Identity.class));
-        verify(strategy, never()).onCacheRead(any(ExperimentsCache.class));
-        verify(strategy).onCacheRead(anyString(), any(ExperimentsCache.class));
+        verify(strategy, never()).onCacheRead(any(CachingContext.class));
+        verify(strategy).onCacheRead(anyString(), any(CachingContext.class));
 
         reset(strategy);
 
         // many read
         experiments.getActiveTreatments(mock(Identity.class));
-        verify(strategy).onCacheRead(any(ExperimentsCache.class));
-        verify(strategy, never()).onCacheRead(anyString(), any(ExperimentsCache.class));
+        verify(strategy).onCacheRead(any(CachingContext.class));
+        verify(strategy, never()).onCacheRead(anyString(), any(CachingContext.class));
     }
 }

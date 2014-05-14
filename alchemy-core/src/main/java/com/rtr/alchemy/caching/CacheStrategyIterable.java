@@ -1,4 +1,4 @@
-package com.rtr.alchemy.db;
+package com.rtr.alchemy.caching;
 
 import com.rtr.alchemy.models.Experiment;
 
@@ -9,14 +9,14 @@ import java.util.Iterator;
  */
 public class CacheStrategyIterable implements Iterable<Experiment> {
     private final Iterable<Experiment> iterable;
-    private final ExperimentsCache cache;
+    private final CachingContext context;
     private final CacheStrategy strategy;
 
     public CacheStrategyIterable(Iterable<Experiment> iterable,
-                                 ExperimentsCache cache,
+                                 CachingContext context,
                                  CacheStrategy strategy) {
         this.iterable = iterable;
-        this.cache = cache;
+        this.context = context;
         this.strategy = strategy;
     }
 
@@ -41,7 +41,7 @@ public class CacheStrategyIterable implements Iterable<Experiment> {
         @Override
         public Experiment next() {
             final Experiment next = iterator.next();
-            strategy.onLoad(next, cache);
+            strategy.onLoad(next, context);
             current = next;
             return next;
         }
@@ -49,7 +49,7 @@ public class CacheStrategyIterable implements Iterable<Experiment> {
         @Override
         public void remove() {
             iterator.remove();
-            strategy.onDelete(current.getName(), cache);
+            strategy.onDelete(current.getName(), context);
         }
     }
 }
