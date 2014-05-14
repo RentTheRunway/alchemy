@@ -1,4 +1,4 @@
-package com.rtr.alchemy.db;
+package com.rtr.alchemy.caching;
 
 import com.rtr.alchemy.models.Experiment;
 
@@ -9,25 +9,25 @@ public interface CacheStrategy {
     /**
      * Fires when an experiment is loaded from the store
      */
-    void onLoad(Experiment experiment, ExperimentsCache cache);
+    void onLoad(Experiment experiment, CachingContext context);
 
     /**
      * Fires when an experiment is saved to the store
      */
-    void onSave(Experiment experiment, ExperimentsCache cache);
+    void onSave(Experiment experiment, CachingContext context);
 
     /**
      * Fires when an experiment is deleted from the store
      */
-    void onDelete(String experimentName, ExperimentsCache cache);
+    void onDelete(String experimentName, CachingContext context);
 
     /**
      * Fires before an experiment is read from the cache
      */
-    void onCacheRead(String experimentName, ExperimentsCache cache);
+    void onCacheRead(String experimentName, CachingContext context);
 
     /**
      * Fires before all experiments are read from the cache
      */
-    void onCacheRead(ExperimentsCache cache);
+    void onCacheRead(CachingContext context);
 }

@@ -1,4 +1,4 @@
-package com.rtr.alchemy.db;
+package com.rtr.alchemy.caching;
 
 import com.google.common.collect.Lists;
 import com.rtr.alchemy.models.Experiment;
@@ -14,24 +14,24 @@ import static org.mockito.Mockito.verify;
 
 public class CacheStrategyIterableTest {
     private Iterator<Experiment> iterator;
-    private ExperimentsCache cache;
+    private CachingContext context;
     private CacheStrategy strategy;
     private Experiment experiment;
 
     @Before
     public void setUp() {
-        cache = mock(ExperimentsCache.class);
+        context = mock(CachingContext.class);
         strategy = mock(CacheStrategy.class);
 
         experiment = mock(Experiment.class);
         final List<Experiment> experiments = Lists.newArrayList(experiment);
-        final CacheStrategyIterable iterable = new CacheStrategyIterable(experiments, cache, strategy);
+        final CacheStrategyIterable iterable = new CacheStrategyIterable(experiments, context, strategy);
         iterator = iterable.iterator();
     }
 
     @Test
     public void testIterable() {
         iterator.next();
-        verify(strategy).onLoad(eq(experiment), eq(cache));
+        verify(strategy).onLoad(eq(experiment), eq(context));
     }
 }
