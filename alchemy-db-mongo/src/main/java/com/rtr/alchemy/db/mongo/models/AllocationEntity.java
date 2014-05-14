@@ -3,6 +3,10 @@ package com.rtr.alchemy.db.mongo.models;
 import com.rtr.alchemy.models.Allocation;
 import org.mongodb.morphia.annotations.Embedded;
 
+/**
+ * An entity that mirrors Allocation
+ * @see com.rtr.alchemy.models.Allocation
+ */
 @Embedded
 public class AllocationEntity {
     public String treatment;

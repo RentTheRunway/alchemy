@@ -8,6 +8,9 @@ import com.rtr.alchemy.models.Experiment;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements a store that stores experiments in memory
+ */
 public class MemoryExperimentsStore implements ExperimentsStore {
     private final Map<String, Experiment> db;
 

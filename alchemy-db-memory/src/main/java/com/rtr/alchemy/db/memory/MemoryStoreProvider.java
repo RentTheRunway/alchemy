@@ -9,6 +9,9 @@ import com.rtr.alchemy.models.Experiment;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * A store provider storing and caching experiments in memory
+ */
 public class MemoryStoreProvider implements ExperimentsStoreProvider {
     private final Map<String, Experiment> db = Maps.newConcurrentMap();
 

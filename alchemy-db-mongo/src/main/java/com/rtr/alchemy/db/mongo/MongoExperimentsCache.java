@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * A cache backed by MongoDB which allows for quick cached access to Experiments
+ */
 public class MongoExperimentsCache implements ExperimentsCache {
     private final RevisionManager revisionManager;
     private final Datastore ds;

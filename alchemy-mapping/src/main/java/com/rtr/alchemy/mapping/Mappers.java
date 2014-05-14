@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The main class for registering mappers and doing mapping
+ */
 public class Mappers {
     private final Map<Class<?>, Map<Class<?>, Mapper>> mappers = Maps.newConcurrentMap();
 

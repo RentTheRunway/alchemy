@@ -20,6 +20,9 @@ import javax.validation.Validator;
 import java.io.File;
 import java.util.Map;
 
+/**
+ * Example code that utilizes the alchemy-client library to talk to an instance of Alchemy service
+ */
 public class ClientExample {
     private static void println(String formatMessage, Object ... args) {
         System.out.println(String.format(formatMessage, args));

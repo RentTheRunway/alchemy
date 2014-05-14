@@ -7,6 +7,9 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+/**
+ * Represents an experiment
+ */
 public class ExperimentDto {
     private final String name;
     private final String description;

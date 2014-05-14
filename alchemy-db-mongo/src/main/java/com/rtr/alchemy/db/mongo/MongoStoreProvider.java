@@ -18,6 +18,9 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
 
+/**
+ * A provider for MongoDB which implements the store and cache for using MongoDB as a backend
+ */
 public class MongoStoreProvider implements ExperimentsStoreProvider {
     private final MongoClient client;
     private final ExperimentsStore store;

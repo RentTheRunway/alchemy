@@ -3,6 +3,9 @@ package com.rtr.alchemy.example.identities;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityType;
 
+/**
+ * An example identity
+ */
 @IdentityType("user")
 public class User extends Identity {
     private final String name;

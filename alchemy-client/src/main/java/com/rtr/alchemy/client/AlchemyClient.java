@@ -34,6 +34,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * A Dropwizard client for talking to an instance Alchemy service
+ */
 public class AlchemyClient {
     private static final String CLIENT_NAME = "alchemy-client";
     private static final Map<String, ?> EMPTY_PARAMS = Maps.newHashMap();

@@ -22,6 +22,9 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Resource for querying active experiments
+ */
 @Path("/active")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

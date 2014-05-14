@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * Example code that utilizes the alchemy-core library to interact with experiments directly
+ */
 public class LibraryExample {
     private static void disableLogging() {
         final Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);

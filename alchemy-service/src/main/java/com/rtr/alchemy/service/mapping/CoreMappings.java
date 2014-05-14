@@ -12,6 +12,9 @@ import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Treatment;
 import com.rtr.alchemy.models.TreatmentOverride;
 
+/**
+ * A helper class for configuring the base required mappers for core domain objects
+ */
 public class CoreMappings {
     public static void configure(final Mappers mappers) {
         // fixed domain types

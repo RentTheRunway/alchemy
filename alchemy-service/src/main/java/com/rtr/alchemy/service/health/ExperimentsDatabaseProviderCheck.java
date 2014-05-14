@@ -5,6 +5,9 @@ import com.google.inject.Inject;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.models.Experiments;
 
+/**
+ * A health check that tests whether experiments can be read from the store
+ */
 public class ExperimentsDatabaseProviderCheck extends HealthCheck {
     private final Experiments experiments;
 
