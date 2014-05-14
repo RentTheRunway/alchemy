@@ -12,6 +12,10 @@ identities:
     mapper: com.rtr.alchemy.example.mappers.UserMapper
 
 provider:
-  type: com.rtr.alchemy.example.provider.MongoStoreProviderConfiguration
+  type: com.rtr.alchemy.example.config.MongoStoreProvider
   hosts: [ "localhost" ]
   db: experiments
+
+cacheStrategy:
+  type: com.rtr.alchemy.example.config.PeriodicStaleCheckingCacheStrategy
+  duration: 1m

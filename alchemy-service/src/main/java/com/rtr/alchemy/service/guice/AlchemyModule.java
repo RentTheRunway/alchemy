@@ -49,8 +49,17 @@ public class AlchemyModule extends AbstractModule implements Managed {
         bind(Mappers.class).toInstance(mappers);
 
         provider = configuration.getProvider().createProvider();
-        experiments = Experiments.using(provider).build();
+        experiments = buildExperiments();
         bind(Experiments.class).toInstance(experiments);
+    }
+
+    private Experiments buildExperiments() {
+        final Experiments.Builder builder = Experiments.using(provider);
+        if (configuration.getCacheStrategy() != null) {
+            builder.using(configuration.getCacheStrategy().createStrategy());
+        }
+
+        return builder.build();
     }
 
     private Mappers buildMappers() throws InstantiationException, IllegalAccessException {

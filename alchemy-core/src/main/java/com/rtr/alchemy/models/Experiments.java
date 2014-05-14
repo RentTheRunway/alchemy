@@ -1,6 +1,7 @@
 package com.rtr.alchemy.models;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.rtr.alchemy.caching.BasicCacheStrategy;
 import com.rtr.alchemy.caching.CacheStrategy;
@@ -42,7 +43,7 @@ public class Experiments implements Closeable {
         cache.invalidateAll(new Experiment.BuilderFactory(this));
     }
 
-    public synchronized Treatment getActiveTreatment(String experimentName, Identity identity) {
+    public Treatment getActiveTreatment(String experimentName, Identity identity) {
         strategy.onCacheRead(experimentName, context);
 
         final Experiment experiment = cache.getActiveExperiments().get(experimentName);
@@ -58,12 +59,12 @@ public class Experiments implements Closeable {
         return override != null ? override.getTreatment() : experiment.getTreatment(identity);
     }
 
-    public synchronized Iterable<Experiment> getActiveExperiments() {
+    public Iterable<Experiment> getActiveExperiments() {
         strategy.onCacheRead(context);
-        return cache.getActiveExperiments().values();
+        return Iterables.unmodifiableIterable(cache.getActiveExperiments().values());
     }
 
-    public synchronized Map<Experiment, Treatment> getActiveTreatments(Identity ... identities) {
+    public Map<Experiment, Treatment> getActiveTreatments(Identity ... identities) {
         final Map<String, Identity> identitiesByType = Maps.newHashMap();
         for (final Identity identity : identities) {
             identitiesByType.put(identity.getType(), identity);
@@ -102,19 +103,23 @@ public class Experiments implements Closeable {
         return result;
     }
 
-    public synchronized Iterable<Experiment> find(Filter filter) {
-        return new CacheStrategyIterable(
-            store.find(filter, new Experiment.BuilderFactory(this)),
-            context,
-            strategy
+    public Iterable<Experiment> find(Filter filter) {
+        return Iterables.unmodifiableIterable(
+            new CacheStrategyIterable(
+                store.find(filter, new Experiment.BuilderFactory(this)),
+                context,
+                strategy
+            )
         );
     }
 
-    public synchronized Iterable<Experiment> find() {
-        return find(Filter.criteria().build());
+    public Iterable<Experiment> find() {
+        return Iterables.unmodifiableIterable(
+            find(Filter.criteria().build())
+        );
     }
 
-    public synchronized Experiment get(String experimentName) {
+    public Experiment get(String experimentName) {
         final Experiment experiment = store.load(
             experimentName,
             new Experiment.Builder(this, experimentName)
@@ -126,17 +131,17 @@ public class Experiments implements Closeable {
         return experiment;
     }
 
-    public synchronized void delete(String experimentName) {
+    public void delete(String experimentName) {
         store.delete(experimentName);
         strategy.onDelete(experimentName, context);
     }
 
-    public synchronized void save(Experiment experiment) {
+    public void save(Experiment experiment) {
         store.save(experiment);
         strategy.onSave(experiment, context);
     }
 
-    public synchronized Experiment create(String name) {
+    public Experiment create(String name) {
         return new Experiment(this, name);
     }
 

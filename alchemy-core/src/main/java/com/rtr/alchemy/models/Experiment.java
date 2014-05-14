@@ -21,7 +21,6 @@ import java.util.Map.Entry;
  */
 
 public class Experiment {
-    private final Object lock = new Object();
     private final Experiments owner;
     private final String name;
     private final Allocations allocations;
@@ -29,13 +28,13 @@ public class Experiment {
     private final Map<String, TreatmentOverride> overrides;
     private final Map<Long, TreatmentOverride> overridesByHash;
     private final int seed;
-    private volatile String description;
-    private volatile String identityType;
-    private volatile boolean active;
-    private volatile DateTime created;
-    private volatile DateTime modified;
-    private volatile DateTime activated;
-    private volatile DateTime deactivated;
+    private String description;
+    private String identityType;
+    private boolean active;
+    private DateTime created;
+    private DateTime modified;
+    private DateTime activated;
+    private DateTime deactivated;
 
     // used by Builder when loading experiment from store
     private Experiment(Experiments owner,
@@ -162,10 +161,6 @@ public class Experiment {
         return modified;
     }
 
-    protected void setModified(DateTime modified) {
-        this.modified = modified;
-    }
-
     public DateTime getActivated() {
         return activated;
     }
@@ -178,36 +173,28 @@ public class Experiment {
      * Gets all allocations defined on this experiment
      */
     public List<Allocation> getAllocations() {
-        synchronized (lock) {
-            return ImmutableList.copyOf(allocations.getAllocations());
-        }
+        return ImmutableList.copyOf(allocations.getAllocations());
     }
 
     /**
      * Gets all treatments defined on this experiment
      */
     public List<Treatment> getTreatments() {
-        synchronized (lock) {
-            return ImmutableList.copyOf(treatments.values());
-        }
+        return ImmutableList.copyOf(treatments.values());
     }
 
     /**
      * Get a treatment with the given name
      */
     public Treatment getTreatment(String treatmentName) {
-        synchronized (lock) {
-            return treatments.get(treatmentName);
-        }
+        return treatments.get(treatmentName);
     }
 
     /**
      * Gets all overrides defined on this experiment
      */
     public List<TreatmentOverride> getOverrides() {
-        synchronized (lock) {
-            return ImmutableList.copyOf(overrides.values());
-        }
+        return ImmutableList.copyOf(overrides.values());
     }
 
     /**
@@ -215,9 +202,7 @@ public class Experiment {
      * @param identity The identity
      */
     public TreatmentOverride getOverride(Identity identity) {
-        synchronized (lock) {
-            return overridesByHash.get(identity.getHash(seed));
-        }
+        return overridesByHash.get(identity.getHash(seed));
     }
 
     /**
@@ -225,9 +210,7 @@ public class Experiment {
      * @param overrideName The name
      */
     public TreatmentOverride getOverride(String overrideName) {
-        synchronized (lock) {
-            return overrides.get(overrideName);
-        }
+        return overrides.get(overrideName);
     }
 
     /**
@@ -261,9 +244,7 @@ public class Experiment {
      * @param name The name
      */
     public Experiment addTreatment(String name) {
-        synchronized (lock) {
-            treatments.put(name, new Treatment(name));
-        }
+        treatments.put(name, new Treatment(name));
         return this;
     }
 
@@ -273,9 +254,7 @@ public class Experiment {
      * @param description The description
      */
     public Experiment addTreatment(String name, String description) {
-        synchronized (lock) {
-            treatments.put(name, new Treatment(name, description));
-        }
+        treatments.put(name, new Treatment(name, description));
         return this;
     }
 
@@ -283,11 +262,9 @@ public class Experiment {
      * Removes all treatments
      */
     public Experiment clearTreatments() {
-        synchronized (lock) {
-            final List<Treatment> toRemove = Lists.newArrayList(treatments.values());
-            for (final Treatment treatment : toRemove) {
-                removeTreatment(treatment.getName());
-            }
+        final List<Treatment> toRemove = Lists.newArrayList(treatments.values());
+        for (final Treatment treatment : toRemove) {
+            removeTreatment(treatment.getName());
         }
 
         return this;
@@ -297,10 +274,8 @@ public class Experiment {
      * Removes all overrides
      */
     public Experiment clearOverrides() {
-        synchronized (lock) {
-            overrides.clear();
-            overridesByHash.clear();
-        }
+        overrides.clear();
+        overridesByHash.clear();
 
         return this;
     }
@@ -312,15 +287,14 @@ public class Experiment {
      * @param identity The identity
      */
     public Experiment addOverride(String overrideName, String treatmentName, Identity identity) {
-        synchronized (lock) {
-            final Long hash = identity.getHash(seed);
-            final TreatmentOverride override = new TreatmentOverride(overrideName, hash, treatment(treatmentName));
-            final TreatmentOverride replaced = overridesByHash.put(hash, override);
-            if (replaced != null) {
-                overrides.remove(replaced.getName());
-            }
-            overrides.put(overrideName, override);
+        final Long hash = identity.getHash(seed);
+        final TreatmentOverride override = new TreatmentOverride(overrideName, hash, treatment(treatmentName));
+        final TreatmentOverride replaced = overridesByHash.put(hash, override);
+        if (replaced != null) {
+            overrides.remove(replaced.getName());
         }
+        overrides.put(overrideName, override);
+
         return this;
     }
 
@@ -329,11 +303,9 @@ public class Experiment {
      * @param identity The identities to remove the override for
      */
     public Experiment removeOverride(Identity identity) {
-        synchronized (lock) {
-            final TreatmentOverride removed = overridesByHash.remove(identity.getHash(seed));
-            if (removed != null) {
-                overrides.remove(removed.getName());
-            }
+        final TreatmentOverride removed = overridesByHash.remove(identity.getHash(seed));
+        if (removed != null) {
+            overrides.remove(removed.getName());
         }
 
         return this;
@@ -344,12 +316,11 @@ public class Experiment {
      * @param overrideName The name of the override to remove
      */
     public Experiment removeOverride(String overrideName) {
-        synchronized (lock) {
-            final  TreatmentOverride removed = overrides.remove(overrideName);
-            if (removed != null) {
-                overridesByHash.remove(removed.getHash());
-            }
+        final  TreatmentOverride removed = overrides.remove(overrideName);
+        if (removed != null) {
+            overridesByHash.remove(removed.getHash());
         }
+
         return this;
     }
 
@@ -358,20 +329,18 @@ public class Experiment {
      * @param treatmentName The treatment to remove overrides for
      */
     public Experiment removeOverrides(String treatmentName) {
-        synchronized (lock) {
-            final Treatment treatment = treatments.get(treatmentName);
+        final Treatment treatment = treatments.get(treatmentName);
 
-            if (treatment == null) {
-                return this;
-            }
+        if (treatment == null) {
+            return this;
+        }
 
-            final Iterator<Entry<Long, TreatmentOverride>> iterator = overridesByHash.entrySet().iterator();
-            while (iterator.hasNext()) {
-                final Entry<Long, TreatmentOverride> entry = iterator.next();
-                if (entry.getValue().getTreatment().equals(treatment)) {
-                    iterator.remove();
-                    overrides.remove(entry.getValue().getName());
-                }
+        final Iterator<Entry<Long, TreatmentOverride>> iterator = overridesByHash.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final Entry<Long, TreatmentOverride> entry = iterator.next();
+            if (entry.getValue().getTreatment().equals(treatment)) {
+                iterator.remove();
+                overrides.remove(entry.getValue().getName());
             }
         }
 
@@ -383,16 +352,14 @@ public class Experiment {
      * @param name The treatment
      */
     public Experiment removeTreatment(String name) {
-        synchronized (lock) {
-            final Treatment treatment = treatments.get(name);
-            if (treatment == null) {
-                return this;
-            }
-
-            removeOverrides(name);
-            allocations.deallocate(treatment, Allocations.NUM_BINS);
-            treatments.remove(name);
+        final Treatment treatment = treatments.get(name);
+        if (treatment == null) {
+            return this;
         }
+
+        removeOverrides(name);
+        allocations.deallocate(treatment, Allocations.NUM_BINS);
+        treatments.remove(name);
 
         return this;
     }
@@ -431,9 +398,8 @@ public class Experiment {
      * @param size The number of bins
      */
     public Experiment allocate(String treatmentName, int size) {
-        synchronized (lock) {
-            allocations.allocate(treatment(treatmentName), size);
-        }
+        allocations.allocate(treatment(treatmentName), size);
+
         return this;
     }
 
@@ -443,9 +409,7 @@ public class Experiment {
      * @param size The number of bins
      */
     public Experiment deallocate(String treatmentName, int size) {
-        synchronized (lock) {
-            allocations.deallocate(treatment(treatmentName), size);
-        }
+        allocations.deallocate(treatment(treatmentName), size);
         return this;
     }
 
@@ -456,13 +420,11 @@ public class Experiment {
      * @param size The number of bins
      */
     public Experiment reallocate(String sourceTreatmentName, String destinationTreatmentName, int size) {
-        synchronized (lock) {
-            allocations.reallocate(
-                treatment(sourceTreatmentName),
-                treatment(destinationTreatmentName),
-                size
-            );
-        }
+        allocations.reallocate(
+            treatment(sourceTreatmentName),
+            treatment(destinationTreatmentName),
+            size
+        );
 
         return this;
     }
@@ -471,9 +433,7 @@ public class Experiment {
      * Removes all allocations
      */
     public Experiment deallocateAll() {
-        synchronized (lock) {
-            allocations.clear();
-        }
+        allocations.clear();
         return this;
     }
 
@@ -487,9 +447,7 @@ public class Experiment {
      * @return the treatment assigned to given identity
      */
     public Treatment getTreatment(Identity identity) {
-        synchronized (lock) {
-            return allocations.getTreatment(identityToBin(identity));
-        }
+        return allocations.getTreatment(identityToBin(identity));
     }
 
     @Override
