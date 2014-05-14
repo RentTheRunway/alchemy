@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.Set;
 
+/**
+ * The client configuration
+ */
 public class AlchemyClientConfiguration extends JerseyClientConfiguration {
     @NotNull
     private final URI service;

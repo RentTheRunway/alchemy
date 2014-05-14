@@ -9,6 +9,9 @@ import com.rtr.alchemy.service.config.StoreProviderConfiguration;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * Configuration object for creating a MongoDB provider with given parameters
+ */
 public class MongoStoreProviderConfiguration extends StoreProviderConfiguration {
     @NotNull
     private final List<String> hosts;

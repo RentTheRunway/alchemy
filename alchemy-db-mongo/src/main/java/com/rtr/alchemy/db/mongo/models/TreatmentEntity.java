@@ -4,6 +4,10 @@ import com.rtr.alchemy.models.Treatment;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Indexed;
 
+/**
+ * An entity that mirrors Treatment
+ * @see com.rtr.alchemy.models.Treatment
+ */
 @Embedded
 public class TreatmentEntity {
     public String name;

@@ -5,6 +5,9 @@ import com.rtr.alchemy.models.Experiment;
 
 import java.util.Iterator;
 
+/**
+ * An iterator that iterates over ExperimentEntity results and maps them to actual Experiment instances
+ */
 public class ExperimentIterable implements Iterable<Experiment> {
     private final Iterator<ExperimentEntity> iterator;
     private final Experiment.BuilderFactory factory;

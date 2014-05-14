@@ -8,6 +8,9 @@ import com.rtr.alchemy.models.Experiment;
 import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.query.Query;
 
+/**
+ * A store backed by MongoDB which allows storing Experiments
+ */
 public class MongoExperimentsStore implements ExperimentsStore {
     private final AdvancedDatastore ds;
     private final RevisionManager revisionManager;

@@ -4,6 +4,9 @@ import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.mapping.Mapper;
 
+/**
+ * Metadata for an identity type
+ */
 public class IdentityMetadata {
     private final String typeName;
     private final Class<? extends Identity> identityType;

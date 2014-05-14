@@ -16,6 +16,10 @@ import org.mongodb.morphia.annotations.Indexed;
 
 import java.util.List;
 
+/**
+ * An entity that mirrors Experiment
+ * @see com.rtr.alchemy.models.Experiment
+ */
 @Entity(value = "Experiments", noClassnameStored = true)
 @Converters(DateTimeConverter.class)
 public class ExperimentEntity {

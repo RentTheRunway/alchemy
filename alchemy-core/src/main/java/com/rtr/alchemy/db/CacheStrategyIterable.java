@@ -4,6 +4,9 @@ import com.rtr.alchemy.models.Experiment;
 
 import java.util.Iterator;
 
+/**
+ * Implements a wrapper around iterable of Experiment in order to trigger the cache strategy as results are retrieved
+ */
 public class CacheStrategyIterable implements Iterable<Experiment> {
     private final Iterable<Experiment> iterable;
     private final ExperimentsCache cache;

@@ -7,6 +7,9 @@ import com.rtr.alchemy.models.Experiment;
 
 import java.util.Map;
 
+/**
+ * Implements a cache that caches experiments in memory
+ */
 public class MemoryExperimentsCache implements ExperimentsCache {
     private final Map<String, Experiment> db;
 
