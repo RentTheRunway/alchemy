@@ -3,7 +3,7 @@ package com.rtr.alchemy.caching;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This caching strategy will periodically check whether the data in the cache is stale, and if so, refresh it.
@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class PeriodicStaleCheckingCacheStrategy extends BasicCacheStrategy {
     private final Duration period;
-    private final ReentrantLock lock = new ReentrantLock();
+    private final AtomicBoolean lock = new AtomicBoolean(false);
     private volatile DateTime lastSync;
 
     public PeriodicStaleCheckingCacheStrategy(Duration period) {
@@ -31,7 +31,7 @@ public class PeriodicStaleCheckingCacheStrategy extends BasicCacheStrategy {
     }
 
     private void invalidateAllIfStale(CachingContext context) {
-        if (!lock.tryLock()) {
+        if (!lock.compareAndSet(false, true)) {
             return;
         }
 
@@ -43,7 +43,7 @@ public class PeriodicStaleCheckingCacheStrategy extends BasicCacheStrategy {
 
             lastSync = DateTime.now();
         } finally {
-            lock.unlock();
+            lock.set(false);
         }
 
         if (context.checkIfAnyStale()) {

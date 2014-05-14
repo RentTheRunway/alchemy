@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A context object that allows you to interact safely with the cache, preventing multiple calls to invalidate from
@@ -17,10 +17,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CachingContext implements Closeable {
     private final ExperimentsCache cache;
     private final Experiment.BuilderFactory builderFactory;
-    private final ReentrantLock lock;
+    private final AtomicBoolean lock;
     private final ExecutorService executorService;
     private final boolean ownsExecutorService;
-    private final ConcurrentMap<String, ReentrantLock> experimentLocks;
+    private final ConcurrentMap<String, AtomicBoolean> experimentLocks;
 
     public CachingContext(ExperimentsCache cache,
                           Experiment.BuilderFactory builderFactory,
@@ -30,7 +30,7 @@ public class CachingContext implements Closeable {
         this.executorService = executorService != null ? executorService : Executors.newSingleThreadExecutor();
         this.ownsExecutorService = executorService == null;
         this.experimentLocks = Maps.newConcurrentMap();
-        this.lock = new ReentrantLock();
+        this.lock = new AtomicBoolean(false);
     }
 
     public CachingContext(ExperimentsCache cache,
@@ -55,20 +55,20 @@ public class CachingContext implements Closeable {
     }
 
     private void safeInvalidateAll(Experiment.BuilderFactory builderFactory) {
-        if (!lock.tryLock()) {
+        if (!lock.compareAndSet(false, true)) {
             return;
         }
 
         try {
             cache.invalidateAll(builderFactory);
         } finally {
-            lock.unlock();
+            lock.set(false);
         }
     }
 
-    private ReentrantLock getExperimentLock(String experimentName) {
-        final ReentrantLock newLock = new ReentrantLock();
-        final ReentrantLock prevLock = experimentLocks.putIfAbsent(experimentName, newLock);
+    private AtomicBoolean getExperimentLock(String experimentName) {
+        final AtomicBoolean newLock = new AtomicBoolean(false);
+        final AtomicBoolean prevLock = experimentLocks.putIfAbsent(experimentName, newLock);
         return prevLock != null ? prevLock : newLock;
     }
 
@@ -89,16 +89,16 @@ public class CachingContext implements Closeable {
     }
 
     private void safeInvalidate(String experimentName, Experiment.Builder builder) {
-        final ReentrantLock lock = getExperimentLock(experimentName);
+        final AtomicBoolean lock = getExperimentLock(experimentName);
 
-        if (!lock.tryLock()) {
+        if (!lock.compareAndSet(false, true)) {
             return;
         }
 
         try {
             cache.invalidate(experimentName, builder);
         } finally {
-            lock.unlock();
+            lock.set(false);
             experimentLocks.remove(experimentName);
         }
     }
