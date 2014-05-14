@@ -33,25 +33,34 @@ public class CachingContext implements Closeable {
         this.lock = new ReentrantLock();
     }
 
+    public CachingContext(ExperimentsCache cache,
+                          Experiment.BuilderFactory builderFactory) {
+        this(cache, builderFactory, null);
+    }
+
     /**
      * Forces cache to reload all data from storage
      */
     public void invalidateAll(boolean async) {
+        if (async) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    safeInvalidateAll(builderFactory);
+                }
+            });
+        } else {
+            safeInvalidateAll(builderFactory);
+        }
+    }
+
+    private void safeInvalidateAll(Experiment.BuilderFactory builderFactory) {
         if (!lock.tryLock()) {
             return;
         }
 
         try {
-            if (async) {
-                executorService.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        cache.invalidateAll(builderFactory);
-                    }
-                });
-            } else {
-                cache.invalidateAll(builderFactory);
-            }
+            cache.invalidateAll(builderFactory);
         } finally {
             lock.unlock();
         }
@@ -67,6 +76,19 @@ public class CachingContext implements Closeable {
      * Forces cache to reload a specific experiment from storage
      */
     public void invalidate(final String experimentName, boolean async) {
+        if (async) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    safeInvalidate(experimentName, builderFactory.createBuilder(experimentName));
+                }
+            });
+        } else {
+            safeInvalidate(experimentName, builderFactory.createBuilder(experimentName));
+        }
+    }
+
+    private void safeInvalidate(String experimentName, Experiment.Builder builder) {
         final ReentrantLock lock = getExperimentLock(experimentName);
 
         if (!lock.tryLock()) {
@@ -74,16 +96,7 @@ public class CachingContext implements Closeable {
         }
 
         try {
-            if (async) {
-                executorService.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        cache.invalidate(experimentName, builderFactory.createBuilder(experimentName));
-                    }
-                });
-            } else {
-                cache.invalidate(experimentName, builderFactory.createBuilder(experimentName));
-            }
+            cache.invalidate(experimentName, builder);
         } finally {
             lock.unlock();
             experimentLocks.remove(experimentName);
