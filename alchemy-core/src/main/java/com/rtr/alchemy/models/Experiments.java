@@ -31,6 +31,7 @@ public class Experiments {
         Preconditions.checkNotNull(store, "store cannot be null");
         Preconditions.checkNotNull(cache, "cache cannot be null");
         this.strategy = strategy != null ? strategy : new BasicCacheStrategy();
+        cache.invalidateAll(new Experiment.BuilderFactory(this));
     }
 
     public synchronized Treatment getActiveTreatment(String experimentName, Identity identity) {

@@ -22,10 +22,11 @@ import static org.mockito.Mockito.mock;
  * The purpose of this class is to provide a base class for testing whether an implementation of a provider
  * behaves correctly
  */
-public abstract class ExperimentsDatabaseProviderTest {
+public abstract class ExperimentsStoreProviderTest {
     private Experiments experiments;
 
     protected abstract ExperimentsStoreProvider createProvider();
+    protected abstract void resetStore();
 
     @IdentityType("test")
     private static class TestIdentity extends Identity {
@@ -54,6 +55,7 @@ public abstract class ExperimentsDatabaseProviderTest {
 
     @Before
     public void setUp() {
+        resetStore();
         final ExperimentsStoreProvider provider = createProvider();
         assertNotNull("provider cannot be null", provider);
         experiments = Experiments.using(provider).build();

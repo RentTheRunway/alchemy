@@ -12,4 +12,6 @@ identities:
     mapper: com.rtr.alchemy.example.mappers.UserMapper
 
 provider:
-  type: com.rtr.alchemy.example.provider.MemoryDatabaseConfiguration
+  type: com.rtr.alchemy.example.provider.MongoStoreProviderConfiguration
+  hosts: [ "localhost" ]
+  db: experiments

@@ -4,4 +4,4 @@ identities:
     mapper: com.rtr.alchemy.client.mappers.UserMapper
 
 provider:
-  type: com.rtr.alchemy.client.providers.MemoryDatabaseConfiguration
+  type: com.rtr.alchemy.client.providers.MemoryStoreConfiguration

@@ -34,7 +34,7 @@ public class AlchemyModule extends AbstractModule {
         try {
             configureImpl();
         } catch (final Exception e) {
-            addError("failed to configure mapper", e);
+            addError(String.format("failed to configure mapper: %s", e.getMessage()));
         }
     }
 

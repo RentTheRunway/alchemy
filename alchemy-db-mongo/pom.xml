@@ -17,6 +17,17 @@
       <artifactId>alchemy-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.rtr.alchemy</groupId>
+      <artifactId>alchemy-testing</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb.morphia</groupId>
+      <artifactId>morphia</artifactId>
+      <version>0.107</version>
+    </dependency>
   </dependencies>
 
 </project>
