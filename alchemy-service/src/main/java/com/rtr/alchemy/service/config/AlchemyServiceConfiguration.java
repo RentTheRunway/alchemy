@@ -31,4 +31,10 @@ public class AlchemyServiceConfiguration extends Configuration {
     public StoreProviderConfiguration getProvider() {
         return provider;
     }
+
+    @JsonProperty
+    private final CacheStrategyConfiguration cacheStrategy = null;
+    public CacheStrategyConfiguration getCacheStrategy() {
+        return cacheStrategy;
+    }
 }
