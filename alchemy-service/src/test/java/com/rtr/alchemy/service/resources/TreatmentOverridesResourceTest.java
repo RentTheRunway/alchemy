@@ -1,6 +1,5 @@
 package com.rtr.alchemy.service.resources;
 
-import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import org.junit.Test;
@@ -56,27 +55,7 @@ public class TreatmentOverridesResourceTest extends ResourceTest {
 
     @Test
     public void testAddOverride() {
-        final TreatmentOverrideRequest request = new TreatmentOverrideRequest() {
-            @Override
-            public String getTreatment() {
-                return "control";
-            }
-
-            @Override
-            public IdentityDto getIdentity() {
-                return new UserDto() {
-                    @Override
-                    public String getName() {
-                        return "qa";
-                    }
-                };
-            }
-
-            @Override
-            public String getName() {
-                return "qa_control";
-            }
-        };
+        final TreatmentOverrideRequest request = new TreatmentOverrideRequest("control", new UserDto("qa"), "qa_control");
 
         put(ENDPOINT_OVERRIDES, EXPERIMENT_BAD)
             .entity(request)

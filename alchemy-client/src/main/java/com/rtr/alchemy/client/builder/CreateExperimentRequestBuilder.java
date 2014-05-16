@@ -58,79 +58,26 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder allocate(final String treatmentName, final int size) {
-        allocations.add(new AllocateRequest() {
-            @Override
-            public String getTreatment() {
-                return treatmentName;
-            }
-
-            @Override
-            public Integer getSize() {
-                return size;
-            }
-        });
-
+    public CreateExperimentRequestBuilder allocate(String treatmentName, int size) {
+        allocations.add(new AllocateRequest(treatmentName, size));
         return this;
     }
 
-    public CreateExperimentRequestBuilder addOverride(final String name, final String treatmentName, final IdentityDto identity) {
-        overrides.add(new TreatmentOverrideRequest() {
-            @Override
-            public String getTreatment() {
-                return treatmentName;
-            }
-
-            @Override
-            public IdentityDto getIdentity() {
-                return identity;
-            }
-
-            @Override
-            public String getName() {
-                return name;
-            }
-        });
-
+    public CreateExperimentRequestBuilder addOverride(String name, String treatmentName, IdentityDto identity) {
+        overrides.add(new TreatmentOverrideRequest(treatmentName, identity, name));
         return this;
     }
 
     public void apply() {
-        builder.put(new CreateExperimentRequest() {
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public String getDescription() {
-                return description;
-            }
-
-            @Override
-            public String getIdentityType() {
-                return identityType;
-            }
-
-            @Override
-            public Boolean isActive() {
-                return isActive;
-            }
-
-            @Override
-            public List<TreatmentDto> getTreatments() {
-                return treatments;
-            }
-
-            @Override
-            public List<AllocateRequest> getAllocations() {
-                return allocations;
-            }
-
-            @Override
-            public List<TreatmentOverrideRequest> getOverrides() {
-                return overrides;
-            }
-        });
+        builder.put(
+            new CreateExperimentRequest(
+                name,
+                description,
+                identityType,
+                isActive,
+                treatments,
+                allocations,
+                overrides)
+        );
     }
 }

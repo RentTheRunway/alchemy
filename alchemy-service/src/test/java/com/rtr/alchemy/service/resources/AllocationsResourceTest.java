@@ -20,7 +20,7 @@ public class AllocationsResourceTest extends ResourceTest {
     private static Map<String, Integer> countAllocations(Iterable<AllocationDto> allocations) {
         final Map<String, Integer> result = Maps.newHashMap();
 
-        for (AllocationDto allocation : allocations) {
+        for (final AllocationDto allocation : allocations) {
             final Integer value = result.get(allocation.getTreatment());
             if (value == null) {
                 result.put(allocation.getTreatment(), allocation.getSize());
@@ -30,53 +30,6 @@ public class AllocationsResourceTest extends ResourceTest {
         }
 
         return result;
-    }
-
-    private AllocationRequest.Allocate allocate(final String treatment, final int size) {
-        return new AllocationRequest.Allocate() {
-            @Override
-            public String getTreatment() {
-                return treatment;
-            }
-
-            @Override
-            public Integer getSize() {
-                return size;
-            }
-        };
-    }
-
-    private AllocationRequest.Deallocate deallocate(final String treatment, final int size) {
-        return new AllocationRequest.Deallocate() {
-            @Override
-            public String getTreatment() {
-                return treatment;
-            }
-
-            @Override
-            public Integer getSize() {
-                return size;
-            }
-        };
-    }
-
-    private AllocationRequest.Reallocate reallocate(final String treatment, final String target, final int size) {
-        return new AllocationRequest.Reallocate() {
-            @Override
-            public String getTarget() {
-                return target;
-            }
-
-            @Override
-            public String getTreatment() {
-                return treatment;
-            }
-
-            @Override
-            public Integer getSize() {
-                return size;
-            }
-        };
     }
 
     @Test
@@ -96,9 +49,9 @@ public class AllocationsResourceTest extends ResourceTest {
     @Test
     public void testUpdateAllocations() {
         final AllocationRequests allocationRequest = AllocationRequests.of(
-            deallocate(EXP_1_TREATMENT_2, 10),
-            allocate(EXP_1_TREATMENT_1, 5),
-            reallocate(EXP_1_TREATMENT_3, EXP_1_TREATMENT_1, 15)
+            new AllocationRequest.Deallocate(EXP_1_TREATMENT_2, 10),
+            new AllocationRequest.Allocate(EXP_1_TREATMENT_1, 5),
+            new AllocationRequest.Reallocate(EXP_1_TREATMENT_3, 15, EXP_1_TREATMENT_1)
         );
 
         post(ALLOCATIONS_ENDPOINT, EXPERIMENT_BAD)

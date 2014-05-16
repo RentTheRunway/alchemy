@@ -58,37 +58,16 @@ public class UpdateExperimentRequestBuilder {
     }
 
     public void apply() {
-        builder.post(new UpdateExperimentRequest() {
-            @Override
-            public Optional<String> getDescription() {
-                return description;
-            }
-
-            @Override
-            public Optional<String> getIdentityType() {
-                return identityType;
-            }
-
-            @Override
-            public Optional<Boolean> getActive() {
-                return active;
-            }
-
-            @Override
-            public Optional<List<TreatmentDto>> getTreatments() {
-                return treatments;
-            }
-
-            @Override
-            public Optional<List<AllocateRequest>> getAllocations() {
-                return allocations;
-            }
-
-            @Override
-            public Optional<List<TreatmentOverrideRequest>> getOverrides() {
-                return overrides;
-            }
-        });
+        builder.post(
+            new UpdateExperimentRequest(
+                description,
+                identityType,
+                active,
+                treatments,
+                allocations,
+                overrides
+            )
+        );
     }
 
 }

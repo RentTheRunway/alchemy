@@ -3,6 +3,8 @@ package com.rtr.alchemy.db.mongo.models;
 import com.rtr.alchemy.models.TreatmentOverride;
 import org.mongodb.morphia.annotations.Embedded;
 
+import javax.annotation.Nullable;
+
 /**
  * An entity that mirrors TreatmentOverride
  * @see com.rtr.alchemy.models.TreatmentOverride

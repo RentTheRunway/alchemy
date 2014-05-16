@@ -6,6 +6,7 @@ import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.models.Experiment;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -43,8 +44,9 @@ public class MemoryExperimentsStore implements ExperimentsStore {
                 continue;
             }
 
-            final String value = String.valueOf(obj);
-            if (value.toLowerCase().contains(filter.toLowerCase())) {
+            final String value = String.valueOf(obj).toLowerCase(Locale.getDefault());
+            final String other = filter.toLowerCase(Locale.getDefault());
+            if (value.contains(other)) {
                 return true;
             }
         }

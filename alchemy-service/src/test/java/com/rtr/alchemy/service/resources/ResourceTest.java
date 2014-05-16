@@ -1,8 +1,8 @@
 package com.rtr.alchemy.service.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
@@ -78,7 +78,6 @@ public abstract class ResourceTest {
         MAPPER.register(DeviceDto.class, Device.class, new DeviceMapper());
         CoreMappings.configure(MAPPER);
         final ObjectMapper mapper = Jackson.newObjectMapper();
-        mapper.registerModule(new MrBeanModule());
         mapper.registerSubtypes(UserDto.class, DeviceDto.class);
         final Environment environment = mock(Environment.class);
         doReturn(mapper).when(environment).getObjectMapper();
@@ -202,19 +201,22 @@ public abstract class ResourceTest {
     }
 
     @JsonTypeName("user")
-    public abstract static class UserDto extends IdentityDto {
-        public abstract String getName();
+    protected static class UserDto extends IdentityDto {
+        private final String name;
+
+        public UserDto(@JsonProperty("name") String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     private static class UserMapper implements Mapper<UserDto, User> {
         @Override
         public UserDto toDto(final User source) {
-            return new UserDto() {
-                @Override
-                public String getName() {
-                    return source.getName();
-                }
-            };
+            return new UserDto(source.getName());
         }
 
         @Override
@@ -242,19 +244,22 @@ public abstract class ResourceTest {
     }
 
     @JsonTypeName("device")
-    public abstract static class DeviceDto extends IdentityDto {
-        public abstract String getId();
+    protected static class DeviceDto extends IdentityDto {
+        private final String id;
+
+        public DeviceDto(@JsonProperty("id") String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 
     private static class DeviceMapper implements Mapper<DeviceDto, Device> {
         @Override
         public DeviceDto toDto(final Device source) {
-            return new DeviceDto() {
-                @Override
-                public String getId() {
-                    return source.getId();
-                }
-            };
+            return new DeviceDto(source.getId());
         }
 
         @Override
@@ -302,12 +307,6 @@ public abstract class ResourceTest {
                                         WebResource.Builder resource) {
             this.action = action;
             this.resource = resource;
-        }
-
-        public ResourceAssertion noEntity() {
-            final ClientResponse response = action.apply(resource);
-            openResponses.add(response);
-            return new ResourceAssertion(response);
         }
 
         public ResourceAssertion entity(Object entity) {
