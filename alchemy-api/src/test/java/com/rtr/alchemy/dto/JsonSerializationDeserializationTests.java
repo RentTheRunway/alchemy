@@ -61,7 +61,7 @@ public class JsonSerializationDeserializationTests {
 
         try {
             return mapper.readTree(stream);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new AssertionError(
                 String.format(
                     "could not parse json from resource file %s: %s",
@@ -70,7 +70,7 @@ public class JsonSerializationDeserializationTests {
                 )
             );
         } finally {
-            try { stream.close(); } catch (IOException ignored) { }
+            try { stream.close(); } catch (final IOException ignored) { }
         }
     }
 
@@ -146,253 +146,75 @@ public class JsonSerializationDeserializationTests {
 
     @Test
     public void testAllocateRequest() {
-        assertJson(new AllocateRequest() {
-            @Override
-            public String getTreatment() {
-                return "control";
-            }
-
-            @Override
-            public Integer getSize() {
-                return 10;
-            }
-        });
+        assertJson(new AllocateRequest("control", 10));
     }
 
     @Test
     public void testAllocationRequest() {
-        assertJson(new AllocationRequest.Allocate() {
-            @Override
-            public String getTreatment() {
-                return "control";
-            }
-
-            @Override
-            public Integer getSize() {
-                return 10;
-            }
-        });
-
-        assertJson(new AllocationRequest.Deallocate() {
-            @Override
-            public String getTreatment() {
-                return "control";
-            }
-
-            @Override
-            public Integer getSize() {
-                return 10;
-            }
-        });
-
-        assertJson(new AllocationRequest.Reallocate() {
-            @Override
-            public String getTarget() {
-                return "other";
-            }
-
-            @Override
-            public String getTreatment() {
-                return "control";
-            }
-
-            @Override
-            public Integer getSize() {
-                return 10;
-            }
-        });
+        assertJson(new AllocationRequest.Allocate("control", 10));
+        assertJson(new AllocationRequest.Deallocate("control", 10));
+        assertJson(new AllocationRequest.Reallocate("control", 10, "other"));
     }
 
     @Test
     public void testCreateExperimentRequest() {
         assertJson(
-            new CreateExperimentRequest() {
-                @Override
-                public String getName() {
-                    return "my_experiment";
-                }
-
-                @Override
-                public String getDescription() {
-                    return "my new experiment";
-                }
-
-                @Override
-                public String getIdentityType() {
-                    return "user";
-                }
-
-                @Override
-                public Boolean isActive() {
-                    return true;
-                }
-
-                @Override
-                public List<TreatmentDto> getTreatments() {
-                    return Lists.newArrayList(
-                        new TreatmentDto("control", "the base case"),
-                        new TreatmentDto("x", "some other condition")
-                    );
-                }
-
-                @Override
-                public List<AllocateRequest> getAllocations() {
-                    return Lists.newArrayList(
-                        new AllocateRequest() {
-                            @Override
-                            public String getTreatment() {
-                                return "control";
-                            }
-
-                            @Override
-                            public Integer getSize() {
-                                return 5;
-                            }
-                        },
-                        new AllocateRequest() {
-                            @Override
-                            public String getTreatment() {
-                                return "x";
-                            }
-
-                            @Override
-                            public Integer getSize() {
-                                return 10;
-                            }
-                        }
-                    );
-                }
-
-                @Override
-                public List<TreatmentOverrideRequest> getOverrides() {
-                    return Lists.<TreatmentOverrideRequest>newArrayList(
-                        new TreatmentOverrideRequest() {
-                            @Override
-                            public String getTreatment() {
-                                return "control";
-                            }
-
-                            @Override
-                            public IdentityDto getIdentity() {
-                                return new MockIdentityDto("foo");
-                            }
-
-                            @Override
-                            public String getName() {
-                                return "qa_override";
-                            }
-                        }
-                    );
-                }
-            }
+            new CreateExperimentRequest(
+                "my_experiment",
+                "my new experiment",
+                "user",
+                true,
+                Lists.newArrayList(
+                    new TreatmentDto("control", "the base case"),
+                    new TreatmentDto("x", "some other condition")
+                ),
+                Lists.newArrayList(
+                        new AllocateRequest("control", 5),
+                        new AllocateRequest("x", 10)
+                ),
+                Lists.newArrayList(
+                    new TreatmentOverrideRequest("control", new MockIdentityDto("foo"), "qa_override")
+                )
+            )
         );
     }
 
     @Test
     public void testTreatmentOverrideRequest() {
         assertJson(
-            new TreatmentOverrideRequest() {
-                @Override
-                public String getTreatment() {
-                    return "control";
-                }
-
-                @Override
-                public IdentityDto getIdentity() {
-                    return new MockIdentityDto("foo");
-                }
-
-                @Override
-                public String getName() {
-                    return "qa_override";
-                }
-            }
+            new TreatmentOverrideRequest(
+                "control",
+                new MockIdentityDto("foo"),
+                "qa_override"
+            )
         );
     }
 
     @Test
     public void testUpdateExperimentRequest() {
         assertJson(
-            new UpdateExperimentRequest() {
-                @Override
-                public Optional<String> getDescription() {
-                    return Optional.of("my new experiment");
-                }
-
-                @Override
-                public Optional<String> getIdentityType() {
-                    return Optional.of("user");
-                }
-
-                @Override
-                public Optional<Boolean> getActive() {
-                    return Optional.of(true);
-                }
-
-                @Override
-                public Optional<List<TreatmentDto>> getTreatments() {
-                    return Optional.<List<TreatmentDto>>of(
+            new UpdateExperimentRequest(
+                    Optional.of("my new experiment"),
+                    Optional.of("user"),
+                    Optional.of(true),
+                    Optional.<List<TreatmentDto>>of(
                         Lists.newArrayList(
                             new TreatmentDto("control", "the base case"),
                             new TreatmentDto("x", "some other condition")
                         )
-                    );
-                }
-
-                @Override
-                public Optional<List<AllocateRequest>> getAllocations() {
-                    return Optional.<List<AllocateRequest>>of(
+                    ),
+                    Optional.<List<AllocateRequest>>of(
                         Lists.newArrayList(
-                            new AllocateRequest() {
-                                @Override
-                                public String getTreatment() {
-                                    return "control";
-                                }
-
-                                @Override
-                                public Integer getSize() {
-                                    return 5;
-                                }
-                            },
-                            new AllocateRequest() {
-                                @Override
-                                public String getTreatment() {
-                                    return "x";
-                                }
-
-                                @Override
-                                public Integer getSize() {
-                                    return 10;
-                                }
-                            }
+                            new AllocateRequest("control", 5),
+                            new AllocateRequest("x", 10)
                         )
-                    );
-                }
-
-                @Override
-                public Optional<List<TreatmentOverrideRequest>> getOverrides() {
-                    return Optional.<List<TreatmentOverrideRequest>>of(
-                        Lists.<TreatmentOverrideRequest>newArrayList(
-                            new TreatmentOverrideRequest() {
-                                @Override
-                                public String getTreatment() {
-                                    return "control";
-                                }
-
-                                @Override
-                                public IdentityDto getIdentity() {
-                                    return new MockIdentityDto("foo");
-                                }
-
-                                @Override
-                                public String getName() {
-                                    return "qa_override";
-                                }
-                            }
+                    ),
+                    Optional.<List<TreatmentOverrideRequest>>of(
+                        Lists.newArrayList(
+                            new TreatmentOverrideRequest("control", new MockIdentityDto("foo"), "qa_override")
                         )
-                    );
-                }
-            }
+                    )
+            )
         );
     }
 

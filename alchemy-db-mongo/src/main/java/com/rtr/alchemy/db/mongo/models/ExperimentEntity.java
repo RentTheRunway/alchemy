@@ -13,6 +13,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
+import javax.annotation.Nullable;
 
 import java.util.List;
 
@@ -23,6 +24,10 @@ import java.util.List;
 @Entity(value = "Experiments", noClassnameStored = true)
 @Converters(DateTimeConverter.class)
 public class ExperimentEntity {
+    private static final TreatmentMapper TREATMENT_MAPPER = new TreatmentMapper();
+    private static final AllocationMapper ALLOCATION_MAPPER = new AllocationMapper();
+    private static final TreatmentOverrideMapper TREATMENT_OVERRIDE_MAPPER = new TreatmentOverrideMapper();
+
     @Id
     public String name;
     public String description;
@@ -93,32 +98,32 @@ public class ExperimentEntity {
         activated = experiment.getActivated();
         deactivated = experiment.getDeactivated();
         identityType = experiment.getIdentityType();
-        treatments = Lists.transform(
-            experiment.getTreatments(),
-            new Function<Treatment, TreatmentEntity>() {
-                @Override
-                public TreatmentEntity apply(Treatment input) {
-                    return TreatmentEntity.from(input);
-                }
-            }
-        );
-        allocations = Lists.transform(
-            experiment.getAllocations(),
-            new Function<Allocation, AllocationEntity>() {
-                @Override
-                public AllocationEntity apply(Allocation input) {
-                    return AllocationEntity.from(input);
-                }
-            }
-        );
-        overrides = Lists.transform(
-            experiment.getOverrides(),
-            new Function<TreatmentOverride, TreatmentOverrideEntity>() {
-                @Override
-                public TreatmentOverrideEntity apply(TreatmentOverride input) {
-                    return TreatmentOverrideEntity.from(input);
-                }
-            }
-        );
+        treatments = Lists.transform(experiment.getTreatments(), TREATMENT_MAPPER);
+        allocations = Lists.transform(experiment.getAllocations(), ALLOCATION_MAPPER);
+        overrides = Lists.transform(experiment.getOverrides(),TREATMENT_OVERRIDE_MAPPER);
+    }
+
+    private static class TreatmentMapper implements Function<Treatment, TreatmentEntity> {
+        @Nullable
+        @Override
+        public TreatmentEntity apply(@Nullable Treatment input) {
+            return input == null ? null : TreatmentEntity.from(input);
+        }
+    }
+
+    private static class AllocationMapper implements Function<Allocation, AllocationEntity> {
+        @Nullable
+        @Override
+        public AllocationEntity apply(@Nullable Allocation input) {
+            return input == null ? null : AllocationEntity.from(input);
+        }
+    }
+
+    private static class TreatmentOverrideMapper implements Function<TreatmentOverride, TreatmentOverrideEntity> {
+        @Nullable
+        @Override
+        public TreatmentOverrideEntity apply(@Nullable TreatmentOverride input) {
+            return input == null ? null : TreatmentOverrideEntity.from(input);
+        }
     }
 }

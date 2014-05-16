@@ -40,6 +40,7 @@ import java.util.concurrent.Executors;
 public class AlchemyClient {
     private static final String CLIENT_NAME = "alchemy-client";
     private static final Map<String, ?> EMPTY_PARAMS = Maps.newHashMap();
+    private static final ClassTypeMappper CLASS_TYPE_MAPPPER = new ClassTypeMappper();
     private final MetricRegistry metricRegistry = new MetricRegistry();
     private final JerseyClientBuilder clientBuilder = new JerseyClientBuilder(metricRegistry);
     private final Client client;
@@ -228,30 +229,15 @@ public class AlchemyClient {
     }
 
     public void addOverride(String experimentName,
-                            final String overrideName,
-                            final String treatmentName,
-                            final IdentityDto identity) {
+                            String overrideName,
+                            String treatmentName,
+                            IdentityDto identity) {
         resource(
             ENDPOINT_OVERRIDES,
             ImmutableMap.of(
                 PARAM_EXPERIMENT_NAME, experimentName
             )
-        ).put(new TreatmentOverrideRequest() {
-            @Override
-            public String getTreatment() {
-                return treatmentName;
-            }
-
-            @Override
-            public IdentityDto getIdentity() {
-                return identity;
-            }
-
-            @Override
-            public String getName() {
-                return overrideName;
-            }
-        });
+        ).put(new TreatmentOverrideRequest(treatmentName, identity, overrideName));
     }
 
     public UpdateExperimentRequestBuilder updateExperiment(String experimentName) {
@@ -348,14 +334,7 @@ public class AlchemyClient {
     public Map<String, Class<? extends IdentityDto>> getIdentityTypes() {
         final Map<String, Class> map = resource(ENDPOINT_METADATA_IDENTITY_TYPES).get(map(String.class, Class.class));
 
-        return Maps.transformValues(map, new Function<Class, Class<? extends IdentityDto>>() {
-            @Nullable
-            @Override
-            @SuppressWarnings("unchecked")
-            public Class<? extends IdentityDto> apply(@Nullable Class input) {
-                return input;
-            }
-        });
+        return Maps.transformValues(map, CLASS_TYPE_MAPPPER);
     }
 
     public JsonSchema getIdentitySchema(String identityType) {
@@ -363,5 +342,14 @@ public class AlchemyClient {
             ENDPOINT_METADATA_IDENTITY_TYPE,
             ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
         ).get(JsonSchema.class);
+    }
+
+    private static class ClassTypeMappper implements Function<Class, Class<? extends IdentityDto>> {
+        @Nullable
+        @Override
+        @SuppressWarnings("unchecked")
+        public Class<? extends IdentityDto> apply(@Nullable Class input) {
+            return input;
+        }
     }
 }

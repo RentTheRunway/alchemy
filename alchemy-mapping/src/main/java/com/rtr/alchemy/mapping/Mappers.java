@@ -37,7 +37,7 @@ public class Mappers {
             targetType = targetType.getSuperclass();
         }
 
-        for (Class<?> ifaceType : interfaces) {
+        for (final Class<?> ifaceType : interfaces) {
             bySourceType.put(ifaceType, mapper);
         }
     }
@@ -51,8 +51,8 @@ public class Mappers {
             bySourceType = mappers.get(mappableType);
         }
 
-        Preconditions.checkState(
-            bySourceType != null,
+        Preconditions.checkNotNull(
+            bySourceType,
             "No mapper defined from type %s to type %s",
             sourceType,
             destType
@@ -92,7 +92,7 @@ public class Mappers {
 
     public <T> Iterable<T> toDto(Iterable<?> source, Class<T> desinationType) {
         final ImmutableList.Builder<T> builder = ImmutableList.builder();
-        for (Object item : source) {
+        for (final Object item : source) {
             builder.add(toDto(item, desinationType));
         }
 
@@ -101,7 +101,7 @@ public class Mappers {
 
     public <T> Iterable<T> fromDto(Iterable<?> source, Class<T> desinationType) {
         final ImmutableList.Builder<T> builder = ImmutableList.builder();
-        for (Object item : source) {
+        for (final Object item : source) {
             builder.add(fromDto(item, desinationType));
         }
 

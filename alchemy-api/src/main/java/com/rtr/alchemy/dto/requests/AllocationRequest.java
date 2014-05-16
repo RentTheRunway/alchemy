@@ -1,5 +1,6 @@
 package com.rtr.alchemy.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -18,22 +19,54 @@ import javax.validation.constraints.NotNull;
 })
 public abstract class AllocationRequest {
     @NotNull
-    public abstract String getTreatment();
-
+    private final String treatment;
     @NotNull
-    public abstract Integer getSize();
+    private final Integer size;
+
+    public AllocationRequest(String treatment,
+                             Integer size) {
+        this.treatment = treatment;
+        this.size = size;
+    }
+
+    public String getTreatment() {
+        return treatment;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
 
     @JsonTypeName("allocate")
-    public static abstract class Allocate extends AllocationRequest {
+    public static class Allocate extends AllocationRequest {
+        public Allocate(@JsonProperty("treatment") String treatment,
+                        @JsonProperty("size") Integer size) {
+            super(treatment, size);
+        }
     }
 
     @JsonTypeName("deallocate")
-    public static abstract class Deallocate extends AllocationRequest {
+    public static class Deallocate extends AllocationRequest {
+        public Deallocate(@JsonProperty("treatment") String treatment,
+                          @JsonProperty("size") Integer size) {
+            super(treatment, size);
+        }
     }
 
     @JsonTypeName("reallocate")
-    public static abstract class Reallocate extends AllocationRequest {
+    public static class Reallocate extends AllocationRequest {
         @NotNull
-        public abstract String getTarget();
+        private final String target;
+
+        public Reallocate(@JsonProperty("treatment") String treatment,
+                          @JsonProperty("size") Integer size,
+                          @JsonProperty("target") String target) {
+            super(treatment, size);
+            this.target = target;
+        }
+
+        public String getTarget() {
+            return target;
+        }
     }
 }

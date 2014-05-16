@@ -1,5 +1,6 @@
 package com.rtr.alchemy.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 
 import javax.validation.Valid;
@@ -9,19 +10,60 @@ import java.util.List;
 /**
  * Represents a request for creating an experiment
  */
-public abstract class CreateExperimentRequest {
+public class CreateExperimentRequest {
     @NotNull
-    public abstract String getName();
-    public abstract String getDescription();
-    public abstract String getIdentityType();
-    public abstract Boolean isActive();
-
+    private final String name;
+    private final String description;
+    private final String identityType;
+    private final Boolean active;
     @Valid
-    public abstract List<TreatmentDto> getTreatments();
-
+    private final List<TreatmentDto> treatments;
     @Valid
-    public abstract List<AllocateRequest> getAllocations();
-
+    private final List<AllocateRequest> allocations;
     @Valid
-    public abstract List<TreatmentOverrideRequest> getOverrides();
+    private final List<TreatmentOverrideRequest> overrides;
+
+    public CreateExperimentRequest(@JsonProperty("name") String name,
+                                   @JsonProperty("description") String description,
+                                   @JsonProperty("identityType") String identityType,
+                                   @JsonProperty("active") Boolean active,
+                                   @JsonProperty("treatments") List<TreatmentDto> treatments,
+                                   @JsonProperty("allocations") List<AllocateRequest> allocations,
+                                   @JsonProperty("overrides") List<TreatmentOverrideRequest> overrides) {
+        this.name = name;
+        this.description = description;
+        this.identityType = identityType;
+        this.active = active;
+        this.treatments = treatments;
+        this.allocations = allocations;
+        this.overrides = overrides;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+
+    }
+    public String getIdentityType() {
+        return identityType;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public List<TreatmentDto> getTreatments() {
+        return treatments;
+    }
+
+    public List<AllocateRequest> getAllocations() {
+        return allocations;
+    }
+
+    public List<TreatmentOverrideRequest> getOverrides() {
+        return overrides;
+    }
 }

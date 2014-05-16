@@ -36,10 +36,6 @@ public abstract class ExperimentsStoreProviderTest {
             this.name = name;
         }
 
-        private String getName() {
-            return name;
-        }
-
         @Override
         public String getType() {
             return name;

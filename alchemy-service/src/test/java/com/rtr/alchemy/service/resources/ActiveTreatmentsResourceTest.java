@@ -1,12 +1,11 @@
 package com.rtr.alchemy.service.resources;
 
-
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.rtr.alchemy.dto.identities.Identities;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import org.junit.Before;
 import org.junit.Test;
+
 import javax.ws.rs.core.Response.Status;
 
 import java.util.Map;
@@ -25,22 +24,10 @@ public class ActiveTreatmentsResourceTest extends ResourceTest {
     public void setUp() {
         super.setUp();
 
-        userDto = new UserDto() {
-            @Override
-            public String getName() {
-                return "user";
-            }
-        };
-
+        userDto = new UserDto("user");
         user = MAPPER.fromDto(userDto, User.class);
 
-        deviceDto = new DeviceDto() {
-            @Override
-            public String getId() {
-                return "0a1b2c3d4fdeadbeef";
-            }
-        };
-
+        deviceDto = new DeviceDto("0a1b2c3d4fdeadbeef");
         device = MAPPER.fromDto(deviceDto, Device.class);
     }
 
