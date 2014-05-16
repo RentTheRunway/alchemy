@@ -3,7 +3,6 @@ package com.rtr.alchemy.client;
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -118,7 +117,6 @@ public class AlchemyClient {
     }
 
     private static void configureObjectMapper(AlchemyClientConfiguration configuration, ObjectMapper mapper) {
-        mapper.registerModule(new MrBeanModule());
         mapper.registerSubtypes(
             configuration
                 .getIdentityTypes()

@@ -3,7 +3,6 @@ package com.rtr.alchemy.service.resources;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
@@ -79,7 +78,6 @@ public abstract class ResourceTest {
         MAPPER.register(DeviceDto.class, Device.class, new DeviceMapper());
         CoreMappings.configure(MAPPER);
         final ObjectMapper mapper = Jackson.newObjectMapper();
-        mapper.registerModule(new MrBeanModule());
         mapper.registerSubtypes(UserDto.class, DeviceDto.class);
         final Environment environment = mock(Environment.class);
         doReturn(mapper).when(environment).getObjectMapper();

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.rtr.alchemy.dto.identities.IdentityDto;
@@ -34,7 +33,6 @@ public class JsonSerializationDeserializationTests {
     @Before
     public void setUp() {
         mapper = new ObjectMapper();
-        mapper.registerModule(new MrBeanModule());
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.rtr.alchemy.service;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 import com.google.common.base.Preconditions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -42,7 +41,6 @@ public class AlchemyService extends Application<AlchemyServiceConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<AlchemyServiceConfiguration> bootstrap) {
-        bootstrap.getObjectMapper().registerModule(new MrBeanModule());
     }
 
     @Override
