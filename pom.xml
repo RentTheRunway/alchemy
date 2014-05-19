@@ -235,4 +235,24 @@
     </plugins>
   </build>
 
+  <scm>
+    <connection>scm:git:git@github.com:RentTheRunway2/alchemy.git</connection>
+    <url>scm:git:git@github.com:RentTheRunway2/alchemy.git</url>
+    <developerConnection>scm:git:git@github.com:RentTheRunway2/alchemy.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <distributionManagement>
+    <!-- Publish the versioned releases here -->
+    <repository>
+      <id>rtr-nexus</id>
+      <name>rtr-nexus</name>
+      <url>http://nexus01.renttherunway.it/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>rtr-nexus</id>
+      <name>rtr-nexus</name>
+      <url>http://nexus01.renttherunway.it/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
