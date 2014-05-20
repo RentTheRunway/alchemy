@@ -5,7 +5,7 @@
   <groupId>com.rtr.alchemy</groupId>
   <artifactId>alchemy-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.1</version>
+  <version>0.1.2-SNAPSHOT</version>
   <modules>
     <module>alchemy-core</module>
     <module>alchemy-service</module>
