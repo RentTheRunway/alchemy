@@ -6,6 +6,7 @@ import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents an experiment
@@ -13,7 +14,7 @@ import java.util.List;
 public class ExperimentDto {
     private final String name;
     private final String description;
-    private final String identityType;
+    private final Set<String> segments;
     private final boolean active;
     private final DateTime created;
     private final DateTime modified;
@@ -26,7 +27,7 @@ public class ExperimentDto {
     @JsonCreator
     public ExperimentDto(@JsonProperty("name") String name,
                          @JsonProperty("description") String description,
-                         @JsonProperty("identityType") String identityType,
+                         @JsonProperty("segments") Set<String> segments,
                          @JsonProperty("active") boolean active,
                          @JsonProperty("created") DateTime created,
                          @JsonProperty("modified") DateTime modified,
@@ -37,7 +38,7 @@ public class ExperimentDto {
                          @JsonProperty("overrides") List<TreatmentOverrideDto> overrides) {
         this.name = name;
         this.description = description;
-        this.identityType = identityType;
+        this.segments = segments;
         this.active = active;
         this.created = created;
         this.modified = modified;
@@ -56,8 +57,8 @@ public class ExperimentDto {
         return description;
     }
 
-    public String getIdentityType() {
-        return identityType;
+    public Set<String> getSegments() {
+        return segments;
     }
 
     public boolean isActive() {

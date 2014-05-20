@@ -1,6 +1,7 @@
 package com.rtr.alchemy.client.builder;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import com.rtr.alchemy.dto.requests.AllocateRequest;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
@@ -8,11 +9,12 @@ import com.rtr.alchemy.dto.requests.UpdateExperimentRequest;
 import com.sun.jersey.api.client.WebResource;
 
 import java.util.List;
+import java.util.Set;
 
 public class UpdateExperimentRequestBuilder {
     private final WebResource.Builder builder;
     private Optional<String> description;
-    private Optional<String> identityType;
+    private Optional<Set<String>> segments;
     private Optional<Boolean> active;
     private Optional<List<TreatmentDto>> treatments;
     private Optional<List<AllocateRequest>> allocations;
@@ -27,8 +29,13 @@ public class UpdateExperimentRequestBuilder {
         return this;
     }
 
-    public UpdateExperimentRequestBuilder setIdentityType(String identityType) {
-        this.identityType = Optional.fromNullable(identityType);
+    public UpdateExperimentRequestBuilder setSegments(Set<String> segments) {
+        this.segments = Optional.fromNullable(segments);
+        return this;
+    }
+
+    public UpdateExperimentRequestBuilder setSegments(String ... segments) {
+        this.segments = Optional.fromNullable((Set<String>) Sets.newHashSet(segments));
         return this;
     }
 
@@ -61,7 +68,7 @@ public class UpdateExperimentRequestBuilder {
         builder.post(
             new UpdateExperimentRequest(
                 description,
-                identityType,
+                segments,
                 active,
                 treatments,
                 allocations,

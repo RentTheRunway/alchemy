@@ -68,22 +68,22 @@ public class ExperimentsResource extends BaseResource {
             experiments
                 .create(request.getName())
                 .setDescription(request.getDescription())
-                .setIdentityType(request.getIdentityType());
+                .setSegments(request.getSegments());
 
         if (request.getTreatments() != null) {
-            for (TreatmentDto treatment : request.getTreatments()) {
+            for (final TreatmentDto treatment : request.getTreatments()) {
                 experiment.addTreatment(treatment.getName(), treatment.getDescription());
             }
         }
 
         if (request.getAllocations() != null) {
-            for (AllocateRequest allocation : request.getAllocations()) {
+            for (final AllocateRequest allocation : request.getAllocations()) {
                 experiment.allocate(allocation.getTreatment(), allocation.getSize());
             }
         }
 
         if (request.getOverrides() != null) {
-            for (TreatmentOverrideRequest override : request.getOverrides()) {
+            for (final TreatmentOverrideRequest override : request.getOverrides()) {
                 final Identity identity = mapper.fromDto(override.getIdentity(), Identity.class);
                 experiment.addOverride(override.getName(), override.getTreatment(), identity);
             }
@@ -112,19 +112,19 @@ public class ExperimentsResource extends BaseResource {
             experiment.setDescription(request.getDescription().orNull());
         }
 
-        if (request.getIdentityType() != null) {
-            experiment.setIdentityType(request.getIdentityType().orNull());
+        if (request.getSegments() != null && request.getSegments().isPresent()) {
+            experiment.setSegments(request.getSegments().orNull());
         }
 
         // only remove treatments not present in request, otherwise we wipe out existing allocations
         if (request.getTreatments() != null) {
             final Set<String> missingTreatments = Sets.newHashSet();
-            for (Treatment treatment : experiment.getTreatments()) {
+            for (final Treatment treatment : experiment.getTreatments()) {
                 missingTreatments.add(treatment.getName());
             }
 
             if (request.getTreatments().isPresent()) {
-                for (TreatmentDto treatment : request.getTreatments().get()) {
+                for (final TreatmentDto treatment : request.getTreatments().get()) {
                     missingTreatments.remove(treatment.getName());
                     final Treatment existingTreatment = experiment.getTreatment(treatment.getName());
 
@@ -136,7 +136,7 @@ public class ExperimentsResource extends BaseResource {
                 }
             }
 
-            for (String missingTreatment : missingTreatments) {
+            for (final String missingTreatment : missingTreatments) {
                 experiment.removeTreatment(missingTreatment);
             }
         }
@@ -145,7 +145,7 @@ public class ExperimentsResource extends BaseResource {
             experiment.deallocateAll();
 
             if (request.getAllocations().isPresent()) {
-                for (AllocateRequest allocation : request.getAllocations().get()) {
+                for (final AllocateRequest allocation : request.getAllocations().get()) {
                     experiment.allocate(allocation.getTreatment(), allocation.getSize());
                 }
             }
@@ -155,7 +155,7 @@ public class ExperimentsResource extends BaseResource {
             experiment.clearOverrides();
 
             if (request.getOverrides().isPresent()) {
-                for (TreatmentOverrideRequest override : request.getOverrides().get()) {
+                for (final TreatmentOverrideRequest override : request.getOverrides().get()) {
                     experiment.addOverride(
                         override.getName(),
                         override.getTreatment(),

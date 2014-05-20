@@ -16,6 +16,7 @@ import org.mongodb.morphia.annotations.Indexed;
 import javax.annotation.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * An entity that mirrors Experiment
@@ -31,7 +32,7 @@ public class ExperimentEntity {
     @Id
     public String name;
     public String description;
-    public String identityType;
+    public Set<String> segments;
 
     @Indexed
     public boolean active;
@@ -58,7 +59,7 @@ public class ExperimentEntity {
     public Experiment toExperiment(Experiment.Builder builder) {
         builder
             .description(description)
-            .identityType(identityType)
+            .segments(segments)
             .created(created)
             .modified(modified)
             .activated(activated)
@@ -97,7 +98,7 @@ public class ExperimentEntity {
         modified = experiment.getModified();
         activated = experiment.getActivated();
         deactivated = experiment.getDeactivated();
-        identityType = experiment.getIdentityType();
+        segments = experiment.getSegments();
         treatments = Lists.transform(experiment.getTreatments(), TREATMENT_MAPPER);
         allocations = Lists.transform(experiment.getAllocations(), ALLOCATION_MAPPER);
         overrides = Lists.transform(experiment.getOverrides(),TREATMENT_OVERRIDE_MAPPER);

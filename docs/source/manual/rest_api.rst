@@ -25,7 +25,7 @@ Experiments
         {
             "name": "pie_vs_cake",
             "description": "My experiment",
-            "identityType": "user",
+            "segments": [ "identified_user" ],
             "active": true,
             "created": 1398347307568,
             "modified": 1398347517914,
@@ -81,7 +81,7 @@ Experiments
     {
         "name": "pie_vs_cake",
         "description": "My experiment",
-        "identityType": "user",
+        "segments": ["identified_user"],
         "active": true,
         "created": 1398347307568,
         "modified": 1398347517914,
@@ -136,7 +136,7 @@ Experiments
     {
         "name": "pie_vs_cake",
         "description": "My experiment",
-        "identityType": "user",
+        "segments": [ "identified_user" ],
         "active": true,
         "treatments": [
             {
@@ -193,7 +193,7 @@ Experiments
     {
         "description": "new description",
         "active": false,
-        "identityType": "user",
+        "segments": [ "identified_user" ],
         "treatments": [
             {
                 "name": "control",
@@ -556,7 +556,7 @@ Metadata
 |
 |
 
-``GET /metadata/identityTypes/{identityType}``
+``GET /metadata/identityTypes/{identityType}/schema``
 
 **Response:** *404* Not Found if type was not found, otherwise *200 OK*
 
@@ -572,4 +572,23 @@ Metadata
             }
         }
     }
+
+
+|
+|
+|
+
+``GET /metadata/identityTypes/{identityType}/segments``
+
+**Response:** *404* Not Found if type was not found, otherwise *200 OK*
+
+**Example Response:**
+
+.. code-block:: json
+
+    [
+        "identified",
+        "anonymous"
+    ]
+
 

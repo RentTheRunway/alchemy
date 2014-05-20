@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.util.Types;
 import com.rtr.alchemy.db.memory.MemoryStoreProvider;
 import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.IdentityType;
+import com.rtr.alchemy.identities.Segments;
 import com.rtr.alchemy.mapping.Mapper;
 import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.models.Experiment;
@@ -32,6 +33,7 @@ import javax.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,8 +65,8 @@ public abstract class ResourceTest {
     protected static final String EXP_2_TREATMENT_3 = "static";
     protected static final String EXP_3_TREATMENT_1 = "control";
     protected static final String EXP_4_TREATMENT_1 = "control";
-    protected static final String IDENTITY_TYPE_USER = "user";
-    protected static final String IDENTITY_TYPE_DEVICE = "device";
+    protected static final String SEGMENT_IDENTIFIED = "identified";
+    protected static final String SEGMENT_DEVICE = "device";
     protected final List<ClientResponse> openResponses = Lists.newArrayList();
 
     @ClassRule
@@ -106,7 +108,7 @@ public abstract class ResourceTest {
             .create(EXPERIMENT_1)
             .setDescription("do people want pie or cake?")
             .activate()
-            .setIdentityType(IDENTITY_TYPE_USER)
+            .setSegments(SEGMENT_IDENTIFIED)
             .addTreatment(EXP_1_TREATMENT_1)
             .addTreatment(EXP_1_TREATMENT_2)
             .addTreatment(EXP_1_TREATMENT_3)
@@ -119,7 +121,7 @@ public abstract class ResourceTest {
         EXPERIMENTS
             .create(EXPERIMENT_2)
             .activate()
-            .setIdentityType(IDENTITY_TYPE_DEVICE)
+            .setSegments(SEGMENT_DEVICE)
             .addTreatment(EXP_2_TREATMENT_1)
             .addTreatment(EXP_2_TREATMENT_2)
             .addTreatment(EXP_2_TREATMENT_3)
@@ -152,6 +154,10 @@ public abstract class ResourceTest {
         return new GenericType<>(Types.newParameterizedType(List.class, elementType));
     }
 
+    protected static <T> GenericType<Set<T>> set(Class<T> elementType) {
+        return new GenericType<>(Types.newParameterizedType(Set.class, elementType));
+    }
+
     protected static <K, V> GenericType<Map<K, V>> map(Class<K> keyType, Class<V> valueType) {
         return new GenericType<>(Types.newParameterizedType(Map.class, keyType, valueType));
     }
@@ -182,7 +188,7 @@ public abstract class ResourceTest {
         return EXPERIMENTS.get(name);
     }
 
-    @IdentityType("user")
+    @Segments({"anonymous", "identified"})
     protected static class User extends Identity {
         private final String name;
 
@@ -195,8 +201,13 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long getHash(int seed) {
+        public long computeHash(int seed) {
             return identity(seed).putString(name).hash();
+        }
+
+        @Override
+        public Set<String> computeSegments() {
+            return Sets.newHashSet(name == null ? "anonymous" : "identified");
         }
     }
 
@@ -225,7 +236,7 @@ public abstract class ResourceTest {
         }
     }
 
-    @IdentityType("device")
+    @Segments({"device"})
     protected static class Device extends Identity {
         private final String id;
 
@@ -238,8 +249,13 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long getHash(int seed) {
+        public long computeHash(int seed) {
             return identity(seed).putString(id).hash();
+        }
+
+        @Override
+        public Set<String> computeSegments() {
+            return Sets.newHashSet("device");
         }
     }
 

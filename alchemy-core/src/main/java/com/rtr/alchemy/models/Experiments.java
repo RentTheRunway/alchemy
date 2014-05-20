@@ -3,6 +3,7 @@ package com.rtr.alchemy.models;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.caching.BasicCacheStrategy;
 import com.rtr.alchemy.caching.CacheStrategy;
 import com.rtr.alchemy.caching.CachingContext;
@@ -16,6 +17,7 @@ import com.rtr.alchemy.caching.CacheStrategyIterable;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -43,6 +45,19 @@ public class Experiments implements Closeable {
         cache.invalidateAll(new Experiment.BuilderFactory(this));
     }
 
+    private boolean segmentsMatch(Set<String> expected, Identity identity) {
+        final Set<String> actual =
+            Sets.intersection(
+                identity.computeSegments(),
+                Identity.getSupportedSegments(identity.getClass())
+            );
+
+        return
+            expected == null ||
+            expected.isEmpty() ||
+            (actual.containsAll(expected));
+    }
+
     public Treatment getActiveTreatment(String experimentName, Identity identity) {
         strategy.onCacheRead(experimentName, context);
 
@@ -51,7 +66,7 @@ public class Experiments implements Closeable {
             return null;
         }
 
-        if (experiment.getIdentityType() != null && !experiment.getIdentityType().equals(identity.getType())) {
+        if (!segmentsMatch(experiment.getSegments(), identity)) {
             return null;
         }
 
@@ -64,40 +79,22 @@ public class Experiments implements Closeable {
         return Iterables.unmodifiableIterable(cache.getActiveExperiments().values());
     }
 
-    public Map<Experiment, Treatment> getActiveTreatments(Identity ... identities) {
-        final Map<String, Identity> identitiesByType = Maps.newHashMap();
-        for (final Identity identity : identities) {
-            identitiesByType.put(identity.getType(), identity);
-        }
-
+    public Map<Experiment, Treatment> getActiveTreatments(Identity identity) {
         strategy.onCacheRead(context);
         final Map<Experiment, Treatment> result = Maps.newHashMap();
         for (final Experiment experiment : cache.getActiveExperiments().values()) {
-            if (experiment.getIdentityType() == null) {
-                for (final Identity identity : identities) {
-                    final TreatmentOverride override = experiment.getOverride(identity);
-                    final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
-
-                    if (treatment != null) {
-                        result.put(experiment, treatment);
-                        break;
-                    }
-                }
-            } else {
-                final Identity identity = identitiesByType.get(experiment.getIdentityType());
-                if (identity == null) {
-                    continue;
-                }
-
-                final TreatmentOverride override = experiment.getOverride(identity);
-                final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
-
-                if (treatment == null) {
-                    continue;
-                }
-
-                result.put(experiment, treatment);
+            if (!segmentsMatch(experiment.getSegments(), identity)) {
+                continue;
             }
+
+            final TreatmentOverride override = experiment.getOverride(identity);
+            final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
+
+            if (treatment == null) {
+                continue;
+            }
+
+            result.put(experiment, treatment);
         }
 
         return result;

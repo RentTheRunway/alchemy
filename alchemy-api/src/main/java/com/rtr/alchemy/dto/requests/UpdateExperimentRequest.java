@@ -7,6 +7,7 @@ import com.rtr.alchemy.dto.models.TreatmentDto;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a request for updating an experiment
@@ -14,7 +15,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateExperimentRequest {
     private final Optional<String> description;
-    private final Optional<String> identityType;
+    private final Optional<Set<String>> segments;
     private final Optional<Boolean> active;
     @Valid
     private final Optional<List<TreatmentDto>> treatments;
@@ -24,13 +25,13 @@ public class UpdateExperimentRequest {
     private final Optional<List<TreatmentOverrideRequest>> overrides;
 
     public UpdateExperimentRequest(@JsonProperty("description") Optional<String> description,
-                                   @JsonProperty("identityType") Optional<String> identityType,
+                                   @JsonProperty("segments") Optional<Set<String>> segments,
                                    @JsonProperty("active") Optional<Boolean> active,
                                    @JsonProperty("treatments") Optional<List<TreatmentDto>> treatments,
                                    @JsonProperty("allocations") Optional<List<AllocateRequest>> allocations,
                                    @JsonProperty("overrides") Optional<List<TreatmentOverrideRequest>> overrides) {
         this.description = description;
-        this.identityType = identityType;
+        this.segments = segments;
         this.active = active;
         this.treatments = treatments;
         this.allocations = allocations;
@@ -41,8 +42,8 @@ public class UpdateExperimentRequest {
         return description;
     }
 
-    public Optional<String> getIdentityType() {
-        return identityType;
+    public Optional<Set<String>> getSegments() {
+        return segments;
     }
 
     public Optional<Boolean> getActive() {

@@ -3,11 +3,13 @@ package com.rtr.alchemy.client;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.google.common.collect.Sets;
 import com.rtr.alchemy.client.dto.UserDto;
+import com.rtr.alchemy.client.identities.User;
 import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.dto.models.AllocationDto;
 import com.rtr.alchemy.dto.models.ExperimentDto;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import com.rtr.alchemy.dto.models.TreatmentOverrideDto;
+import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.service.AlchemyService;
 import com.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -337,5 +339,12 @@ public class AlchemyClientTest {
                 .get("name")
                 .isStringSchema()
         );
+    }
+
+    @Test
+    public void testGetIdentitySegments() {
+        final Set<String> segments = client.getIdentitySegments("user");
+        assertNotNull(segments);
+        assertEquals(Identity.getSupportedSegments(User.class), segments);
     }
 }

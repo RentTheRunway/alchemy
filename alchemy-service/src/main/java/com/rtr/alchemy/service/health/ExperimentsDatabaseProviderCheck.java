@@ -19,7 +19,7 @@ public class ExperimentsDatabaseProviderCheck extends HealthCheck {
     @Override
     protected Result check() throws Exception {
         experiments.find(Filter.criteria().limit(1).build());
-        experiments.getActiveTreatments();
+        experiments.getActiveExperiments();
         return Result.healthy();
     }
 }

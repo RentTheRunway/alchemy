@@ -5,16 +5,19 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityBuilder;
 import org.apache.commons.math3.util.FastMath;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Represents a collection of user experiences being tested
@@ -29,7 +32,7 @@ public class Experiment {
     private final Map<Long, TreatmentOverride> overridesByHash;
     private final int seed;
     private String description;
-    private String identityType;
+    private Set<String> segments;
     private boolean active;
     private DateTime created;
     private DateTime modified;
@@ -40,7 +43,7 @@ public class Experiment {
     private Experiment(Experiments owner,
                        String name,
                        String description,
-                       String identityType,
+                       Set<String> segments,
                        boolean active,
                        DateTime created,
                        DateTime modified,
@@ -52,7 +55,7 @@ public class Experiment {
         this.owner = owner;
         this.name = name;
         this.description = description;
-        this.identityType = identityType;
+        this.segments = segments != null ? Sets.newHashSet(segments) : Sets.<String>newHashSet();
         this.active = active;
         this.created = created;
         this.modified = modified;
@@ -80,6 +83,7 @@ public class Experiment {
                          String name) {
         this.owner = owner;
         this.name = name;
+        this.segments = Sets.newHashSet();
         this.allocations = new Allocations();
         this.treatments = Maps.newConcurrentMap();
         this.overrides = Maps.newConcurrentMap();
@@ -119,7 +123,7 @@ public class Experiment {
 
         this.seed = toCopy.seed;
         this.description = toCopy.description;
-        this.identityType = toCopy.identityType;
+        this.segments = Sets.newHashSet(toCopy.segments);
         this.active = toCopy.active;
         this.created = toCopy.created;
         this.modified = toCopy.modified;
@@ -140,12 +144,25 @@ public class Experiment {
         return this;
     }
 
-    public String getIdentityType() {
-        return identityType;
+    public Set<String> getSegments() {
+        return Collections.unmodifiableSet(segments);
     }
 
-    public Experiment setIdentityType(String identityType) {
-        this.identityType = identityType;
+    public Experiment setSegments(Set<String> segments) {
+        if (segments == null) {
+            this.segments = Sets.newHashSet();
+        } else {
+            this.segments = Sets.newHashSet(segments);
+        }
+        return this;
+    }
+
+    public Experiment setSegments(String ... segments) {
+        if (segments == null) {
+            this.segments = Sets.newHashSet();
+        } else {
+            this.segments = Sets.newHashSet(segments);
+        }
         return this;
     }
 
@@ -202,7 +219,7 @@ public class Experiment {
      * @param identity The identity
      */
     public TreatmentOverride getOverride(Identity identity) {
-        return overridesByHash.get(identity.getHash(seed));
+        return overridesByHash.get(identity.computeHash(seed));
     }
 
     /**
@@ -287,7 +304,7 @@ public class Experiment {
      * @param identity The identity
      */
     public Experiment addOverride(String overrideName, String treatmentName, Identity identity) {
-        final Long hash = identity.getHash(seed);
+        final Long hash = identity.computeHash(seed);
         final TreatmentOverride override = new TreatmentOverride(overrideName, hash, treatment(treatmentName));
         final TreatmentOverride replaced = overridesByHash.put(hash, override);
         if (replaced != null) {
@@ -303,7 +320,7 @@ public class Experiment {
      * @param identity The identities to remove the override for
      */
     public Experiment removeOverride(Identity identity) {
-        final TreatmentOverride removed = overridesByHash.remove(identity.getHash(seed));
+        final TreatmentOverride removed = overridesByHash.remove(identity.computeHash(seed));
         if (removed != null) {
             overrides.remove(removed.getName());
         }
@@ -438,7 +455,7 @@ public class Experiment {
     }
 
     private int identityToBin(Identity identity) {
-        return (int) (FastMath.abs(identity.getHash(seed)) % Allocations.NUM_BINS);
+        return (int) (FastMath.abs(identity.computeHash(seed)) % Allocations.NUM_BINS);
     }
 
     /**
@@ -473,7 +490,7 @@ public class Experiment {
                 .toStringHelper(this)
                 .add("name", name)
                 .add("description", description)
-                .add("identityType", identityType)
+                .add("segments", segments)
                 .add("active", active)
                 .add("created", created)
                 .add("modified", modified)
@@ -502,7 +519,7 @@ public class Experiment {
         private final Experiments owner;
         private final String name;
         private String description;
-        private String identityType;
+        private Set<String> segments;
         private boolean active;
         private DateTime created = DateTime.now(DateTimeZone.UTC);
         private DateTime modified  = DateTime.now(DateTimeZone.UTC);
@@ -515,6 +532,7 @@ public class Experiment {
         Builder(Experiments owner, String name) {
             this.owner = owner;
             this.name = name;
+            segments = Sets.newHashSet();
             treatments = Maps.newHashMap();
             overrides = Lists.newArrayList();
             allocations = Lists.newArrayList();
@@ -525,8 +543,8 @@ public class Experiment {
             return this;
         }
 
-        public Builder identityType(String identityType) {
-            this.identityType = identityType;
+        public Builder segments(Set<String> segments) {
+            this.segments = segments;
             return this;
         }
 
@@ -581,7 +599,7 @@ public class Experiment {
                 owner,
                 name,
                 description,
-                identityType,
+                segments,
                 active,
                 created,
                 modified,

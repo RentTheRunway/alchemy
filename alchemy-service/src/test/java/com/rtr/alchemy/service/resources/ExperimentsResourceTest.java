@@ -2,6 +2,7 @@ package com.rtr.alchemy.service.resources;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.dto.models.ExperimentDto;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import com.rtr.alchemy.dto.requests.AllocateRequest;
@@ -12,6 +13,7 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -78,7 +80,7 @@ public class ExperimentsResourceTest extends ResourceTest {
         final UpdateExperimentRequest request =
             new UpdateExperimentRequest(
                 Optional.of("new description"),
-                Optional.of("device"),
+                Optional.of((Set<String>) Sets.newHashSet("device")),
                 Optional.of(false),
                 Optional.<List<TreatmentDto>>absent(),
                 Optional.<List<AllocateRequest>>absent(),
@@ -88,7 +90,7 @@ public class ExperimentsResourceTest extends ResourceTest {
         final ExperimentDto expected = MAPPER.toDto(
             experiment(EXPERIMENT_1)
                 .setDescription(request.getDescription().get())
-                .setIdentityType(request.getIdentityType().get())
+                .setSegments(request.getSegments().get())
                 .deactivate(),
             ExperimentDto.class
         );

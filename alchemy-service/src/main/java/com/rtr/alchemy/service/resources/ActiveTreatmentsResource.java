@@ -1,7 +1,6 @@
 package com.rtr.alchemy.service.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.rtr.alchemy.dto.identities.IdentityDto;
@@ -19,7 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,14 +53,13 @@ public class ActiveTreatmentsResource extends BaseResource {
     @POST
     @Timed
     @Path("/treatments")
-    public Map<String, TreatmentDto> getActiveTreatments(@Valid List<IdentityDto> identities) {
+    public Map<String, TreatmentDto> getActiveTreatments(@Valid IdentityDto identityDto) {
         final Map<String, TreatmentDto> treatments = Maps.newHashMap();
-        final List<Identity> identitiesList = Lists.newArrayList(mapper.fromDto(identities, Identity.class));
         final Map<Experiment, Treatment> activeTreatments = experiments.getActiveTreatments(
-            identitiesList.toArray(new Identity[identitiesList.size()])
+            mapper.fromDto(identityDto, Identity.class)
         );
 
-        for (Map.Entry<Experiment, Treatment> entry : activeTreatments.entrySet()) {
+        for (final Map.Entry<Experiment, Treatment> entry : activeTreatments.entrySet()) {
             treatments.put(entry.getKey().getName(), mapper.toDto(entry.getValue(), TreatmentDto.class));
         }
 
