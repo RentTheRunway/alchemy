@@ -75,7 +75,7 @@ public class CoreMappings {
                     return new ExperimentDto(
                         experiment.getName(),
                         experiment.getDescription(),
-                        experiment.getIdentityType(),
+                        experiment.getSegments(),
                         experiment.isActive(),
                         experiment.getCreated(),
                         experiment.getModified(),

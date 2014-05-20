@@ -30,6 +30,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,7 +61,8 @@ public class AlchemyClient {
     private static final String ENDPOINT_ACTIVE_TREATMENT = "/active/experiments/{experimentName}/treatment";
     private static final String ENDPOINT_ACTIVE_TREATMENTS = "/active/treatments";
     private static final String ENDPOINT_METADATA_IDENTITY_TYPES = "/metadata/identityTypes";
-    private static final String ENDPOINT_METADATA_IDENTITY_TYPE = "/metadata/identityTypes/{identityType}";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA = "/metadata/identityTypes/{identityType}/schema";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SEGMENTS = "/metadata/identityTypes/{identityType}/segments";
 
     /**
      * Constructs a client with the given dropwizard environment
@@ -150,6 +152,10 @@ public class AlchemyClient {
 
     protected static <T> GenericType<List<T>> list(Class<T> elementType) {
         return new GenericType<List<T>>(ParameterizedTypeImpl.make(List.class, new Type[] {elementType}, null)) {};
+    }
+
+    protected static <T> GenericType<Set<T>> set(Class<T> elementType) {
+        return new GenericType<Set<T>>(ParameterizedTypeImpl.make(Set.class, new Type[] {elementType}, null)) {};
     }
 
     public List<ExperimentDto> getExperiments() {
@@ -265,11 +271,11 @@ public class AlchemyClient {
         ).post(TreatmentDto.class, identity);
     }
 
-    public Map<String, TreatmentDto> getActiveTreatments(IdentityDto ... identities) {
+    public Map<String, TreatmentDto> getActiveTreatments(IdentityDto identity) {
         return
             resource(ENDPOINT_ACTIVE_TREATMENTS)
                 .post(
-                    map(String.class, TreatmentDto.class), identities
+                    map(String.class, TreatmentDto.class), identity
                 );
     }
 
@@ -337,9 +343,16 @@ public class AlchemyClient {
 
     public JsonSchema getIdentitySchema(String identityType) {
         return resource(
-            ENDPOINT_METADATA_IDENTITY_TYPE,
+            ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA,
             ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
         ).get(JsonSchema.class);
+    }
+
+    public Set<String> getIdentitySegments(String identityType) {
+        return resource(
+            ENDPOINT_METADATA_IDENTITY_TYPE_SEGMENTS,
+            ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
+        ).get(set(String.class));
     }
 
     private static class ClassTypeMappper implements Function<Class, Class<? extends IdentityDto>> {

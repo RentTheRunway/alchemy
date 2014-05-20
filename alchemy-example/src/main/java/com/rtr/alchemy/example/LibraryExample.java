@@ -48,7 +48,7 @@ public class LibraryExample {
                 .setDescription("my new experiment")
                 .addTreatment("control", "the default")
                 .addTreatment("pie", "show them pie")
-                .setIdentityType("user")
+                .setSegments("identified")
                 .allocate("control", 25)
                 .allocate("pie", 25)
                 .activate()

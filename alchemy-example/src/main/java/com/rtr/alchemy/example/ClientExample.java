@@ -69,7 +69,7 @@ public class ClientExample {
                 .setDescription("my new experiment")
                 .addTreatment("control", "the default")
                 .addTreatment("pie", "show them pie")
-                .setIdentityType("user")
+                .setSegments("identified")
                 .allocate("control", 25)
                 .allocate("pie", 25)
                 .activate()
@@ -103,7 +103,7 @@ public class ClientExample {
                 .apply();
 
             // Let's print out our allocations
-            for (AllocationDto allocation : client.getAllocations("my_experiment")) {
+            for (final AllocationDto allocation : client.getAllocations("my_experiment")) {
                 println("treatment: %s, offset: %d, size: %d", allocation.getTreatment(), allocation.getOffset(), allocation.getSize());
             }
             println();
@@ -147,7 +147,7 @@ public class ClientExample {
             println("name: %s, description: %s", activeTreatment.getName(), activeTreatment.getDescription());
             println();
 
-            for (Map.Entry<String, TreatmentDto> entry : client.getActiveTreatments(new UserDto("qa")).entrySet()) {
+            for (final Map.Entry<String, TreatmentDto> entry : client.getActiveTreatments(new UserDto("qa")).entrySet()) {
                 println(
                     "experiment: %s, treatment: %s, description: %s",
                     entry.getKey(),
@@ -170,7 +170,7 @@ public class ClientExample {
             // Let's nuke it and call it a day
             client.deleteExperiment("my_experiment");
 
-        } catch (UniformInterfaceException uie) {
+        } catch (final UniformInterfaceException uie) {
             println("ERROR, HTTP %d: %s", uie.getResponse().getStatus(), uie.getResponse().getEntity(String.class));
         }
     }

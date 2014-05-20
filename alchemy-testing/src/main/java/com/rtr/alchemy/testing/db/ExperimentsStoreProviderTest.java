@@ -1,15 +1,18 @@
 package com.rtr.alchemy.testing.db;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.IdentityType;
+import com.rtr.alchemy.identities.Segments;
 import com.rtr.alchemy.models.Allocations;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,7 +31,7 @@ public abstract class ExperimentsStoreProviderTest {
     protected abstract ExperimentsStoreProvider createProvider();
     protected abstract void resetStore();
 
-    @IdentityType("test")
+    @Segments({"test"})
     private static class TestIdentity extends Identity {
         private final String name;
 
@@ -37,15 +40,15 @@ public abstract class ExperimentsStoreProviderTest {
         }
 
         @Override
-        public String getType() {
-            return name;
-        }
-
-        @Override
-        public long getHash(int seed) {
+        public long computeHash(int seed) {
             return identity(seed)
                 .putString(name)
                 .hash();
+        }
+
+        @Override
+        public Set<String> computeSegments() {
+            return Sets.newHashSet("test");
         }
     }
 
@@ -227,7 +230,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .get("foo")
-            .setIdentityType("test")
+            .setSegments("test")
             .save();
 
         assertEquals(
@@ -238,7 +241,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .get("foo")
-            .setIdentityType("bar")
+            .setSegments("bar")
             .save();
 
         assertNull(
@@ -255,14 +258,14 @@ public abstract class ExperimentsStoreProviderTest {
             .create("foo")
             .addTreatment("control")
             .allocate("control", 100)
-            .setIdentityType("test")
+            .setSegments("test")
             .save();
 
         experiments
             .create("bar")
             .addTreatment("control")
             .allocate("control", 100)
-            .setIdentityType("test")
+            .setSegments("test")
             .save();
 
         assertTrue("no active experiments", experiments.getActiveTreatments(identity).isEmpty());
@@ -288,14 +291,10 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .get("bar")
-            .setIdentityType("bar")
+            .setSegments("bar")
             .save();
 
         assertEquals("should have one because of identity type", 1, experiments.getActiveTreatments(identity).size());
-
-        final Identity identity2 = new TestIdentity("bar");
-
-        assertEquals("should have two experiments", 2, experiments.getActiveTreatments(identity, identity2).size());
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.rtr.alchemy.service.resources;
 
 import com.google.common.collect.ImmutableMap;
-import com.rtr.alchemy.dto.identities.Identities;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,18 +73,13 @@ public class ActiveTreatmentsResourceTest extends ResourceTest {
 
     @Test
     public void testGetActiveTreatments() {
-        post(ENDPOINT_ACTIVE_TREATMENTS)
-            .entity(Identities.empty())
-            .assertStatus(Status.OK);
-
         final Map<String, TreatmentDto> expected = ImmutableMap.of(
-            EXPERIMENT_1, MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(user), TreatmentDto.class),
-            EXPERIMENT_2, MAPPER.toDto(experiment(EXPERIMENT_2).getTreatment(device), TreatmentDto.class)
+            EXPERIMENT_1, MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(user), TreatmentDto.class)
         );
 
         final Map<String, TreatmentDto> actual =
             post(ENDPOINT_ACTIVE_TREATMENTS)
-                .entity(Identities.of(userDto, deviceDto))
+                .entity(userDto)
                 .assertStatus(Status.OK)
                 .result(map(String.class, TreatmentDto.class));
 

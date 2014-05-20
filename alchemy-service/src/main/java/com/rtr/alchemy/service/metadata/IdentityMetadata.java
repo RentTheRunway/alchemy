@@ -4,6 +4,8 @@ import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.mapping.Mapper;
 
+import java.util.Set;
+
 /**
  * Metadata for an identity type
  */
@@ -12,6 +14,7 @@ public class IdentityMetadata {
     private final Class<? extends Identity> identityType;
     private final Class<? extends IdentityDto> dtoType;
     private final Class<? extends Mapper> mapperType;
+    private final Set<String> segments;
 
     public IdentityMetadata(String typeName,
                             Class<? extends Identity> identityType,
@@ -21,6 +24,7 @@ public class IdentityMetadata {
         this.identityType = identityType;
         this.dtoType = dtoType;
         this.mapperType = mapperType;
+        this.segments = Identity.getSupportedSegments(identityType);
     }
 
     public String getTypeName() {
@@ -37,5 +41,9 @@ public class IdentityMetadata {
 
     public Class<? extends Mapper> getMapperType() {
         return mapperType;
+    }
+
+    public Set<String> getSegments() {
+        return segments;
     }
 }

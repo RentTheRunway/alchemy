@@ -15,7 +15,7 @@ public class IdentityBuilderTest {
     @Test
     public void testHashAll() {
         final Identity identity = mock(Identity.class);
-        doReturn(1L).when(identity).getHash(anyInt());
+        doReturn(1L).when(identity).computeHash(anyInt());
 
         final long hash =
             IdentityBuilder

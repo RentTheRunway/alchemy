@@ -6,6 +6,7 @@ import com.rtr.alchemy.dto.models.TreatmentDto;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a request for creating an experiment
@@ -14,7 +15,7 @@ public class CreateExperimentRequest {
     @NotNull
     private final String name;
     private final String description;
-    private final String identityType;
+    private final Set<String> segments;
     private final Boolean active;
     @Valid
     private final List<TreatmentDto> treatments;
@@ -25,14 +26,14 @@ public class CreateExperimentRequest {
 
     public CreateExperimentRequest(@JsonProperty("name") String name,
                                    @JsonProperty("description") String description,
-                                   @JsonProperty("identityType") String identityType,
+                                   @JsonProperty("segments") Set<String> segments,
                                    @JsonProperty("active") Boolean active,
                                    @JsonProperty("treatments") List<TreatmentDto> treatments,
                                    @JsonProperty("allocations") List<AllocateRequest> allocations,
                                    @JsonProperty("overrides") List<TreatmentOverrideRequest> overrides) {
         this.name = name;
         this.description = description;
-        this.identityType = identityType;
+        this.segments = segments;
         this.active = active;
         this.treatments = treatments;
         this.allocations = allocations;
@@ -47,8 +48,8 @@ public class CreateExperimentRequest {
         return description;
 
     }
-    public String getIdentityType() {
-        return identityType;
+    public Set<String> getSegments() {
+        return segments;
     }
 
     public Boolean isActive() {

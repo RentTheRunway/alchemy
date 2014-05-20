@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.dto.models.AllocationDto;
 import com.rtr.alchemy.dto.models.ExperimentDto;
@@ -16,6 +17,7 @@ import com.rtr.alchemy.dto.requests.AllocationRequest;
 import com.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import com.rtr.alchemy.dto.requests.UpdateExperimentRequest;
+import io.dropwizard.jackson.Jackson;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,16 +25,17 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class JsonSerializationDeserializationTests {
+public class JsonSerializationDeserializationTest {
     private ObjectMapper mapper;
 
     @Before
     public void setUp() {
-        mapper = new ObjectMapper();
+        mapper = Jackson.newObjectMapper();
     }
 
     /**
@@ -54,7 +57,7 @@ public class JsonSerializationDeserializationTests {
     }
 
     private JsonNode readTreeFromResource(String resourceFile) {
-        final InputStream stream = JsonSerializationDeserializationTests.class.getClassLoader().getResourceAsStream(resourceFile);
+        final InputStream stream = JsonSerializationDeserializationTest.class.getClassLoader().getResourceAsStream(resourceFile);
         assertNotNull(String.format("could not load resource file %s", resourceFile), stream);
 
         try {
@@ -86,7 +89,7 @@ public class JsonSerializationDeserializationTests {
         assertJson(new ExperimentDto(
             "my_experiment",
             "my new experiment",
-            "user",
+            Sets.newHashSet("identified"),
             true,
             new DateTime(0),
             new DateTime(1),
@@ -160,7 +163,7 @@ public class JsonSerializationDeserializationTests {
             new CreateExperimentRequest(
                 "my_experiment",
                 "my new experiment",
-                "user",
+                Sets.newHashSet("identified"),
                 true,
                 Lists.newArrayList(
                     new TreatmentDto("control", "the base case"),
@@ -193,7 +196,7 @@ public class JsonSerializationDeserializationTests {
         assertJson(
             new UpdateExperimentRequest(
                     Optional.of("my new experiment"),
-                    Optional.of("user"),
+                    Optional.of((Set<String>) Sets.newHashSet("identified")),
                     Optional.of(true),
                     Optional.<List<TreatmentDto>>of(
                         Lists.newArrayList(

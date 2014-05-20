@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used to specify a free-form string to associate a given identity type with for filtering purposes
+ * Annotates an identity with a list of supported segments
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IdentityType {
-    String value();
+public @interface Segments {
+    String[] value() default {};
 }

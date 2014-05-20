@@ -130,7 +130,7 @@ public class IdentityBuilder {
         if (value == null) {
             putNull();
         } else {
-            hasher.putLong(value.getHash(seed));
+            hasher.putLong(value.computeHash(seed));
         }
         return this;
     }

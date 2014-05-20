@@ -127,8 +127,7 @@ public class ExperimentTest {
 
     @Test
     public void testRemoveTreatment() {
-        doReturn("user").when(identity).getType();
-        doReturn(0L).when(identity).getHash(anyInt());
+        doReturn(0L).when(identity).computeHash(anyInt());
 
         final Experiment experiment =
             new Experiment(null, "foo")
