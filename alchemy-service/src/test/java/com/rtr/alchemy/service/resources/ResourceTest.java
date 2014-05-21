@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.inject.util.Types;
 import com.rtr.alchemy.db.memory.MemoryStoreProvider;
 import com.rtr.alchemy.dto.identities.IdentityDto;
@@ -201,13 +200,13 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long computeHash(int seed) {
+        public long computeHash(int seed, Set<String> segments) {
             return identity(seed).putString(name).hash();
         }
 
         @Override
         public Set<String> computeSegments() {
-            return Sets.newHashSet(name == null ? "anonymous" : "identified");
+            return segments(name == null ? "anonymous" : "identified");
         }
     }
 
@@ -249,13 +248,13 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long computeHash(int seed) {
+        public long computeHash(int seed, Set<String> segments) {
             return identity(seed).putString(id).hash();
         }
 
         @Override
         public Set<String> computeSegments() {
-            return Sets.newHashSet("device");
+            return segments("device");
         }
     }
 

@@ -38,7 +38,7 @@ public class ExperimentsTest {
         }
 
         @Override
-        public long computeHash(int seed) {
+        public long computeHash(int seed, Set<String> segments) {
             return 0;
         }
 

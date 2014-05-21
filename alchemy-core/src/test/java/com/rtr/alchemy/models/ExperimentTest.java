@@ -7,8 +7,10 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -127,7 +129,7 @@ public class ExperimentTest {
 
     @Test
     public void testRemoveTreatment() {
-        doReturn(0L).when(identity).computeHash(anyInt());
+        doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any());
 
         final Experiment experiment =
             new Experiment(null, "foo")

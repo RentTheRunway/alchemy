@@ -219,7 +219,7 @@ public class Experiment {
      * @param identity The identity
      */
     public TreatmentOverride getOverride(Identity identity) {
-        return overridesByHash.get(identity.computeHash(seed));
+        return overridesByHash.get(identity.computeHash(seed, segments));
     }
 
     /**
@@ -304,7 +304,7 @@ public class Experiment {
      * @param identity The identity
      */
     public Experiment addOverride(String overrideName, String treatmentName, Identity identity) {
-        final Long hash = identity.computeHash(seed);
+        final Long hash = identity.computeHash(seed, segments);
         final TreatmentOverride override = new TreatmentOverride(overrideName, hash, treatment(treatmentName));
         final TreatmentOverride replaced = overridesByHash.put(hash, override);
         if (replaced != null) {
@@ -320,7 +320,7 @@ public class Experiment {
      * @param identity The identities to remove the override for
      */
     public Experiment removeOverride(Identity identity) {
-        final TreatmentOverride removed = overridesByHash.remove(identity.computeHash(seed));
+        final TreatmentOverride removed = overridesByHash.remove(identity.computeHash(seed, segments));
         if (removed != null) {
             overrides.remove(removed.getName());
         }
@@ -455,7 +455,7 @@ public class Experiment {
     }
 
     private int identityToBin(Identity identity) {
-        return (int) (FastMath.abs(identity.computeHash(seed)) % Allocations.NUM_BINS);
+        return (int) (FastMath.abs(identity.computeHash(seed, segments)) % Allocations.NUM_BINS);
     }
 
     /**

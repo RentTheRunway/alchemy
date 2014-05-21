@@ -4,6 +4,7 @@ import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 
 import java.nio.charset.Charset;
+import java.util.Set;
 
 /**
  * Used for building a unique identity
@@ -126,11 +127,11 @@ public class IdentityBuilder {
         return this;
     }
 
-    public IdentityBuilder putIdentity(Identity value) {
+    public IdentityBuilder putIdentity(Identity value, Set<String> segments) {
         if (value == null) {
             putNull();
         } else {
-            hasher.putLong(value.computeHash(seed));
+            hasher.putLong(value.computeHash(seed, segments));
         }
         return this;
     }
