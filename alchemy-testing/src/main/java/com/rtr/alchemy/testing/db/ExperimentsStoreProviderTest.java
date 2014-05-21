@@ -1,7 +1,6 @@
 package com.rtr.alchemy.testing.db;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.Filter;
 import com.rtr.alchemy.identities.Identity;
@@ -40,7 +39,7 @@ public abstract class ExperimentsStoreProviderTest {
         }
 
         @Override
-        public long computeHash(int seed) {
+        public long computeHash(int seed, Set<String> segments) {
             return identity(seed)
                 .putString(name)
                 .hash();
@@ -48,7 +47,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         @Override
         public Set<String> computeSegments() {
-            return Sets.newHashSet("test");
+            return segments("test");
         }
     }
 

@@ -52,7 +52,7 @@ New identities can be implemented as needed.  You need to extend the Identity cl
         }
 
         @Override
-        public long computeHash(int seed) {
+        public long computeHash(int seed, Set<String> segments) {
             return
                 identity(seed)
                     .putString(firstName)
@@ -63,7 +63,7 @@ New identities can be implemented as needed.  You need to extend the Identity cl
         // Optional
         @Override
         public Set<String> computeSegments() {
-            return Sets.newHashSet(firstName == null && lastName == null ? "anonymous_person" : "identified_person");
+            return segments(firstName == null && lastName == null ? "anonymous_person" : "identified_person");
         }
     }
 
@@ -107,6 +107,84 @@ Lastly, you will need to implement a mapper that maps to/from your identity DTO 
             return new FullName(source.getFirstName(), source.getLastName());
         }
     }
+
+Composite Identities
+====================
+A composite identity is an identity that is composed of two or more underlying identities and may have complex criteria for which underlying identity contributes to the computed hash.
+As an example, suppose you have an identity that represents a ``device`` with an id and an identity that represents as ``user`` with an id.  A composite identity could contain both, since both of these pieces of information may be available at the same time.
+Next, suppose at first, the user is anonymous, so you opt to use the hash code generated from ``device``. At a later time when the user logs in and is then identified, you may want to continue to use ``device``.  For another experiment, you
+may want to hash on ``user`` instead in this case, so how can you use the same composite identity but different hashing behavior?  You can solve this problem by utilizing the fact that computeHash() is passed the segments that are being requested
+by an experiment and then change the behavior accordingly.  For example:
+
+.. code-block:: java
+
+    @Segments(
+        value = { Composite.SEGMENT_USER, Composite.SEGMENT_DEVICE },
+        identities = { User.class, Device.class }
+    )
+    public class Composite extends Identity {
+        public static final String SEGMENT_USER = "user";
+        public static final String SEGMENT_DEVICE = "device";
+        private final User user;
+        private final Device device;
+
+        public Composite(User user, Device device) {
+            this.user = user;
+            this.device = device;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public Device getDevice() {
+            return device;
+        }
+
+        @Override
+        public long computeHash(int seed, Set<String> segments) {
+            // we want to compute a hash based on what segment is preferred (user vs device)
+            // we'll say that 'user' supersedes 'device', such that if only 'user' is specified, we hash user,
+            // if only device is specified, we hash device, if both are specified, we hash user.  If neither are
+            // specified, we can return whichever is not null first user vs device
+
+            if (segments.contains(SEGMENT_USER)) { // "user" or "both" were requested
+                return user.computeHash(seed, segments);
+            } else if (segments.contains(SEGMENT_DEVICE)) { // "device" was requested
+                return device.computeHash(seed, segments);
+            }
+
+            // neither was requested, default to whatever the most specifically identifying value we can return is
+            if (user != null) {
+                return user.computeHash(seed, segments);
+            }
+
+            if (device != null) {
+                return device.computeHash(seed, segments);
+            }
+
+            return 0;
+        }
+
+        @Override
+        public Set<String> computeSegments() {
+            return
+                Sets.union(
+                    // NOTE: it's safe to pass null to the segments(...) utility function
+                    segments(
+                        user != null ? "user" : null,
+                        device != null ? "device" : null
+                    ),
+                    Sets.union(
+                        segments(user),
+                        segments(device)
+                    )
+                );
+        }
+    }
+
+The main thing to note is that we check what segments are being requested to determine the behavior of the hash function.  The composite identity also needs to specify what the possible segment values it can return are.
+We can specify this by including the ``identities`` value in the ``@Segments`` annotation, which will then automatically include the segments that those identities return.
 
 Implementing a custom database provider
 =======================================

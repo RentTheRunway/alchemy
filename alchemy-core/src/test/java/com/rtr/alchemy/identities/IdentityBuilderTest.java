@@ -1,7 +1,11 @@
 package com.rtr.alchemy.identities;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Set;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -15,19 +19,19 @@ public class IdentityBuilderTest {
     @Test
     public void testHashAll() {
         final Identity identity = mock(Identity.class);
-        doReturn(1L).when(identity).computeHash(anyInt());
+        doReturn(1L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any());
 
         final long hash =
             IdentityBuilder
                 .seed(0)
                 .putBoolean(true)
                 .putByte((byte) 1)
-                .putBytes(new byte[] {1, 2, 3})
+                .putBytes(new byte[]{1, 2, 3})
                 .putChar('a')
                 .putDouble(1.0)
                 .putFloat(1.0f)
                 .putInt(1)
-                .putIdentity(identity)
+                .putIdentity(identity, Sets.<String>newHashSet())
                 .putLong(1L)
                 .putShort((short) 1)
                 .putString("foo")
@@ -49,7 +53,7 @@ public class IdentityBuilderTest {
                 .putDouble(null)
                 .putFloat(null)
                 .putInt(null)
-                .putIdentity(null)
+                .putIdentity(null, Sets.<String>newHashSet())
                 .putLong(null)
                 .putShort(null)
                 .putString(null)

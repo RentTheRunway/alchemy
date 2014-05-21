@@ -1,6 +1,5 @@
 package com.rtr.alchemy.client.identities;
 
-import com.google.common.collect.Sets;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.Segments;
 
@@ -19,7 +18,7 @@ public class User extends Identity {
     }
 
     @Override
-    public long computeHash(int seed) {
+    public long computeHash(int seed, Set<String> segments) {
         return
             identity(seed)
                 .putString(name)
@@ -28,6 +27,6 @@ public class User extends Identity {
 
     @Override
     public Set<String> computeSegments() {
-        return Sets.newHashSet(name == null ? "anonymous" : "identified");
+        return segments(name == null ? "anonymous" : "identified");
     }
 }
