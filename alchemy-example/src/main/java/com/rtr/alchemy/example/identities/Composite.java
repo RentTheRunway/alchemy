@@ -10,13 +10,8 @@ import java.util.Set;
  * Demonstrates how one may do composite identities, which are complex identities which are made up of sub-identities
  * and have complex criteria for computing their hash
  */
-@Segments(
-    value = { Composite.SEGMENT_USER, Composite.SEGMENT_DEVICE },
-    identities = { User.class, Device.class }
-)
+@Segments(identities = { User.class, Device.class })
 public class Composite extends Identity {
-    public static final String SEGMENT_USER = "user";
-    public static final String SEGMENT_DEVICE = "device";
     private final User user;
     private final Device device;
 
@@ -40,9 +35,9 @@ public class Composite extends Identity {
         // if only device is specified, we hash device, if both are specified, we hash user.  If neither are
         // specified, we can return whichever is not null first user vs device
 
-        if (segments.contains(SEGMENT_USER)) { // "user" or "both" were requested
+        if (segments.contains(User.SEGMENT_USER)) { // "user" or "both" were requested
             return user.computeHash(seed, segments);
-        } else if (segments.contains(SEGMENT_DEVICE)) { // "device" was requested
+        } else if (segments.contains(Device.SEGMENT_DEVICE)) { // "device" was requested
             return device.computeHash(seed, segments);
         }
 
@@ -62,14 +57,8 @@ public class Composite extends Identity {
     public Set<String> computeSegments() {
         return
             Sets.union(
-                segments(
-                    user != null ? "user" : null,
-                    device != null ? "device" : null
-                ),
-                Sets.union(
-                    segments(user),
-                    segments(device)
-                )
+                segments(user),
+                segments(device)
             );
     }
 }

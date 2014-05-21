@@ -118,13 +118,64 @@ by an experiment and then change the behavior accordingly.  For example:
 
 .. code-block:: java
 
-    @Segments(
-        value = { Composite.SEGMENT_USER, Composite.SEGMENT_DEVICE },
-        identities = { User.class, Device.class }
-    )
-    public class Composite extends Identity {
+    @Segments({User.SEGMENT_USER, User.SEGMENT_ANONYMOUS, User.SEGMENT_IDENTIFIED})
+    public class User extends Identity {
+        public static final String SEGMENT_ANONYMOUS = "anonymous";
+        public static final String SEGMENT_IDENTIFIED = "identified";
         public static final String SEGMENT_USER = "user";
+
+        private final String name;
+
+        public User(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public long computeHash(int seed, Set<String> segments) {
+            return identity(seed)
+                .putString(name)
+                .hash();
+        }
+
+        @Override
+        public Set<String> computeSegments() {
+            return segments(SEGMENT_USER, name == null ? SEGMENT_ANONYMOUS : SEGMENT_IDENTIFIED);
+        }
+    }
+
+    @Segments(Device.SEGMENT_DEVICE)
+    public class Device extends Identity {
         public static final String SEGMENT_DEVICE = "device";
+        private final String id;
+
+        public Device(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public long computeHash(int seed, Set<String> segments) {
+            return
+                identity(seed)
+                    .putString(id)
+                    .hash();
+        }
+
+        @Override
+        public Set<String> computeSegments() {
+            return segments(SEGMENT_DEVICE);
+        }
+    }
+
+    @Segments(identities = { User.class, Device.class })
+    public class Composite extends Identity {
         private final User user;
         private final Device device;
 
@@ -148,9 +199,9 @@ by an experiment and then change the behavior accordingly.  For example:
             // if only device is specified, we hash device, if both are specified, we hash user.  If neither are
             // specified, we can return whichever is not null first user vs device
 
-            if (segments.contains(SEGMENT_USER)) { // "user" or "both" were requested
+            if (segments.contains(User.SEGMENT_USER)) { // "user" or "both" were requested
                 return user.computeHash(seed, segments);
-            } else if (segments.contains(SEGMENT_DEVICE)) { // "device" was requested
+            } else if (segments.contains(Device.SEGMENT_DEVICE)) { // "device" was requested
                 return device.computeHash(seed, segments);
             }
 
@@ -170,18 +221,12 @@ by an experiment and then change the behavior accordingly.  For example:
         public Set<String> computeSegments() {
             return
                 Sets.union(
-                    // NOTE: it's safe to pass null to the segments(...) utility function
-                    segments(
-                        user != null ? "user" : null,
-                        device != null ? "device" : null
-                    ),
-                    Sets.union(
-                        segments(user),
-                        segments(device)
-                    )
+                    segments(user),
+                    segments(device)
                 );
         }
     }
+
 
 The main thing to note is that we check what segments are being requested to determine the behavior of the hash function.  The composite identity also needs to specify what the possible segment values it can return are.
 We can specify this by including the ``identities`` value in the ``@Segments`` annotation, which will then automatically include the segments that those identities return.
