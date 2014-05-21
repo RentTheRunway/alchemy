@@ -162,14 +162,14 @@ public class LibraryExample {
             // Experiment with composite identity - an identity where hashing can change based on what segments are requested
             experiments
                 .create("composite")
-                .setSegments(User.SEGMENT_IDENTIFIED, Composite.SEGMENT_DEVICE) // we want only users that are identified and we prefer to hash on device
+                .setSegments(User.SEGMENT_IDENTIFIED, Device.SEGMENT_DEVICE) // we want only users that are identified and we prefer to hash on device
                 .addTreatment("control")
                 .allocate("control", 100)
                 .activate()
                 .save();
 
             // These are the segments that will be requested by the experiment when calling computeHash
-            final Set<String> segments = Sets.newHashSet(User.SEGMENT_IDENTIFIED, Composite.SEGMENT_DEVICE);
+            final Set<String> segments = Sets.newHashSet(User.SEGMENT_IDENTIFIED, Device.SEGMENT_DEVICE);
 
             final Composite userOnly = new Composite(new User("foo"), null);
             println("treatment for user-only composite: %s", experiments.getActiveTreatment("composite", userOnly));
