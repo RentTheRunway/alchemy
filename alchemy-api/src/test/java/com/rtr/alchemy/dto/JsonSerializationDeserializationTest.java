@@ -48,7 +48,7 @@ public class JsonSerializationDeserializationTest {
         final JsonNode jsonTree = readTreeFromResource(resourceFile);
         final JsonNode objectTree = mapper.valueToTree(value);
 
-        assertEquals(objectTree, jsonTree);
+        assertEquals(jsonTree, objectTree);
     }
 
     private void assertJson(Object value) {
@@ -88,6 +88,7 @@ public class JsonSerializationDeserializationTest {
     public void testExperimentDto() {
         assertJson(new ExperimentDto(
             "my_experiment",
+            0,
             "my new experiment",
             Sets.newHashSet("identified"),
             true,
@@ -162,6 +163,7 @@ public class JsonSerializationDeserializationTest {
         assertJson(
             new CreateExperimentRequest(
                 "my_experiment",
+                0,
                 "my new experiment",
                 Sets.newHashSet("identified"),
                 true,
@@ -195,6 +197,7 @@ public class JsonSerializationDeserializationTest {
     public void testUpdateExperimentRequest() {
         assertJson(
             new UpdateExperimentRequest(
+                    Optional.<Integer>absent(),
                     Optional.of("my new experiment"),
                     Optional.of((Set<String>) Sets.newHashSet("identified")),
                     Optional.of(true),

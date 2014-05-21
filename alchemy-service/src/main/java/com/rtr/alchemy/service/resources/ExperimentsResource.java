@@ -70,6 +70,10 @@ public class ExperimentsResource extends BaseResource {
                 .setDescription(request.getDescription())
                 .setSegments(request.getSegments());
 
+        if (request.getSeed() != null) {
+            experiment.setSeed(request.getSeed());
+        }
+
         if (request.getTreatments() != null) {
             for (final TreatmentDto treatment : request.getTreatments()) {
                 experiment.addTreatment(treatment.getName(), treatment.getDescription());
@@ -107,6 +111,10 @@ public class ExperimentsResource extends BaseResource {
     public void updateExperiment(@PathParam("experimentName") String experimentName,
                                  @Valid UpdateExperimentRequest request) {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
+
+        if (request.getSeed() != null && request.getSeed().isPresent()) {
+            experiment.setSeed(request.getSeed().or(0));
+        }
 
         if (request.getDescription() != null) {
             experiment.setDescription(request.getDescription().orNull());

@@ -30,7 +30,7 @@ public class Experiment {
     private final Map<String, Treatment> treatments;
     private final Map<String, TreatmentOverride> overrides;
     private final Map<Long, TreatmentOverride> overridesByHash;
-    private final int seed;
+    private int seed;
     private String description;
     private Set<String> segments;
     private boolean active;
@@ -42,6 +42,7 @@ public class Experiment {
     // used by Builder when loading experiment from store
     private Experiment(Experiments owner,
                        String name,
+                       int seed,
                        String description,
                        Set<String> segments,
                        boolean active,
@@ -75,7 +76,7 @@ public class Experiment {
         }
 
         this.allocations = new Allocations(allocations);
-        this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
+        this.seed = seed;
     }
 
     // used when creating a new experiment
@@ -164,6 +165,18 @@ public class Experiment {
             this.segments = Sets.newHashSet(segments);
         }
         return this;
+    }
+
+    /**
+     * Sets the seed used to compute hashes from identities. WARNING: Changing this value will change what users are assigned to what treatments
+     */
+    public Experiment setSeed(int seed) {
+        this.seed = seed;
+        return this;
+    }
+
+    public int getSeed() {
+        return seed;
     }
 
     public boolean isActive() {
@@ -518,6 +531,7 @@ public class Experiment {
     public static class Builder {
         private final Experiments owner;
         private final String name;
+        private int seed;
         private String description;
         private Set<String> segments;
         private boolean active;
@@ -573,6 +587,11 @@ public class Experiment {
             return this;
         }
 
+        public Builder seed(int seed) {
+            this.seed = seed;
+            return this;
+        }
+
         private Treatment getTreatment(String name) {
             final Treatment treatment = treatments.get(name);
             Preconditions.checkState(treatment != null, "treatment with name %s must be defined first", name);
@@ -598,6 +617,7 @@ public class Experiment {
             return new Experiment(
                 owner,
                 name,
+                seed,
                 description,
                 segments,
                 active,

@@ -52,6 +52,7 @@ public class ExperimentsResourceTest extends ResourceTest {
         final CreateExperimentRequest request =
             new CreateExperimentRequest(
                 "new_experiment",
+                0,
                 "it's new",
                 null,
                 false,
@@ -79,6 +80,7 @@ public class ExperimentsResourceTest extends ResourceTest {
     public void testUpdateExperiment() {
         final UpdateExperimentRequest request =
             new UpdateExperimentRequest(
+                Optional.<Integer>absent(),
                 Optional.of("new description"),
                 Optional.of((Set<String>) Sets.newHashSet("device")),
                 Optional.of(false),

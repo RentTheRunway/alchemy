@@ -13,6 +13,7 @@ import java.util.Set;
  */
 public class ExperimentDto {
     private final String name;
+    private final int seed;
     private final String description;
     private final Set<String> segments;
     private final boolean active;
@@ -26,6 +27,7 @@ public class ExperimentDto {
 
     @JsonCreator
     public ExperimentDto(@JsonProperty("name") String name,
+                         @JsonProperty("seed") int seed,
                          @JsonProperty("description") String description,
                          @JsonProperty("segments") Set<String> segments,
                          @JsonProperty("active") boolean active,
@@ -37,6 +39,7 @@ public class ExperimentDto {
                          @JsonProperty("allocations") List<AllocationDto> allocations,
                          @JsonProperty("overrides") List<TreatmentOverrideDto> overrides) {
         this.name = name;
+        this.seed = seed;
         this.description = description;
         this.segments = segments;
         this.active = active;
@@ -51,6 +54,10 @@ public class ExperimentDto {
 
     public String getName() {
         return name;
+    }
+
+    public int getSeed() {
+        return seed;
     }
 
     public String getDescription() {

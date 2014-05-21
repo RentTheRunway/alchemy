@@ -1,4 +1,5 @@
 {
+    "seed": null,
     "description": "my new experiment",
     "segments": ["identified"],
     "active": true,

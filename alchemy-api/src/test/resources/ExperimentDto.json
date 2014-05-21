@@ -1,5 +1,6 @@
 {
     "name": "my_experiment",
+    "seed": 0,
     "description": "my new experiment",
     "segments": ["identified"],
     "active": true,

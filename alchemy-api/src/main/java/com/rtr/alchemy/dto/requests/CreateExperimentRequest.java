@@ -14,6 +14,7 @@ import java.util.Set;
 public class CreateExperimentRequest {
     @NotNull
     private final String name;
+    private final Integer seed;
     private final String description;
     private final Set<String> segments;
     private final Boolean active;
@@ -25,6 +26,7 @@ public class CreateExperimentRequest {
     private final List<TreatmentOverrideRequest> overrides;
 
     public CreateExperimentRequest(@JsonProperty("name") String name,
+                                   @JsonProperty("seed") Integer seed,
                                    @JsonProperty("description") String description,
                                    @JsonProperty("segments") Set<String> segments,
                                    @JsonProperty("active") Boolean active,
@@ -32,6 +34,7 @@ public class CreateExperimentRequest {
                                    @JsonProperty("allocations") List<AllocateRequest> allocations,
                                    @JsonProperty("overrides") List<TreatmentOverrideRequest> overrides) {
         this.name = name;
+        this.seed = seed;
         this.description = description;
         this.segments = segments;
         this.active = active;
@@ -42,6 +45,10 @@ public class CreateExperimentRequest {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getSeed() {
+        return seed;
     }
 
     public String getDescription() {

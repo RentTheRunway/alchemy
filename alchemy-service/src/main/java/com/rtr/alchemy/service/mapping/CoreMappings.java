@@ -74,6 +74,7 @@ public class CoreMappings {
                 public ExperimentDto toDto(Experiment experiment) {
                     return new ExperimentDto(
                         experiment.getName(),
+                        experiment.getSeed(),
                         experiment.getDescription(),
                         experiment.getSegments(),
                         experiment.isActive(),
