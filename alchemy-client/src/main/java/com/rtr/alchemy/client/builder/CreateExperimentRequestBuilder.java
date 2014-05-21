@@ -15,6 +15,7 @@ import java.util.Set;
 public class CreateExperimentRequestBuilder {
     private final String name;
     private final WebResource.Builder builder;
+    private Integer seed;
     private String description;
     private Set<String> segments;
     private Boolean isActive;
@@ -28,6 +29,11 @@ public class CreateExperimentRequestBuilder {
         this.treatments = Lists.newArrayList();
         this.allocations = Lists.newArrayList();
         this.overrides = Lists.newArrayList();
+    }
+
+    public CreateExperimentRequestBuilder setSeed(int seed) {
+        this.seed = seed;
+        return this;
     }
 
     public CreateExperimentRequestBuilder setDescription(String description) {
@@ -79,6 +85,7 @@ public class CreateExperimentRequestBuilder {
         builder.put(
             new CreateExperimentRequest(
                 name,
+                seed,
                 description,
                 segments,
                 isActive,

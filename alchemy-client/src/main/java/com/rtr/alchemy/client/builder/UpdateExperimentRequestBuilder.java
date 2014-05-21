@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class UpdateExperimentRequestBuilder {
     private final WebResource.Builder builder;
+    private Optional<Integer> seed;
     private Optional<String> description;
     private Optional<Set<String>> segments;
     private Optional<Boolean> active;
@@ -22,6 +23,11 @@ public class UpdateExperimentRequestBuilder {
 
     public UpdateExperimentRequestBuilder(WebResource.Builder builder) {
         this.builder = builder;
+    }
+
+    public UpdateExperimentRequestBuilder setSeed(int seed) {
+        this.seed = Optional.of(seed);
+        return this;
     }
 
     public UpdateExperimentRequestBuilder setDescription(String description) {
@@ -67,6 +73,7 @@ public class UpdateExperimentRequestBuilder {
     public void apply() {
         builder.post(
             new UpdateExperimentRequest(
+                seed,
                 description,
                 segments,
                 active,

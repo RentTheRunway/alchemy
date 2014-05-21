@@ -1,7 +1,5 @@
 package com.rtr.alchemy.dto.requests;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Optional;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 
@@ -12,30 +10,40 @@ import java.util.Set;
 /**
  * Represents a request for updating an experiment
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateExperimentRequest {
-    private final Optional<String> description;
-    private final Optional<Set<String>> segments;
-    private final Optional<Boolean> active;
-    @Valid
-    private final Optional<List<TreatmentDto>> treatments;
-    @Valid
-    private final Optional<List<AllocateRequest>> allocations;
-    @Valid
-    private final Optional<List<TreatmentOverrideRequest>> overrides;
+    private Optional<Integer> seed;
+    private Optional<String> description;
+    private Optional<Set<String>> segments;
+    private Optional<Boolean> active;
 
-    public UpdateExperimentRequest(@JsonProperty("description") Optional<String> description,
-                                   @JsonProperty("segments") Optional<Set<String>> segments,
-                                   @JsonProperty("active") Optional<Boolean> active,
-                                   @JsonProperty("treatments") Optional<List<TreatmentDto>> treatments,
-                                   @JsonProperty("allocations") Optional<List<AllocateRequest>> allocations,
-                                   @JsonProperty("overrides") Optional<List<TreatmentOverrideRequest>> overrides) {
+    @Valid
+    private Optional<List<TreatmentDto>> treatments;
+
+    @Valid
+    private Optional<List<AllocateRequest>> allocations;
+
+    @Valid
+    private Optional<List<TreatmentOverrideRequest>> overrides;
+
+    public UpdateExperimentRequest() { }
+
+    public UpdateExperimentRequest(Optional<Integer> seed,
+                                   Optional<String> description,
+                                   Optional<Set<String>> segments,
+                                   Optional<Boolean> active,
+                                   Optional<List<TreatmentDto>> treatments,
+                                   Optional<List<AllocateRequest>> allocations,
+                                   Optional<List<TreatmentOverrideRequest>> overrides) {
+        this.seed = seed;
         this.description = description;
         this.segments = segments;
         this.active = active;
         this.treatments = treatments;
         this.allocations = allocations;
         this.overrides = overrides;
+    }
+    public Optional<Integer> getSeed() {
+        return seed;
     }
 
     public Optional<String> getDescription() {
@@ -60,5 +68,34 @@ public class UpdateExperimentRequest {
 
     public Optional<List<TreatmentOverrideRequest>> getOverrides() {
         return overrides;
+    }
+
+    // NOTE: Need setters in order for Optional<T> to work correctly
+    public void setSeed(Optional<Integer> seed) {
+        this.seed = seed;
+    }
+
+    public void setDescription(Optional<String> description) {
+        this.description = description;
+    }
+
+    public void setSegments(Optional<Set<String>> segments) {
+        this.segments = segments;
+    }
+
+    public void setActive(Optional<Boolean> active) {
+        this.active = active;
+    }
+
+    public void setTreatments(Optional<List<TreatmentDto>> treatments) {
+        this.treatments = treatments;
+    }
+
+    public void setAllocations(Optional<List<AllocateRequest>> allocations) {
+        this.allocations = allocations;
+    }
+
+    public void setOverrides(Optional<List<TreatmentOverrideRequest>> overrides) {
+        this.overrides = overrides;
     }
 }

@@ -31,6 +31,7 @@ public class ExperimentEntity {
 
     @Id
     public String name;
+    public int seed;
     public String description;
     public Set<String> segments;
 
@@ -58,6 +59,7 @@ public class ExperimentEntity {
 
     public Experiment toExperiment(Experiment.Builder builder) {
         builder
+            .seed(seed)
             .description(description)
             .segments(segments)
             .created(created)
@@ -92,6 +94,7 @@ public class ExperimentEntity {
 
     private ExperimentEntity(Experiment experiment) {
         name = experiment.getName();
+        seed = experiment.getSeed();
         description = experiment.getDescription();
         active = experiment.isActive();
         created = experiment.getCreated();

@@ -1,4 +1,5 @@
 {
+    "seed": 0,
     "name": "my_experiment",
     "description": "my new experiment",
     "segments": ["identified"],
