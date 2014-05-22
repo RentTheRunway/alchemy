@@ -11,7 +11,7 @@ import com.rtr.alchemy.dto.models.TreatmentDto;
 import com.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.service.AlchemyService;
-import com.rtr.alchemy.service.config.AlchemyServiceConfiguration;
+import com.rtr.alchemy.service.config.AlchemyServiceConfigurationImpl;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.junit.Before;
@@ -43,9 +43,13 @@ public class AlchemyClientTest {
         }
     }
 
+    public static class WrapperService extends AlchemyService<AlchemyServiceConfigurationImpl> {
+        // Needed in order for DropwizardAppRule to be able to determine configuration type
+    }
+
     @ClassRule
-    public final static DropwizardAppRule<AlchemyServiceConfiguration> RULE =
-        new DropwizardAppRule<>(AlchemyService.class, getResourcePath("test-server.yaml"));
+    public final static DropwizardAppRule<AlchemyServiceConfigurationImpl> RULE =
+        new DropwizardAppRule<>(WrapperService.class, getResourcePath("test-server.yaml"));
 
     private AlchemyClient client;
 

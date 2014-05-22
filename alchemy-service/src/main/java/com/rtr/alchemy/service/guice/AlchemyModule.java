@@ -1,5 +1,7 @@
 package com.rtr.alchemy.service.guice;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.identities.Identity;
@@ -10,6 +12,7 @@ import com.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import com.rtr.alchemy.service.config.IdentityMapping;
 import com.rtr.alchemy.service.mapping.CoreMappings;
 import com.rtr.alchemy.service.metadata.IdentitiesMetadata;
+import com.rtr.alchemy.service.metadata.IdentityMetadata;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 
@@ -26,11 +29,38 @@ public class AlchemyModule extends AbstractModule implements Managed {
     private Experiments experiments;
 
     public AlchemyModule(AlchemyServiceConfiguration configuration,
-                         Environment environment,
-                         IdentitiesMetadata metadata) {
+                         Environment environment) {
         this.configuration = configuration;
         this.environment = environment;
-        this.metadata = metadata;
+
+        this.metadata = collectIdentityMetadata(configuration);
+    }
+
+    private static IdentitiesMetadata collectIdentityMetadata(AlchemyServiceConfiguration configuration) {
+        final IdentitiesMetadata metadata = new IdentitiesMetadata();
+
+        for (final Entry<Class<? extends Identity>, IdentityMapping> entry : configuration.getIdentities().entrySet()) {
+            final JsonTypeName typeName = entry.getValue().getDtoType().getAnnotation(JsonTypeName.class);
+
+            Preconditions.checkNotNull(
+                typeName,
+                "identity DTO %s must specify @%s annotation",
+                entry.getValue().getDtoType().getSimpleName(),
+                JsonTypeName.class.getSimpleName()
+            );
+
+            metadata.put(
+                typeName.value(),
+                new IdentityMetadata(
+                    typeName.value(),
+                    entry.getKey(),
+                    entry.getValue().getDtoType(),
+                    entry.getValue().getMapperType()
+                )
+            );
+        }
+
+        return metadata;
     }
 
     @Override
