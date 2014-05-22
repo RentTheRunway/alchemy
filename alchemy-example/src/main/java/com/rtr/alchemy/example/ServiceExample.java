@@ -1,13 +1,14 @@
 package com.rtr.alchemy.example;
 
 import com.rtr.alchemy.service.AlchemyService;
+import com.rtr.alchemy.service.config.AlchemyServiceConfigurationImpl;
 
 /**
  * This example runs an instance of the Alchemy Dropwizard service with a basic configuration
  */
-public class ServiceExample extends AlchemyService {
+public class ServiceExample extends AlchemyService<AlchemyServiceConfigurationImpl> {
     public static void main(String[] args) throws Exception{
-        AlchemyService.main(args);
+        new ServiceExample().run(args);
     }
 
     @Override
