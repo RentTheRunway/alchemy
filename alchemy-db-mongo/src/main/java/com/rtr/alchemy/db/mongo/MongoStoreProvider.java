@@ -1,20 +1,18 @@
 package com.rtr.alchemy.db.mongo;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.mongo.util.DateTimeConverter;
-import org.apache.commons.math3.util.Pair;
 import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.Morphia;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -26,54 +24,23 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
     private final ExperimentsStore store;
     private final ExperimentsCache cache;
 
-    public MongoStoreProvider(String db) {
-        this(ServerAddress.defaultHost(), db);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public MongoStoreProvider(String host, String db) {
-        this(Lists.newArrayList(host), db);
-    }
+    private MongoStoreProvider(List<ServerAddress> hosts,
+                               List<MongoCredential> credentials,
+                               MongoClientOptions options,
+                               String database) {
 
-    public MongoStoreProvider(Iterable<String> hosts, String db) {
-        final List<ServerAddress> addresses = parseAddresses(Lists.newArrayList(hosts));
         final Morphia morphia = new Morphia();
-
         morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
-        client = new MongoClient(addresses);
+        client = options == null ? new MongoClient(hosts, credentials) : new MongoClient(hosts, credentials, options);
 
-        final AdvancedDatastore ds = (AdvancedDatastore) morphia.createDatastore(client, db);
+        final AdvancedDatastore ds = (AdvancedDatastore) morphia.createDatastore(client, database);
         final RevisionManager revisionManager = new RevisionManager(ds);
         this.store = new MongoExperimentsStore(ds, revisionManager);
         this.cache = new MongoExperimentsCache(ds, revisionManager);
-    }
-
-    private static Pair<String, Integer> parseHostAndPort(String host) {
-        try {
-            final URI uri = new URI(String.format("my://%s", host));
-            return
-                uri.getPort() == -1 ?
-                    new Pair<>(uri.getHost(), ServerAddress.defaultPort()) :
-                    new Pair<>(uri.getHost(), uri.getPort());
-        } catch (final URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static List<ServerAddress> parseAddresses(List<String> hosts) {
-        return Lists.transform(
-            hosts,
-            new Function<String, ServerAddress>() {
-                @Override
-                public ServerAddress apply(String input) {
-                    final Pair<String, Integer> hostPort = parseHostAndPort(input);
-                    try {
-                        return new ServerAddress(hostPort.getFirst(), hostPort.getSecond());
-                    } catch (final UnknownHostException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        );
     }
 
     @Override
@@ -89,5 +56,51 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
     @Override
     public void close() throws IOException {
         client.close();
+    }
+
+    public static class Builder {
+        private List<ServerAddress> hosts;
+        private List<MongoCredential> credentials;
+        private MongoClientOptions options;
+        private String database;
+
+        public Builder() {
+            this.hosts = Lists.newArrayList();
+            this.credentials = Lists.newArrayList();
+            this.database = "experiments";
+        }
+
+        public Builder setDatabase(String database) {
+            this.database = database;
+            return this;
+        }
+
+        public Builder setOptions(MongoClientOptions options) {
+            this.options = options;
+            return this;
+        }
+
+        public Builder addCredential(MongoCredential credential) {
+            this.credentials.add(credential);
+            return this;
+        }
+
+        public Builder addHost(ServerAddress host) {
+            hosts.add(host);
+            return this;
+        }
+
+        public MongoStoreProvider build() throws UnknownHostException {
+            if (hosts.isEmpty()) {
+                hosts.add(new ServerAddress(ServerAddress.defaultHost(), ServerAddress.defaultPort()));
+            }
+
+            return new MongoStoreProvider(
+                hosts,
+                credentials,
+                options,
+                database
+            );
+        }
     }
 }

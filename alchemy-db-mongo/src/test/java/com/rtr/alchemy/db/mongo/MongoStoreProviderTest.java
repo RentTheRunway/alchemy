@@ -14,8 +14,11 @@ public class MongoStoreProviderTest extends ExperimentsStoreProviderTest {
     private static final String DATABASE_NAME = "test_experiments";
 
     @Override
-    protected ExperimentsStoreProvider createProvider() {
-        return new MongoStoreProvider(DATABASE_NAME);
+    protected ExperimentsStoreProvider createProvider() throws Exception {
+        return MongoStoreProvider
+            .newBuilder()
+            .setDatabase(DATABASE_NAME)
+            .build();
     }
 
     @Override
