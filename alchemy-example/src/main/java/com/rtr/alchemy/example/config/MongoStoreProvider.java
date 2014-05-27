@@ -24,7 +24,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
 
     private final String username;
 
-    private final String pasword;
+    private final String password;
 
     @JsonCreator
     public MongoStoreProvider(@JsonProperty("hosts") List<HostAndPort> hosts,
@@ -34,7 +34,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         this.hosts = hosts;
         this.db = db;
         this.username = username;
-        this.pasword = password;
+        this.password = password;
     }
 
     public List<HostAndPort> getHosts() {
@@ -49,8 +49,8 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         return username;
     }
 
-    public String getPasword() {
-        return pasword;
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         }
 
         if (username != null) {
-            builder.addCredential(MongoCredential.createPlainCredential(username, db, pasword.toCharArray()));
+            builder.addCredential(MongoCredential.createPlainCredential(username, db, password.toCharArray()));
         }
 
         builder.setDatabase(db);
