@@ -2,10 +2,14 @@ package com.rtr.alchemy.example.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.net.HostAndPort;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.service.config.StoreProviderConfiguration;
 
 import javax.validation.constraints.NotNull;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -13,19 +17,27 @@ import java.util.List;
  */
 public class MongoStoreProvider extends StoreProviderConfiguration {
     @NotNull
-    private final List<String> hosts;
+    private final List<HostAndPort> hosts;
 
     @NotNull
     private final String db;
 
+    private final String username;
+
+    private final String password;
+
     @JsonCreator
-    public MongoStoreProvider(@JsonProperty("hosts") List<String> hosts,
-                              @JsonProperty("db") String db) {
+    public MongoStoreProvider(@JsonProperty("hosts") List<HostAndPort> hosts,
+                              @JsonProperty("db") String db,
+                              @JsonProperty("username") String username,
+                              @JsonProperty("password") String password) {
         this.hosts = hosts;
         this.db = db;
+        this.username = username;
+        this.password = password;
     }
 
-    public List<String> getHosts() {
+    public List<HostAndPort> getHosts() {
         return hosts;
     }
 
@@ -33,8 +45,31 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         return db;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     @Override
-    public ExperimentsStoreProvider createProvider() {
-        return new com.rtr.alchemy.db.mongo.MongoStoreProvider(hosts, db);
+    public ExperimentsStoreProvider createProvider() throws UnknownHostException {
+        final com.rtr.alchemy.db.mongo.MongoStoreProvider.Builder builder = com.rtr.alchemy.db.mongo.MongoStoreProvider.newBuilder();
+        for (final HostAndPort host : hosts) {
+            if (!host.hasPort()) {
+                builder.addHost(new ServerAddress(host.getHostText()));
+            } else {
+                builder.addHost(new ServerAddress(host.getHostText(), host.getPort()));
+            }
+        }
+
+        if (username != null) {
+            builder.addCredential(MongoCredential.createPlainCredential(username, db, password.toCharArray()));
+        }
+
+        builder.setDatabase(db);
+
+        return builder.build();
     }
 }

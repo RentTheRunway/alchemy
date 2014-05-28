@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 public abstract class ExperimentsStoreProviderTest {
     private Experiments experiments;
 
-    protected abstract ExperimentsStoreProvider createProvider();
+    protected abstract ExperimentsStoreProvider createProvider() throws Exception ;
     protected abstract void resetStore();
 
     @Segments({"test"})
@@ -52,7 +52,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         resetStore();
         final ExperimentsStoreProvider provider = createProvider();
         assertNotNull("provider cannot be null", provider);
