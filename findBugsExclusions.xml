@@ -1,0 +1,11 @@
+<FindBugsFilter>
+  <!-- ANTLR generated files -->
+  <Match>
+    <Or>
+      <Class name="com.rtr.alchemy.filtering.FilterBaseListener"/>
+      <Class name="com.rtr.alchemy.filtering.FilterLexer"/>
+      <Class name="com.rtr.alchemy.filtering.FilterParser"/>
+      <Class name="com.rtr.alchemy.filtering.FilterListener"/>
+    </Or>
+  </Match>
+</FindBugsFilter>

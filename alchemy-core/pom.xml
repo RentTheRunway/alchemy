@@ -38,5 +38,41 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.2.2</version>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>4.2.2</version>
+        <configuration>
+          <sourceDirectory>${basedir}/src/main/antlr4</sourceDirectory>
+          <outputDirectory>${basedir}/src/main/java/com/rtr/alchemy/filtering</outputDirectory>
+          <libDirectory>/tmp</libDirectory>
+          <arguments>
+            <argument>-lib</argument>
+            <argument>/tmp</argument>
+            <argument>-package</argument>
+            <argument>com.rtr.alchemy.filtering</argument>
+          </arguments>
+          <options>
+            <language>Java</language>
+          </options>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

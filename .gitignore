@@ -10,3 +10,5 @@ build
 # Idea Files #
 *.iml
 .idea
+*.tokens
+gen
