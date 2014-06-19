@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 public class FilterParserTest {
 
     private boolean eval(Set<String> attribtes, String expression) {
-        final FilterExpression filterExpression = new FilterExpression(expression);
+        final FilterExpression filterExpression = FilterExpression.of(expression);
         return filterExpression.evaluate(attribtes);
     }
 
@@ -48,5 +48,19 @@ public class FilterParserTest {
 
         // mix
         assertTrue(eval(attributes, "(not ! not ! a | not not not ! b) and not !a"));
+    }
+
+    @Test
+    public void testisValid() {
+        assertTrue(FilterExpression.isValid("a"));
+        assertTrue(FilterExpression.isValid("a|b"));
+        assertTrue(FilterExpression.isValid("!a"));
+        assertTrue(FilterExpression.isValid("(((a)))"));
+        assertFalse(FilterExpression.isValid("|"));
+        assertFalse(FilterExpression.isValid("a|"));
+        assertFalse(FilterExpression.isValid("|b"));
+        assertFalse(FilterExpression.isValid("!|"));
+        assertFalse(FilterExpression.isValid("!|b"));
+        assertFalse(FilterExpression.isValid("((a)"));
     }
 }

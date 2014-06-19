@@ -15,16 +15,27 @@ import java.util.Stack;
  * Allows evaluation of a filter expression which tests whether given attributes are present
  */
 public class FilterExpression {
+    private static final FilterErrorListener ERROR_LISTENER = new FilterErrorListener();
     private final ParseTreeWalker walker;
     private final FilterParser.ExpContext expression;
 
-    public FilterExpression(String expression) {
-        final ANTLRInputStream inputStream = new ANTLRInputStream(expression);
-        final FilterLexer lexer = new FilterLexer(inputStream);
-        final CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        final FilterParser parser = new FilterParser(tokenStream);
+    public FilterExpression(FilterParser parser) {
         this.expression = parser.exp();
         this.walker = new ParseTreeWalker();
+    }
+
+    public static FilterExpression of(String expression) {
+        final ANTLRInputStream inputStream = new ANTLRInputStream(expression);
+        final FilterLexer lexer = new FilterLexer(inputStream);
+        lexer.getErrorListeners().clear();
+        lexer.addErrorListener(ERROR_LISTENER);
+
+        final CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        final FilterParser parser = new FilterParser(tokenStream);
+        parser.getErrorListeners().clear();
+        parser.addErrorListener(ERROR_LISTENER);
+
+        return new FilterExpression(parser);
     }
 
     /**
@@ -35,6 +46,15 @@ public class FilterExpression {
         final FilterExpressionEvaluator evaluator = new FilterExpressionEvaluator(attributes);
         walker.walk(evaluator, expression);
         return evaluator.getResult();
+    }
+
+    public static boolean isValid(String expression) {
+        try {
+            FilterExpression.of(expression);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /**
