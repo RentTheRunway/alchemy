@@ -15,9 +15,9 @@ public class FilterParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		LPAREN=1, RPAREN=2, AND=3, OR=4, NOT=5, IDENTIFIER=6, WS=7;
+		T__1=1, T__0=2, AND=3, OR=4, NOT=5, IDENTIFIER=6, WS=7;
 	public static final String[] tokenNames = {
-		"<INVALID>", "'('", "')'", "AND", "OR", "NOT", "IDENTIFIER", "WS"
+		"<INVALID>", "')'", "'('", "AND", "OR", "NOT", "IDENTIFIER", "WS"
 	};
 	public static final int
 		RULE_exp = 0, RULE_term = 1, RULE_factor = 2, RULE_value = 3;
@@ -207,12 +207,12 @@ public class FilterParser extends Parser {
 		try {
 			setState(33);
 			switch (_input.LA(1)) {
-			case LPAREN:
+			case 2:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(26); match(LPAREN);
+				setState(26); match(2);
 				setState(27); exp(0);
-				setState(28); match(RPAREN);
+				setState(28); match(1);
 				}
 				break;
 			case IDENTIFIER:
@@ -301,7 +301,7 @@ public class FilterParser extends Parser {
 		"\6\2\2\17\21\5\4\3\2\20\r\3\2\2\2\21\24\3\2\2\2\22\20\3\2\2\2\22\23\3"+
 		"\2\2\2\23\3\3\2\2\2\24\22\3\2\2\2\25\33\5\6\4\2\26\27\5\6\4\2\27\30\7"+
 		"\5\2\2\30\31\5\4\3\2\31\33\3\2\2\2\32\25\3\2\2\2\32\26\3\2\2\2\33\5\3"+
-		"\2\2\2\34\35\7\3\2\2\35\36\5\2\2\2\36\37\7\4\2\2\37$\3\2\2\2 $\5\b\5\2"+
+		"\2\2\2\34\35\7\4\2\2\35\36\5\2\2\2\36\37\7\3\2\2\37$\3\2\2\2 $\5\b\5\2"+
 		"!\"\7\7\2\2\"$\5\6\4\2#\34\3\2\2\2# \3\2\2\2#!\3\2\2\2$\7\3\2\2\2%&\7"+
 		"\b\2\2&\t\3\2\2\2\5\22\32#";
 	public static final ATN _ATN =

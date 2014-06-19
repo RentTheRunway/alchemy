@@ -1,7 +1,5 @@
 grammar Filter;
 
-LPAREN: '(';
-RPAREN: ')';
 AND: ('&' | 'and');
 OR: ('|' | 'or');
 NOT: ('!' | 'not');

@@ -15,17 +15,17 @@ public class FilterLexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		LPAREN=1, RPAREN=2, AND=3, OR=4, NOT=5, IDENTIFIER=6, WS=7;
+		T__1=1, T__0=2, AND=3, OR=4, NOT=5, IDENTIFIER=6, WS=7;
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
 	};
 
 	public static final String[] tokenNames = {
 		"<INVALID>",
-		"'('", "')'", "AND", "OR", "NOT", "IDENTIFIER", "WS"
+		"')'", "'('", "AND", "OR", "NOT", "IDENTIFIER", "WS"
 	};
 	public static final String[] ruleNames = {
-		"LPAREN", "RPAREN", "AND", "OR", "NOT", "IDENTIFIER", "WS"
+		"T__1", "T__0", "AND", "OR", "NOT", "IDENTIFIER", "WS"
 	};
 
 
@@ -60,7 +60,7 @@ public class FilterLexer extends Lexer {
 		"\5\t\6\13\7\r\b\17\t\3\2\4\7\2//\62;C\\aac|\5\2\13\f\17\17\"\"\66\2\3"+
 		"\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2"+
 		"\2\17\3\2\2\2\3\21\3\2\2\2\5\23\3\2\2\2\7\31\3\2\2\2\t\36\3\2\2\2\13$"+
-		"\3\2\2\2\r\'\3\2\2\2\17,\3\2\2\2\21\22\7*\2\2\22\4\3\2\2\2\23\24\7+\2"+
+		"\3\2\2\2\r\'\3\2\2\2\17,\3\2\2\2\21\22\7+\2\2\22\4\3\2\2\2\23\24\7*\2"+
 		"\2\24\6\3\2\2\2\25\32\7(\2\2\26\27\7c\2\2\27\30\7p\2\2\30\32\7f\2\2\31"+
 		"\25\3\2\2\2\31\26\3\2\2\2\32\b\3\2\2\2\33\37\7~\2\2\34\35\7q\2\2\35\37"+
 		"\7t\2\2\36\33\3\2\2\2\36\34\3\2\2\2\37\n\3\2\2\2 %\7#\2\2!\"\7p\2\2\""+
