@@ -3,7 +3,6 @@ package com.rtr.alchemy.service.resources;
 import com.google.inject.Inject;
 import com.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
-import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
@@ -64,7 +63,7 @@ public class TreatmentOverridesResource extends BaseResource {
             .addOverride(
                 request.getName(),
                 request.getTreatment(),
-                mapper.fromDto(request.getIdentity(), Identity.class)
+                request.getFilter()
             )
             .save();
 

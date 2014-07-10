@@ -1,11 +1,12 @@
 package com.rtr.alchemy.client.identities;
 
+import com.rtr.alchemy.identities.Attributes;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.Segments;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
-@Segments({"anonymous", "identified"})
+@Attributes({"anonymous", "identified"})
 public class User extends Identity {
     private final String name;
 
@@ -18,7 +19,7 @@ public class User extends Identity {
     }
 
     @Override
-    public long computeHash(int seed, Set<String> segments) {
+    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
         return
             identity(seed)
                 .putString(name)
@@ -26,7 +27,10 @@ public class User extends Identity {
     }
 
     @Override
-    public Set<String> computeSegments() {
-        return segments(name == null ? "anonymous" : "identified");
+    public AttributesMap computeAttributes() {
+        return
+            name == null ?
+            attributes().put("anonymous", true).build() :
+            attributes().put("identified", true).build();
     }
 }

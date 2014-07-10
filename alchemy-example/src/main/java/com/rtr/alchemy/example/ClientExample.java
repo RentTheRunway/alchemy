@@ -69,7 +69,7 @@ public class ClientExample {
                 .setDescription("my new experiment")
                 .addTreatment("control", "the default")
                 .addTreatment("pie", "show them pie")
-                .setSegments("identified")
+                .setFilter("identified")
                 .allocate("control", 25)
                 .allocate("pie", 25)
                 .activate()
@@ -93,7 +93,7 @@ public class ClientExample {
             println();
 
             // Let's add an override for our qa person, who obviously likes pie
-            client.addOverride("my_experiment", "qa_pie", "pie", new UserDto("qa"));
+            client.addOverride("my_experiment", "qa_pie", "pie", "user_name=qa");
 
             // Let's also add for comparison, cake
             client.addTreatment("my_experiment", "cake", "show them cake");
@@ -129,8 +129,8 @@ public class ClientExample {
 
             // Ok, that was unfair, let's fix the allocations
             client.clearAllocations("my_experiment");
-            client.addOverride("my_experiment", "gene_likes_beer", "beer", new UserDto("gene"));
-            client.addOverride("my_experiment", "qa_wine", "wine", new UserDto("qa"));
+            client.addOverride("my_experiment", "gene_likes_beer", "beer", "user_name=gene");
+            client.addOverride("my_experiment", "qa_wine", "wine", "user_name=qa");
             client
                 .updateAllocations("my_experiment")
                 .allocate("beer", 51)

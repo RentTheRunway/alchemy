@@ -3,7 +3,6 @@ package com.rtr.alchemy.models;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.rtr.alchemy.caching.BasicCacheStrategy;
 import com.rtr.alchemy.caching.CacheStrategy;
 import com.rtr.alchemy.caching.CachingContext;
@@ -11,13 +10,13 @@ import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.Filter;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.caching.CacheStrategyIterable;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -45,50 +44,58 @@ public class Experiments implements Closeable {
         cache.invalidateAll(new Experiment.BuilderFactory(this));
     }
 
-    private boolean segmentsMatch(Set<String> expected, Identity identity) {
-        final Set<String> actual =
-            Sets.intersection(
-                identity.computeSegments(),
-                Identity.getSupportedSegments(identity.getClass())
-            );
+    private Treatment getTreatmentWithOverrides(Experiment experiment, Identity identity, AttributesMap attributes) {
+        for (TreatmentOverride override : experiment.getOverrides()) {
+            if (override.getFilter().evaluate(attributes)) {
+                return override.getTreatment();
+            }
+        }
 
-        return
-            expected == null ||
-            expected.isEmpty() ||
-            (actual.containsAll(expected));
+        return experiment.getTreatment(identity, attributes);
     }
 
+    /**
+     * Returns the current active treatment for an experiment name and identity, taking overrides into account
+     */
     public Treatment getActiveTreatment(String experimentName, Identity identity) {
         strategy.onCacheRead(experimentName, context);
 
         final Experiment experiment = cache.getActiveExperiments().get(experimentName);
-        if (experiment == null) {
+        final AttributesMap attributes = identity
+                                            .computeAttributes()
+                                            .filter(Identity.getSupportedAttributes(identity.getClass()));
+
+        if (experiment == null || !experiment.getFilter().evaluate(attributes)) {
             return null;
         }
 
-        if (!segmentsMatch(experiment.getSegments(), identity)) {
-            return null;
-        }
-
-        final TreatmentOverride override = experiment.getOverride(identity);
-        return override != null ? override.getTreatment() : experiment.getTreatment(identity);
+        return getTreatmentWithOverrides(experiment, identity, attributes);
     }
 
+    /**
+     * Returns all active experiments
+     */
     public Iterable<Experiment> getActiveExperiments() {
         strategy.onCacheRead(context);
         return Iterables.unmodifiableIterable(cache.getActiveExperiments().values());
     }
 
+    /**
+     * Returns all active treatments for all active experiments for an identity, taking overrides into account
+     */
     public Map<Experiment, Treatment> getActiveTreatments(Identity identity) {
         strategy.onCacheRead(context);
         final Map<Experiment, Treatment> result = Maps.newHashMap();
+        final AttributesMap attributes = identity
+                                            .computeAttributes()
+                                            .filter(Identity.getSupportedAttributes(identity.getClass()));
+
         for (final Experiment experiment : cache.getActiveExperiments().values()) {
-            if (!segmentsMatch(experiment.getSegments(), identity)) {
+            if (!experiment.getFilter().evaluate(attributes)) {
                 continue;
             }
 
-            final TreatmentOverride override = experiment.getOverride(identity);
-            final Treatment treatment = override == null ? experiment.getTreatment(identity) : override.getTreatment();
+            final Treatment treatment = getTreatmentWithOverrides(experiment, identity, attributes);
 
             if (treatment == null) {
                 continue;
@@ -100,6 +107,9 @@ public class Experiments implements Closeable {
         return result;
     }
 
+    /**
+     * Finds an experiment given a set of criteria
+     */
     public Iterable<Experiment> find(Filter filter) {
         return Iterables.unmodifiableIterable(
             new CacheStrategyIterable(
@@ -110,12 +120,18 @@ public class Experiments implements Closeable {
         );
     }
 
+    /**
+     * Finds all experiments
+     */
     public Iterable<Experiment> find() {
         return Iterables.unmodifiableIterable(
             find(Filter.criteria().build())
         );
     }
 
+    /**
+     * Gets a specific experiment by name
+     */
     public Experiment get(String experimentName) {
         final Experiment experiment = store.load(
             experimentName,
@@ -128,16 +144,25 @@ public class Experiments implements Closeable {
         return experiment;
     }
 
+    /**
+     * Deletes a specific experiment by name
+     */
     public void delete(String experimentName) {
         store.delete(experimentName);
         strategy.onDelete(experimentName, context);
     }
 
+    /**
+     * Persists a specific experiment by name
+     */
     public void save(Experiment experiment) {
         store.save(experiment);
         strategy.onSave(experiment, context);
     }
 
+    /**
+     * Creates a new experiment by name, which is not persisted until save is called
+     */
     public Experiment create(String name) {
         return new Experiment(this, name);
     }

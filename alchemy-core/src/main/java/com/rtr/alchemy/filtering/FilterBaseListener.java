@@ -30,6 +30,19 @@ public class FilterBaseListener implements FilterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterConstant(@NotNull FilterParser.ConstantContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstant(@NotNull FilterParser.ConstantContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTerm(@NotNull FilterParser.TermContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -63,6 +76,19 @@ public class FilterBaseListener implements FilterListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFactor(@NotNull FilterParser.FactorContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComparison(@NotNull FilterParser.ComparisonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComparison(@NotNull FilterParser.ComparisonContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

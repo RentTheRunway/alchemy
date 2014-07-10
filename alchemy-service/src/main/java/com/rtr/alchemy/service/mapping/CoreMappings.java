@@ -1,6 +1,7 @@
 package com.rtr.alchemy.service.mapping;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.dto.models.AllocationDto;
 import com.rtr.alchemy.dto.models.ExperimentDto;
 import com.rtr.alchemy.dto.models.TreatmentDto;
@@ -12,10 +13,17 @@ import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Treatment;
 import com.rtr.alchemy.models.TreatmentOverride;
 
+import java.util.List;
+
 /**
  * A helper class for configuring the base required mappers for core domain objects
  */
 public class CoreMappings {
+
+    private static <T> List<T> safeArrayList(Iterable<T> iterable) {
+        return iterable != null ? Lists.newArrayList(iterable) : null;
+    }
+
     public static void configure(final Mappers mappers) {
         // fixed domain types
         mappers.register(
@@ -56,7 +64,11 @@ public class CoreMappings {
             new Mapper<TreatmentOverrideDto, TreatmentOverride>() {
                 @Override
                 public TreatmentOverrideDto toDto(TreatmentOverride override) {
-                    return new TreatmentOverrideDto(override.getName(), override.getTreatment().getName());
+                    return new TreatmentOverrideDto(
+                        override.getName(),
+                        override.getFilter().toString(),
+                        override.getTreatment().getName()
+                    );
                 }
 
                 @Override
@@ -72,19 +84,24 @@ public class CoreMappings {
             new Mapper<ExperimentDto, Experiment>() {
                 @Override
                 public ExperimentDto toDto(Experiment experiment) {
+                    if (experiment == null) {
+                        return null;
+                    }
+
                     return new ExperimentDto(
                         experiment.getName(),
                         experiment.getSeed(),
                         experiment.getDescription(),
-                        experiment.getSegments(),
+                        experiment.getFilter() != null ? experiment.getFilter().toString() : null,
+                        experiment.getHashAttributes() != null ? Sets.newLinkedHashSet(experiment.getHashAttributes()) : null,
                         experiment.isActive(),
                         experiment.getCreated(),
                         experiment.getModified(),
                         experiment.getActivated(),
                         experiment.getDeactivated(),
-                        Lists.newArrayList(mappers.toDto(experiment.getTreatments(), TreatmentDto.class)),
-                        Lists.newArrayList(mappers.toDto(experiment.getAllocations(), AllocationDto.class)),
-                        Lists.newArrayList(mappers.toDto(experiment.getOverrides(), TreatmentOverrideDto.class))
+                        safeArrayList(mappers.toDto(experiment.getTreatments(), TreatmentDto.class)),
+                        safeArrayList(mappers.toDto(experiment.getAllocations(), AllocationDto.class)),
+                        safeArrayList(mappers.toDto(experiment.getOverrides(), TreatmentOverrideDto.class))
                     );
                 }
 

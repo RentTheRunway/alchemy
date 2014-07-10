@@ -6,6 +6,8 @@ import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.Filter;
+import com.rtr.alchemy.filtering.FilterExpression;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
@@ -46,12 +48,14 @@ public class CacheStrategyTest {
 
         experiment1 = mock(Experiment.class);
         doReturn("foo").when(experiment1).getName();
+        doReturn(FilterExpression.alwaysTrue()).when(experiment1).getFilter();
         doReturn(experiment1)
             .when(store)
             .load(eq("foo"), any(Experiment.Builder.class));
 
         experiment2 = mock(Experiment.class);
         doReturn("bar").when(experiment2).getName();
+        doReturn(FilterExpression.alwaysTrue()).when(experiment2).getFilter();
         doReturn(experiment2)
             .when(store)
             .load(eq("bar"), any(Experiment.Builder.class));
@@ -118,15 +122,18 @@ public class CacheStrategyTest {
 
         reset(strategy);
 
+        final Identity identity = mock(Identity.class);
+        doReturn(AttributesMap.empty()).when(identity).computeAttributes();
+
         // single read
-        experiments.getActiveTreatment(experiment1.getName(), mock(Identity.class));
+        experiments.getActiveTreatment(experiment1.getName(), identity);
         verify(strategy, never()).onCacheRead(any(CachingContext.class));
         verify(strategy).onCacheRead(anyString(), any(CachingContext.class));
 
         reset(strategy);
 
         // many read
-        experiments.getActiveTreatments(mock(Identity.class));
+        experiments.getActiveTreatments(identity);
         verify(strategy).onCacheRead(any(CachingContext.class));
         verify(strategy, never()).onCacheRead(anyString(), any(CachingContext.class));
     }

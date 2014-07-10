@@ -2,22 +2,22 @@ package com.rtr.alchemy.client.builder;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import com.rtr.alchemy.dto.requests.AllocateRequest;
 import com.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import com.sun.jersey.api.client.WebResource;
 
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class CreateExperimentRequestBuilder {
     private final String name;
     private final WebResource.Builder builder;
     private Integer seed;
     private String description;
-    private Set<String> segments;
+    private String filter;
+    private LinkedHashSet<String> hashAttributes;
     private Boolean isActive;
     private final List<TreatmentDto> treatments;
     private final List<AllocateRequest> allocations;
@@ -41,13 +41,18 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder setSegments(Set<String> segments) {
-        this.segments = segments;
+    public CreateExperimentRequestBuilder setFilter(String filter) {
+        this.filter = filter;
         return this;
     }
 
-    public CreateExperimentRequestBuilder setSegments(String ... segments) {
-        this.segments = Sets.newHashSet(segments);
+    public CreateExperimentRequestBuilder setHashAttributes(LinkedHashSet<String> hashAttributes) {
+        this.hashAttributes = hashAttributes;
+        return this;
+    }
+
+    public CreateExperimentRequestBuilder setHashAttributes(String ... hashAttributes) {
+        this.hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes));
         return this;
     }
 
@@ -76,8 +81,8 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder addOverride(String name, String treatmentName, IdentityDto identity) {
-        overrides.add(new TreatmentOverrideRequest(treatmentName, identity, name));
+    public CreateExperimentRequestBuilder addOverride(String name, String treatmentName, String filter) {
+        overrides.add(new TreatmentOverrideRequest(treatmentName, filter, name));
         return this;
     }
 
@@ -87,7 +92,8 @@ public class CreateExperimentRequestBuilder {
                 name,
                 seed,
                 description,
-                segments,
+                filter,
+                hashAttributes,
                 isActive,
                 treatments,
                 allocations,

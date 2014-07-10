@@ -1,13 +1,15 @@
 package com.rtr.alchemy.example.identities;
 
+import com.rtr.alchemy.identities.Attributes;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.Segments;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
-@Segments(Device.SEGMENT_DEVICE)
+@Attributes({Device.ATTR_DEVICE, Device.ATTR_DEVICE_ID})
 public class Device extends Identity {
-    public static final String SEGMENT_DEVICE = "device";
+    public static final String ATTR_DEVICE = "device";
+    public static final String ATTR_DEVICE_ID = "device_id";
     private final String id;
 
     public Device(String id) {
@@ -19,7 +21,7 @@ public class Device extends Identity {
     }
 
     @Override
-    public long computeHash(int seed, Set<String> segments) {
+    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
         return
             identity(seed)
                 .putString(id)
@@ -27,7 +29,10 @@ public class Device extends Identity {
     }
 
     @Override
-    public Set<String> computeSegments() {
-        return segments(SEGMENT_DEVICE);
+    public AttributesMap computeAttributes() {
+        return attributes()
+            .put(ATTR_DEVICE, true)
+            .put(ATTR_DEVICE_ID, id)
+            .build();
     }
 }

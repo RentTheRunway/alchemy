@@ -1,38 +1,55 @@
 package com.rtr.alchemy.models;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.rtr.alchemy.filtering.FilterExpression;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 import com.rtr.alchemy.identities.IdentityBuilder;
 import org.apache.commons.math3.util.FastMath;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Represents a collection of user experiences being tested
  */
 
 public class Experiment {
+    private static final LinkedHashSet<String> EMPTY_SET = Sets.newLinkedHashSet();
+    private static final Function<TreatmentOverride, String> TREATMENT_INDEXER =
+        new Function<TreatmentOverride, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable TreatmentOverride input) {
+                return input != null ? input.getName() : null;
+            }
+        };
+
     private final Experiments owner;
     private final String name;
     private final Allocations allocations;
     private final Map<String, Treatment> treatments;
     private final Map<String, TreatmentOverride> overrides;
-    private final Map<Long, TreatmentOverride> overridesByHash;
     private int seed;
     private String description;
-    private Set<String> segments;
+    private FilterExpression filter;
+    private LinkedHashSet<String> hashAttributes;
     private boolean active;
     private DateTime created;
     private DateTime modified;
@@ -44,7 +61,8 @@ public class Experiment {
                        String name,
                        int seed,
                        String description,
-                       Set<String> segments,
+                       FilterExpression filter,
+                       LinkedHashSet<String> hashAttributes,
                        boolean active,
                        DateTime created,
                        DateTime modified,
@@ -56,25 +74,15 @@ public class Experiment {
         this.owner = owner;
         this.name = name;
         this.description = description;
-        this.segments = segments != null ? Sets.newHashSet(segments) : Sets.<String>newHashSet();
+        this.filter = Objects.firstNonNull(filter, FilterExpression.alwaysTrue());
+        this.hashAttributes = Objects.firstNonNull(hashAttributes, EMPTY_SET);
         this.active = active;
         this.created = created;
         this.modified = modified;
         this.activated = activated;
         this.deactivated = deactivated;
-
-        this.treatments = treatments;
-        for (final Treatment treatment : treatments.values()) {
-            this.treatments.put(treatment.getName(), treatment);
-        }
-
-        this.overrides = Maps.newConcurrentMap();
-        this.overridesByHash = Maps.newConcurrentMap();
-        for (final TreatmentOverride override : overrides) {
-            this.overridesByHash.put(override.getHash(), override);
-            this.overrides.put(override.getName(), override);
-        }
-
+        this.treatments = new ConcurrentHashMap<>(treatments);
+        this.overrides = new ConcurrentHashMap<>(Maps.uniqueIndex(overrides, TREATMENT_INDEXER));
         this.allocations = new Allocations(allocations);
         this.seed = seed;
     }
@@ -84,11 +92,11 @@ public class Experiment {
                          String name) {
         this.owner = owner;
         this.name = name;
-        this.segments = Sets.newHashSet();
+        this.filter = FilterExpression.alwaysTrue();
+        this.hashAttributes = EMPTY_SET;
         this.allocations = new Allocations();
         this.treatments = Maps.newConcurrentMap();
         this.overrides = Maps.newConcurrentMap();
-        this.overridesByHash = Maps.newConcurrentMap();
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
     }
 
@@ -114,17 +122,16 @@ public class Experiment {
         this.allocations = new Allocations(allocations);
 
         this.overrides = Maps.newConcurrentMap();
-        this.overridesByHash = Maps.newConcurrentMap();
         for (final TreatmentOverride override : toCopy.getOverrides()) {
             final Treatment treatment = this.treatments.get(override.getTreatment().getName());
-            final TreatmentOverride newOverride =  new TreatmentOverride(override.getName(), override.getHash(), treatment);
+            final TreatmentOverride newOverride =  new TreatmentOverride(override.getName(), override.getFilter(), treatment);
             overrides.put(override.getName(), newOverride);
-            overridesByHash.put(override.getHash(), newOverride);
         }
 
         this.seed = toCopy.seed;
         this.description = toCopy.description;
-        this.segments = Sets.newHashSet(toCopy.segments);
+        this.filter = toCopy.filter;
+        this.hashAttributes = Sets.newLinkedHashSet(toCopy.getHashAttributes());
         this.active = toCopy.active;
         this.created = toCopy.created;
         this.modified = toCopy.modified;
@@ -145,24 +152,29 @@ public class Experiment {
         return this;
     }
 
-    public Set<String> getSegments() {
-        return Collections.unmodifiableSet(segments);
+    public FilterExpression getFilter() {
+        return filter;
     }
 
-    public Experiment setSegments(Set<String> segments) {
-        if (segments == null) {
-            this.segments = Sets.newHashSet();
-        } else {
-            this.segments = Sets.newHashSet(segments);
-        }
+    public Set<String> getHashAttributes() {
+        return Collections.unmodifiableSet(hashAttributes);
+    }
+
+    public Experiment setFilter(FilterExpression filter) {
+        this.filter = filter;
         return this;
     }
 
-    public Experiment setSegments(String ... segments) {
-        if (segments == null) {
-            this.segments = Sets.newHashSet();
+    public Experiment setHashAttributes(LinkedHashSet<String> hashAttributes) {
+        this.hashAttributes = Objects.firstNonNull(hashAttributes, EMPTY_SET);
+        return this;
+    }
+
+    public Experiment setHashAttributes(String ... hashAttributes) {
+        if (hashAttributes == null) {
+            this.hashAttributes = EMPTY_SET;
         } else {
-            this.segments = Sets.newHashSet(segments);
+            this.hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes));
         }
         return this;
     }
@@ -203,14 +215,14 @@ public class Experiment {
      * Gets all allocations defined on this experiment
      */
     public List<Allocation> getAllocations() {
-        return ImmutableList.copyOf(allocations.getAllocations());
+        return Collections.unmodifiableList(allocations.getAllocations());
     }
 
     /**
      * Gets all treatments defined on this experiment
      */
     public List<Treatment> getTreatments() {
-        return ImmutableList.copyOf(treatments.values());
+        return Collections.unmodifiableList(Lists.newArrayList(treatments.values()));
     }
 
     /**
@@ -225,14 +237,6 @@ public class Experiment {
      */
     public List<TreatmentOverride> getOverrides() {
         return ImmutableList.copyOf(overrides.values());
-    }
-
-    /**
-     * Gets the assigned override for a given identity
-     * @param identity The identity
-     */
-    public TreatmentOverride getOverride(Identity identity) {
-        return overridesByHash.get(identity.computeHash(seed, segments));
     }
 
     /**
@@ -305,8 +309,6 @@ public class Experiment {
      */
     public Experiment clearOverrides() {
         overrides.clear();
-        overridesByHash.clear();
-
         return this;
     }
 
@@ -314,29 +316,12 @@ public class Experiment {
      * Add a treatment override for an identity
      * @param treatmentName The treatment an identity should receive
      * @param overrideName The name of the override
-     * @param identity The identity
+     * @param filter A filter expression that describes which attributes this override should apply for
      */
-    public Experiment addOverride(String overrideName, String treatmentName, Identity identity) {
-        final Long hash = identity.computeHash(seed, segments);
-        final TreatmentOverride override = new TreatmentOverride(overrideName, hash, treatment(treatmentName));
-        final TreatmentOverride replaced = overridesByHash.put(hash, override);
-        if (replaced != null) {
-            overrides.remove(replaced.getName());
-        }
+    public Experiment addOverride(String overrideName, String treatmentName, String filter) {
+        final FilterExpression filterExp = FilterExpression.of(filter);
+        final TreatmentOverride override = new TreatmentOverride(overrideName, filterExp, treatment(treatmentName));
         overrides.put(overrideName, override);
-
-        return this;
-    }
-
-    /**
-     * Remove an override
-     * @param identity The identities to remove the override for
-     */
-    public Experiment removeOverride(Identity identity) {
-        final TreatmentOverride removed = overridesByHash.remove(identity.computeHash(seed, segments));
-        if (removed != null) {
-            overrides.remove(removed.getName());
-        }
 
         return this;
     }
@@ -346,11 +331,7 @@ public class Experiment {
      * @param overrideName The name of the override to remove
      */
     public Experiment removeOverride(String overrideName) {
-        final  TreatmentOverride removed = overrides.remove(overrideName);
-        if (removed != null) {
-            overridesByHash.remove(removed.getHash());
-        }
-
+        overrides.remove(overrideName);
         return this;
     }
 
@@ -365,12 +346,11 @@ public class Experiment {
             return this;
         }
 
-        final Iterator<Entry<Long, TreatmentOverride>> iterator = overridesByHash.entrySet().iterator();
+        final Iterator<Entry<String, TreatmentOverride>> iterator = overrides.entrySet().iterator();
         while (iterator.hasNext()) {
-            final Entry<Long, TreatmentOverride> entry = iterator.next();
+            final Entry<String, TreatmentOverride> entry = iterator.next();
             if (entry.getValue().getTreatment().equals(treatment)) {
                 iterator.remove();
-                overrides.remove(entry.getValue().getName());
             }
         }
 
@@ -467,8 +447,8 @@ public class Experiment {
         return this;
     }
 
-    private int identityToBin(Identity identity) {
-        return (int) (FastMath.abs(identity.computeHash(seed, segments)) % Allocations.NUM_BINS);
+    private int identityToBin(Identity identity, AttributesMap attributes) {
+        return (int) (FastMath.abs(identity.computeHash(seed, hashAttributes ,attributes)) % Allocations.NUM_BINS);
     }
 
     /**
@@ -476,8 +456,8 @@ public class Experiment {
      * @param identity The identity
      * @return the treatment assigned to given identity
      */
-    public Treatment getTreatment(Identity identity) {
-        return allocations.getTreatment(identityToBin(identity));
+    public Treatment getTreatment(Identity identity, AttributesMap attributes) {
+        return allocations.getTreatment(identityToBin(identity, attributes));
     }
 
     @Override
@@ -503,7 +483,8 @@ public class Experiment {
                 .toStringHelper(this)
                 .add("name", name)
                 .add("description", description)
-                .add("segments", segments)
+                .add("filter", filter)
+                .add("hashAttributes", hashAttributes)
                 .add("active", active)
                 .add("created", created)
                 .add("modified", modified)
@@ -533,7 +514,8 @@ public class Experiment {
         private final String name;
         private int seed;
         private String description;
-        private Set<String> segments;
+        private FilterExpression filter;
+        private LinkedHashSet<String> hashAttributes;
         private boolean active;
         private DateTime created = DateTime.now(DateTimeZone.UTC);
         private DateTime modified  = DateTime.now(DateTimeZone.UTC);
@@ -546,7 +528,6 @@ public class Experiment {
         Builder(Experiments owner, String name) {
             this.owner = owner;
             this.name = name;
-            segments = Sets.newHashSet();
             treatments = Maps.newHashMap();
             overrides = Lists.newArrayList();
             allocations = Lists.newArrayList();
@@ -557,8 +538,18 @@ public class Experiment {
             return this;
         }
 
-        public Builder segments(Set<String> segments) {
-            this.segments = segments;
+        public Builder filter(String filter) {
+            this.filter = FilterExpression.of(filter);
+            return this;
+        }
+
+        public Builder hashAttributes(String ... hashAttributes) {
+            this.hashAttributes = Sets.newLinkedHashSet(Arrays.asList(hashAttributes));
+            return this;
+        }
+
+        public Builder hashAttributes(Iterable<String> hashAttributes) {
+            this.hashAttributes = Sets.newLinkedHashSet(hashAttributes);
             return this;
         }
 
@@ -603,8 +594,8 @@ public class Experiment {
             return this;
         }
 
-        public Builder addOverride(String identity, long hash, String treatmentName) {
-            overrides.add(new TreatmentOverride(identity, hash, getTreatment(treatmentName)));
+        public Builder addOverride(String name, String filter, String treatmentName) {
+            overrides.add(new TreatmentOverride(name, FilterExpression.of(filter), getTreatment(treatmentName)));
             return this;
         }
 
@@ -619,7 +610,8 @@ public class Experiment {
                 name,
                 seed,
                 description,
-                segments,
+                filter,
+                hashAttributes,
                 active,
                 created,
                 modified,

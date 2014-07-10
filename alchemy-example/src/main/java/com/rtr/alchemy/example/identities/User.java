@@ -1,18 +1,20 @@
 package com.rtr.alchemy.example.identities;
 
+import com.rtr.alchemy.identities.Attributes;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.Segments;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 /**
  * An example identity
  */
-@Segments({User.SEGMENT_USER, User.SEGMENT_ANONYMOUS, User.SEGMENT_IDENTIFIED})
+@Attributes({User.ATTR_USER, User.ATTR_ANONYMOUS, User.ATTR_IDENTIFIED, User.ATTR_USER_NAME})
 public class User extends Identity {
-    public static final String SEGMENT_ANONYMOUS = "anonymous";
-    public static final String SEGMENT_IDENTIFIED = "identified";
-    public static final String SEGMENT_USER = "user";
+    public static final String ATTR_ANONYMOUS = "anonymous";
+    public static final String ATTR_IDENTIFIED = "identified";
+    public static final String ATTR_USER = "user";
+    public static final String ATTR_USER_NAME = "user_name";
 
     private final String name;
 
@@ -25,14 +27,19 @@ public class User extends Identity {
     }
 
     @Override
-    public long computeHash(int seed, Set<String> segments) {
+    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
         return identity(seed)
             .putString(name)
             .hash();
     }
 
     @Override
-    public Set<String> computeSegments() {
-        return segments(SEGMENT_USER, name == null ? SEGMENT_ANONYMOUS : SEGMENT_IDENTIFIED);
+    public AttributesMap computeAttributes() {
+        return
+            attributes()
+                .put(ATTR_USER, true)
+                .put(ATTR_USER_NAME, name)
+                .put(name == null ? ATTR_ANONYMOUS : ATTR_IDENTIFIED, true)
+                .build();
     }
 }

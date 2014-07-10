@@ -25,7 +25,9 @@ Experiments
         {
             "name": "pie_vs_cake",
             "description": "My experiment",
-            "segments": [ "identified_user" ],
+            "seed": 123,
+            "filter": [ "identified_user" ],
+            "hashAttributes": ["user_name"],
             "active": true,
             "created": 1398347307568,
             "modified": 1398347517914,
@@ -60,7 +62,8 @@ Experiments
             "overrides": [
                 {
                     "name": "qa_cake",
-                    "treatment": "cake"
+                    "treatment": "cake",
+                    "filter": "user_name=\"qa\""
                 }
             ]
         }
@@ -81,7 +84,9 @@ Experiments
     {
         "name": "pie_vs_cake",
         "description": "My experiment",
-        "segments": ["identified_user"],
+        "seed": 123,
+        "filter": ["identified_user"],
+        "hashAttributes": ["user_name"],
         "active": true,
         "created": 1398347307568,
         "modified": 1398347517914,
@@ -116,7 +121,8 @@ Experiments
         "overrides": [
             {
                 "name": "qa_cake",
-                "treatment": "cake"
+                "treatment": "cake",
+                "filter": "user_name=\"qa\""
             }
         ]
     }
@@ -136,7 +142,9 @@ Experiments
     {
         "name": "pie_vs_cake",
         "description": "My experiment",
-        "segments": [ "identified_user" ],
+        "seed": 123,
+        "filter": [ "identified_user" ],
+        "hashAttributes": ["user_name"],
         "active": true,
         "treatments": [
             {
@@ -170,10 +178,7 @@ Experiments
             {
                 "name": "qa_cake",
                 "treatment": "cake",
-                "identity": {
-                    "type": "user",
-                    "name": "qa"
-                }
+                "filter": "user_name=\"qa\""
             }
         ]
     }
@@ -193,7 +198,8 @@ Experiments
     {
         "description": "new description",
         "active": false,
-        "segments": [ "identified_user" ],
+        "filter": [ "identified_user" ],
+        "hashAttributes": ["user_name"],
         "treatments": [
             {
                 "name": "control",
@@ -226,10 +232,7 @@ Experiments
             {
                 "name": "qa_cake",
                 "treatment": "cake",
-                "identity": {
-                    "type": "user",
-                    "name": "qa"
-                }
+                "filter": "user_name=\"qa\""
             }
         ]
     }
@@ -412,7 +415,8 @@ Treatment Overrides
     [
         {
             "name": "qa_cake",
-            "treatment": "cake"
+            "treatment": "cake",
+            "filter": "user_name=\"qa\""
         }
     ]
 
@@ -431,6 +435,7 @@ Treatment Overrides
     {
         "name": "qa_cake",
         "treatment": "cake"
+        "filter": "user_name=\"qa\""
     }
 
 |
@@ -448,10 +453,7 @@ Treatment Overrides
     {
         "name": "qa_override",
         "treatment": "cake",
-        "identity": {
-            "type": "user",
-            "name": "qa"
-        }
+        "filter": "user_name=\"qa\""
     }
 
 |
@@ -578,7 +580,7 @@ Metadata
 |
 |
 
-``GET /metadata/identityTypes/{identityType}/segments``
+``GET /metadata/identityTypes/{identityType}/attributes``
 
 **Response:** *404* Not Found if type was not found, otherwise *200 OK*
 
@@ -592,3 +594,29 @@ Metadata
     ]
 
 
+|
+|
+|
+
+``GET /metadata/identity/attributes``
+
+**Response:** *404* Not Found if type was not found, otherwise *200 OK*
+
+**Example Payload:**
+
+.. code-block:: json
+
+    {
+        "type": "user",
+        "name": "qa"
+    }
+
+**Example Response:**
+
+.. code-block:: json
+
+    {
+        "user": true,
+        "identified": true,
+        "user_name": "qa"
+    }

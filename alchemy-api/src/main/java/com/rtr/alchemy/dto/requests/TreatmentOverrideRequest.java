@@ -1,7 +1,6 @@
 package com.rtr.alchemy.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rtr.alchemy.dto.identities.IdentityDto;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,15 +11,15 @@ public class TreatmentOverrideRequest {
     @NotNull
     private final String treatment;
     @NotNull
-    private final IdentityDto identity;
+    private final String filter;
     @NotNull
     private final String name;
 
     public TreatmentOverrideRequest(@JsonProperty("treatment") String treatment,
-                                    @JsonProperty("identity") IdentityDto identity,
+                                    @JsonProperty("filter") String filter,
                                     @JsonProperty("name") String name) {
         this.treatment = treatment;
-        this.identity = identity;
+        this.filter = filter;
         this.name = name;
     }
 
@@ -28,8 +27,8 @@ public class TreatmentOverrideRequest {
         return treatment;
     }
 
-    public IdentityDto getIdentity() {
-        return identity;
+    public String getFilter() {
+        return filter;
     }
 
     public String getName() {

@@ -1,7 +1,8 @@
 {
     "seed": null,
     "description": "my new experiment",
-    "segments": ["identified"],
+    "filter": "identified",
+    "hashAttributes": [],
     "active": true,
     "treatments": [
         {
@@ -26,11 +27,8 @@
     "overrides": [
         {
             "name": "qa_override",
-            "identity": {
-                "type": "mock",
-                "value": "foo"
-            },
-            "treatment": "control"
+            "treatment": "control",
+            "filter": "foo"
         }
     ]
 }

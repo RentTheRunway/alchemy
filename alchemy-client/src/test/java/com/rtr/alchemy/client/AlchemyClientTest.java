@@ -244,7 +244,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .addTreatment("control")
-            .addOverride("override", "control", new UserDto("foo"))
+            .addOverride("override", "control", "identified")
             .apply();
 
         final List<TreatmentOverrideDto> overrides = client.getOverrides("exp");
@@ -261,7 +261,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .addTreatment("control")
-            .addOverride("override", "control", new UserDto("foo"))
+            .addOverride("override", "control", "identified")
             .apply();
 
         final TreatmentOverrideDto override = client.getOverride("exp", "override");
@@ -274,7 +274,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .addTreatment("control")
-            .addOverride("override", "control", new UserDto("foo"))
+            .addOverride("override", "control", "identified")
             .apply();
 
         client.removeOverride("exp", "override");
@@ -287,7 +287,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .addTreatment("control")
-            .addOverride("override", "control", new UserDto("foo"))
+            .addOverride("override", "control", "identified")
             .apply();
 
         client.clearOverrides("exp");
@@ -299,7 +299,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .addTreatment("control")
-            .addOverride("override", "control", new UserDto("foo"))
+            .addOverride("override", "control", "identified")
             .activate()
             .apply();
 
@@ -312,7 +312,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .addTreatment("control")
-            .addOverride("override", "control", new UserDto("foo"))
+            .addOverride("override", "control", "identified")
             .activate()
             .apply();
 
@@ -346,9 +346,9 @@ public class AlchemyClientTest {
     }
 
     @Test
-    public void testGetIdentitySegments() {
-        final Set<String> segments = client.getIdentitySegments("user");
-        assertNotNull(segments);
-        assertEquals(Identity.getSupportedSegments(User.class), segments);
+    public void testGetIdentityAttributes() {
+        final Set<String> attributes = client.getIdentityAttributes("user");
+        assertNotNull(attributes);
+        assertEquals(Identity.getSupportedAttributes(User.class), attributes);
     }
 }

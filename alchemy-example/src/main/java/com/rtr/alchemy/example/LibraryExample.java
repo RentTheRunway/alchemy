@@ -3,12 +3,14 @@ package com.rtr.alchemy.example;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.memory.MemoryStoreProvider;
 import com.rtr.alchemy.example.identities.Composite;
 import com.rtr.alchemy.example.identities.Device;
 import com.rtr.alchemy.example.identities.User;
+import com.rtr.alchemy.filtering.FilterExpression;
 import com.rtr.alchemy.models.Allocation;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
@@ -17,8 +19,8 @@ import com.rtr.alchemy.models.TreatmentOverride;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Example code that utilizes the alchemy-core library to interact with experiments directly
@@ -52,7 +54,7 @@ public class LibraryExample {
                 .setDescription("my new experiment")
                 .addTreatment("control", "the default")
                 .addTreatment("pie", "show them pie")
-                .setSegments("identified")
+                .setFilter(FilterExpression.of("identified"))
                 .allocate("control", 25)
                 .allocate("pie", 25)
                 .activate()
@@ -77,7 +79,7 @@ public class LibraryExample {
 
             // Let's add an override for our qa person, who obviously likes pie
             experiment
-                .addOverride("qa_pie", "pie", new User("qa"))
+                .addOverride("qa_pie", "pie", "user_name=qa")
                 .save();
 
             // Let's also add for comparison, cake
@@ -118,8 +120,8 @@ public class LibraryExample {
             // Ok, that was unfair, let's fix the allocations
             experiment
                 .deallocateAll()
-                .addOverride("gene_likes_beer", "beer", new User("gene"))
-                .addOverride("qa_wine", "wine", new User("qa"))
+                .addOverride("gene_likes_beer", "beer", "user_name=gene")
+                .addOverride("qa_wine", "wine", "user_name=qa")
                 .allocate("beer", 51)
                 .allocate("wine", 49)
                 .save();
@@ -159,17 +161,19 @@ public class LibraryExample {
             // Let's nuke it and call it a day
             experiments.delete("my_experiment");
 
-            // Experiment with composite identity - an identity where hashing can change based on what segments are requested
+            // Experiment with composite identity - an identity where hashing can change based on what attributes are requested
             experiments
                 .create("composite")
-                .setSegments(User.SEGMENT_IDENTIFIED, Device.SEGMENT_DEVICE) // we want only users that are identified and we prefer to hash on device
+                 // we want only users that are identified and we prefer to hash on device
+                .setFilter(FilterExpression.of(String.format("%s & %s", User.ATTR_IDENTIFIED, Device.ATTR_DEVICE)))
+                .setHashAttributes(Device.ATTR_DEVICE)
                 .addTreatment("control")
                 .allocate("control", 100)
                 .activate()
                 .save();
 
-            // These are the segments that will be requested by the experiment when calling computeHash
-            final Set<String> segments = Sets.newHashSet(User.SEGMENT_IDENTIFIED, Device.SEGMENT_DEVICE);
+            // These are the attributes that will be requested by the experiment when calling computeHash
+            final LinkedHashSet<String> hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(User.ATTR_IDENTIFIED, Device.ATTR_DEVICE));
 
             final Composite userOnly = new Composite(new User("foo"), null);
             println("treatment for user-only composite: %s", experiments.getActiveTreatment("composite", userOnly));
@@ -181,24 +185,25 @@ public class LibraryExample {
 
             final Composite anonUser = new Composite(new User(null), new Device("bar"));
             println("treatment for anon-user composite: %s", experiments.getActiveTreatment("composite", anonUser));
-            println("hash for anon-user composite: %d", anonUser.computeHash(0, segments));
+            println("hash for anon-user composite: %d", anonUser.computeHash(0, hashAttributes, anonUser.computeAttributes()));
             println();
 
             final Composite userFoo = new Composite(new User("foo"), new Device("bar"));
             println("treatment for user-foo composite: %s", experiments.getActiveTreatment("composite", userFoo));
-            println("hash for user-foo composite: %d", userFoo.computeHash(0, segments));
+            println("hash for user-foo composite: %d", userFoo.computeHash(0, hashAttributes, userFoo.computeAttributes()));
             println();
 
-            // Since we're hashing on device, because that is our requested segment, hashes should be the same
+            // Since we're hashing on device, because that is our requested filter, hashes should be the same
             final Composite userBaz = new Composite(new User("baz"), new Device("bar"));
             println("treatment for user-baz composite: %s", experiments.getActiveTreatment("composite", userBaz));
-            println("hash for user-baz composite: %d", userBaz.computeHash(0, segments));
+            println("hash for user-baz composite: %d", userBaz.computeHash(0, hashAttributes, userBaz.computeAttributes()));
             println();
 
-            // Now change our segments to not be specified to device, now hashes should be different
-            final Set<String> segments2 = Sets.newHashSet(User.SEGMENT_IDENTIFIED);
-            println("hash for user-foo composite: %d", userFoo.computeHash(0, segments2));
-            println("hash for user-baz composite: %d", userBaz.computeHash(0, segments2));
+            // Now change our attributes to not be specified to device, now hashes should be different
+            final LinkedHashSet<String> hashAttributes2 = Sets.newLinkedHashSet(Lists.newArrayList(User.ATTR_IDENTIFIED));
+
+            println("hash for user-foo composite: %d", userFoo.computeHash(0, hashAttributes2, userFoo.computeAttributes()));
+            println("hash for user-baz composite: %d", userBaz.computeHash(0, hashAttributes2, userBaz.computeAttributes()));
         }
     }
 }

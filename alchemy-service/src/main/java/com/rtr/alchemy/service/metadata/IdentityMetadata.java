@@ -14,7 +14,7 @@ public class IdentityMetadata {
     private final Class<? extends Identity> identityType;
     private final Class<? extends IdentityDto> dtoType;
     private final Class<? extends Mapper> mapperType;
-    private final Set<String> segments;
+    private final Set<String> attributes;
 
     public IdentityMetadata(String typeName,
                             Class<? extends Identity> identityType,
@@ -24,7 +24,7 @@ public class IdentityMetadata {
         this.identityType = identityType;
         this.dtoType = dtoType;
         this.mapperType = mapperType;
-        this.segments = Identity.getSupportedSegments(identityType);
+        this.attributes = Identity.getSupportedAttributes(identityType);
     }
 
     public String getTypeName() {
@@ -43,7 +43,7 @@ public class IdentityMetadata {
         return mapperType;
     }
 
-    public Set<String> getSegments() {
-        return segments;
+    public Set<String> getAttributes() {
+        return attributes;
     }
 }

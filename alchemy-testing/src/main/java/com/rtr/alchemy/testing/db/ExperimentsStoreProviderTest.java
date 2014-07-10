@@ -3,21 +3,24 @@ package com.rtr.alchemy.testing.db;
 import com.google.common.collect.Iterables;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.Filter;
+import com.rtr.alchemy.filtering.FilterExpression;
+import com.rtr.alchemy.identities.Attributes;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.Segments;
 import com.rtr.alchemy.models.Allocations;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -30,7 +33,7 @@ public abstract class ExperimentsStoreProviderTest {
     protected abstract ExperimentsStoreProvider createProvider() throws Exception ;
     protected abstract void resetStore();
 
-    @Segments({"test"})
+    @Attributes({"test"})
     private static class TestIdentity extends Identity {
         private final String name;
 
@@ -39,15 +42,15 @@ public abstract class ExperimentsStoreProviderTest {
         }
 
         @Override
-        public long computeHash(int seed, Set<String> segments) {
+        public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
             return identity(seed)
-                .putString(name)
-                .hash();
+                    .putString(name)
+                    .hash();
         }
 
         @Override
-        public Set<String> computeSegments() {
-            return segments("test");
+        public AttributesMap computeAttributes() {
+            return attributes().put("test", true).build();
         }
     }
 
@@ -203,6 +206,7 @@ public abstract class ExperimentsStoreProviderTest {
         experiments
             .create("foo")
             .addTreatment("control")
+            .setHashAttributes()
             .allocate("control", 100)
             .save();
 
@@ -229,7 +233,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .get("foo")
-            .setSegments("test")
+            .setFilter(FilterExpression.of("test"))
             .save();
 
         assertEquals(
@@ -240,7 +244,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .get("foo")
-            .setSegments("bar")
+            .setFilter(FilterExpression.of("bar"))
             .save();
 
         assertNull(
@@ -257,14 +261,14 @@ public abstract class ExperimentsStoreProviderTest {
             .create("foo")
             .addTreatment("control")
             .allocate("control", 100)
-            .setSegments("test")
+            .setFilter(FilterExpression.of("test"))
             .save();
 
         experiments
             .create("bar")
             .addTreatment("control")
             .allocate("control", 100)
-            .setSegments("test")
+            .setFilter(FilterExpression.of("test"))
             .save();
 
         assertTrue("no active experiments", experiments.getActiveTreatments(identity).isEmpty());
@@ -290,7 +294,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .get("bar")
-            .setSegments("bar")
+            .setFilter(FilterExpression.of("bar"))
             .save();
 
         assertEquals("should have one because of identity type", 1, experiments.getActiveTreatments(identity).size());
@@ -342,7 +346,9 @@ public abstract class ExperimentsStoreProviderTest {
             obj1 == obj4
         );
 
-        final Experiment obj5 = experiments.getActiveTreatments(mock(Identity.class)).keySet().iterator().next();
+        final Identity identity = mock(Identity.class);
+        doReturn(AttributesMap.empty()).when(identity).computeAttributes();
+        final Experiment obj5 = experiments.getActiveTreatments(identity).keySet().iterator().next();
 
         assertFalse(
             "saved experiment object reference should not be same object reference from getActiveTreatments()",

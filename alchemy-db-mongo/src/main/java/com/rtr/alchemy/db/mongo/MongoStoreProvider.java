@@ -11,6 +11,7 @@ import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.mongo.util.DateTimeConverter;
 import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.MapperOptions;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -34,6 +35,7 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
                                String database) {
 
         final Morphia morphia = new Morphia();
+        morphia.getMapper().getOptions().setStoreEmpties(true);
         morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
         client = options == null ? new MongoClient(hosts, credentials) : new MongoClient(hosts, credentials, options);
 

@@ -15,14 +15,17 @@ public class FilterParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__1=1, T__0=2, AND=3, OR=4, NOT=5, IDENTIFIER=6, WS=7;
+		T__1=1, T__0=2, AND=3, OR=4, NOT=5, NUMBER=6, STRING=7, BOOLEAN=8, IDENTIFIER=9, 
+		COMPARISON=10, WS=11;
 	public static final String[] tokenNames = {
-		"<INVALID>", "')'", "'('", "AND", "OR", "NOT", "IDENTIFIER", "WS"
+		"<INVALID>", "')'", "'('", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", 
+		"IDENTIFIER", "COMPARISON", "WS"
 	};
 	public static final int
-		RULE_exp = 0, RULE_term = 1, RULE_factor = 2, RULE_value = 3;
+		RULE_exp = 0, RULE_term = 1, RULE_factor = 2, RULE_comparison = 3, RULE_constant = 4, 
+		RULE_value = 5;
 	public static final String[] ruleNames = {
-		"exp", "term", "factor", "value"
+		"exp", "term", "factor", "comparison", "constant", "value"
 	};
 
 	@Override
@@ -82,10 +85,10 @@ public class FilterParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(9); term();
+			setState(13); term();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(16);
+			setState(20);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			while ( _alt!=2 && _alt!=ATN.INVALID_ALT_NUMBER ) {
@@ -96,14 +99,14 @@ public class FilterParser extends Parser {
 					{
 					_localctx = new ExpContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_exp);
-					setState(11);
+					setState(15);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(12); match(OR);
-					setState(13); term();
+					setState(16); match(OR);
+					setState(17); term();
 					}
 					} 
 				}
-				setState(18);
+				setState(22);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			}
@@ -146,21 +149,21 @@ public class FilterParser extends Parser {
 		TermContext _localctx = new TermContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_term);
 		try {
-			setState(24);
+			setState(28);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(19); factor();
+				setState(23); factor();
 				}
 				break;
 
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(20); factor();
-				setState(21); match(AND);
-				setState(22); term();
+				setState(24); factor();
+				setState(25); match(AND);
+				setState(26); term();
 				}
 				break;
 			}
@@ -179,6 +182,9 @@ public class FilterParser extends Parser {
 	public static class FactorContext extends ParserRuleContext {
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
+		}
+		public ComparisonContext comparison() {
+			return getRuleContext(ComparisonContext.class,0);
 		}
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
@@ -205,31 +211,126 @@ public class FilterParser extends Parser {
 		FactorContext _localctx = new FactorContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_factor);
 		try {
-			setState(33);
-			switch (_input.LA(1)) {
-			case 2:
+			setState(38);
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(26); match(2);
-				setState(27); exp(0);
-				setState(28); match(1);
+				setState(30); match(2);
+				setState(31); exp(0);
+				setState(32); match(1);
 				}
 				break;
-			case IDENTIFIER:
+
+			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(30); value();
+				setState(34); value();
 				}
 				break;
-			case NOT:
+
+			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(31); match(NOT);
-				setState(32); factor();
+				setState(35); comparison();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(36); match(NOT);
+				setState(37); factor();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ComparisonContext extends ParserRuleContext {
+		public ValueContext value(int i) {
+			return getRuleContext(ValueContext.class,i);
+		}
+		public TerminalNode COMPARISON() { return getToken(FilterParser.COMPARISON, 0); }
+		public List<ValueContext> value() {
+			return getRuleContexts(ValueContext.class);
+		}
+		public ComparisonContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_comparison; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof FilterListener ) ((FilterListener)listener).enterComparison(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof FilterListener ) ((FilterListener)listener).exitComparison(this);
+		}
+	}
+
+	public final ComparisonContext comparison() throws RecognitionException {
+		ComparisonContext _localctx = new ComparisonContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_comparison);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(40); value();
+			setState(41); match(COMPARISON);
+			setState(42); value();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ConstantContext extends ParserRuleContext {
+		public TerminalNode BOOLEAN() { return getToken(FilterParser.BOOLEAN, 0); }
+		public TerminalNode NUMBER() { return getToken(FilterParser.NUMBER, 0); }
+		public TerminalNode STRING() { return getToken(FilterParser.STRING, 0); }
+		public ConstantContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_constant; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof FilterListener ) ((FilterListener)listener).enterConstant(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof FilterListener ) ((FilterListener)listener).exitConstant(this);
+		}
+	}
+
+	public final ConstantContext constant() throws RecognitionException {
+		ConstantContext _localctx = new ConstantContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_constant);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(44);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << STRING) | (1L << BOOLEAN))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -245,6 +346,9 @@ public class FilterParser extends Parser {
 
 	public static class ValueContext extends ParserRuleContext {
 		public TerminalNode IDENTIFIER() { return getToken(FilterParser.IDENTIFIER, 0); }
+		public ConstantContext constant() {
+			return getRuleContext(ConstantContext.class,0);
+		}
 		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -261,11 +365,26 @@ public class FilterParser extends Parser {
 
 	public final ValueContext value() throws RecognitionException {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_value);
+		enterRule(_localctx, 10, RULE_value);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(35); match(IDENTIFIER);
+			setState(48);
+			switch (_input.LA(1)) {
+			case NUMBER:
+			case STRING:
+			case BOOLEAN:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(46); constant();
+				}
+				break;
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(47); match(IDENTIFIER);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -293,17 +412,20 @@ public class FilterParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\t(\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\2\3\2\3\2\7\2\21\n\2\f\2\16\2\24\13\2"+
-		"\3\3\3\3\3\3\3\3\3\3\5\3\33\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4$\n\4\3"+
-		"\5\3\5\3\5\2\3\2\6\2\4\6\b\2\2\'\2\n\3\2\2\2\4\32\3\2\2\2\6#\3\2\2\2\b"+
-		"%\3\2\2\2\n\13\b\2\1\2\13\f\5\4\3\2\f\22\3\2\2\2\r\16\f\3\2\2\16\17\7"+
-		"\6\2\2\17\21\5\4\3\2\20\r\3\2\2\2\21\24\3\2\2\2\22\20\3\2\2\2\22\23\3"+
-		"\2\2\2\23\3\3\2\2\2\24\22\3\2\2\2\25\33\5\6\4\2\26\27\5\6\4\2\27\30\7"+
-		"\5\2\2\30\31\5\4\3\2\31\33\3\2\2\2\32\25\3\2\2\2\32\26\3\2\2\2\33\5\3"+
-		"\2\2\2\34\35\7\4\2\2\35\36\5\2\2\2\36\37\7\3\2\2\37$\3\2\2\2 $\5\b\5\2"+
-		"!\"\7\7\2\2\"$\5\6\4\2#\34\3\2\2\2# \3\2\2\2#!\3\2\2\2$\7\3\2\2\2%&\7"+
-		"\b\2\2&\t\3\2\2\2\5\22\32#";
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\r\65\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\3\2\3\2\3\2\3\2\3\2\3\2\7\2\25\n"+
+		"\2\f\2\16\2\30\13\2\3\3\3\3\3\3\3\3\3\3\5\3\37\n\3\3\4\3\4\3\4\3\4\3\4"+
+		"\3\4\3\4\3\4\5\4)\n\4\3\5\3\5\3\5\3\5\3\6\3\6\3\7\3\7\5\7\63\n\7\3\7\2"+
+		"\3\2\b\2\4\6\b\n\f\2\3\3\2\b\n\64\2\16\3\2\2\2\4\36\3\2\2\2\6(\3\2\2\2"+
+		"\b*\3\2\2\2\n.\3\2\2\2\f\62\3\2\2\2\16\17\b\2\1\2\17\20\5\4\3\2\20\26"+
+		"\3\2\2\2\21\22\f\3\2\2\22\23\7\6\2\2\23\25\5\4\3\2\24\21\3\2\2\2\25\30"+
+		"\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\3\3\2\2\2\30\26\3\2\2\2\31\37"+
+		"\5\6\4\2\32\33\5\6\4\2\33\34\7\5\2\2\34\35\5\4\3\2\35\37\3\2\2\2\36\31"+
+		"\3\2\2\2\36\32\3\2\2\2\37\5\3\2\2\2 !\7\4\2\2!\"\5\2\2\2\"#\7\3\2\2#)"+
+		"\3\2\2\2$)\5\f\7\2%)\5\b\5\2&\'\7\7\2\2\')\5\6\4\2( \3\2\2\2($\3\2\2\2"+
+		"(%\3\2\2\2(&\3\2\2\2)\7\3\2\2\2*+\5\f\7\2+,\7\f\2\2,-\5\f\7\2-\t\3\2\2"+
+		"\2./\t\2\2\2/\13\3\2\2\2\60\63\5\n\6\2\61\63\7\13\2\2\62\60\3\2\2\2\62"+
+		"\61\3\2\2\2\63\r\3\2\2\2\6\26\36(\62";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

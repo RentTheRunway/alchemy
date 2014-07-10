@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents an experiment
@@ -15,7 +15,8 @@ public class ExperimentDto {
     private final String name;
     private final int seed;
     private final String description;
-    private final Set<String> segments;
+    private final String filter;
+    private final LinkedHashSet<String> hashAttributes;
     private final boolean active;
     private final DateTime created;
     private final DateTime modified;
@@ -29,7 +30,8 @@ public class ExperimentDto {
     public ExperimentDto(@JsonProperty("name") String name,
                          @JsonProperty("seed") int seed,
                          @JsonProperty("description") String description,
-                         @JsonProperty("segments") Set<String> segments,
+                         @JsonProperty("filter") String filter,
+                         @JsonProperty("hashAttributes") LinkedHashSet<String> hashAttributes,
                          @JsonProperty("active") boolean active,
                          @JsonProperty("created") DateTime created,
                          @JsonProperty("modified") DateTime modified,
@@ -41,7 +43,8 @@ public class ExperimentDto {
         this.name = name;
         this.seed = seed;
         this.description = description;
-        this.segments = segments;
+        this.filter = filter;
+        this.hashAttributes = hashAttributes;
         this.active = active;
         this.created = created;
         this.modified = modified;
@@ -64,8 +67,12 @@ public class ExperimentDto {
         return description;
     }
 
-    public Set<String> getSegments() {
-        return segments;
+    public String getFilter() {
+        return filter;
+    }
+
+    public LinkedHashSet<String> getHashAttributes() {
+        return hashAttributes;
     }
 
     public boolean isActive() {

@@ -20,6 +20,17 @@ public interface FilterListener extends ParseTreeListener {
 	void exitExp(@NotNull FilterParser.ExpContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link FilterParser#constant}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstant(@NotNull FilterParser.ConstantContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FilterParser#constant}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstant(@NotNull FilterParser.ConstantContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link FilterParser#term}.
 	 * @param ctx the parse tree
 	 */
@@ -51,4 +62,15 @@ public interface FilterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFactor(@NotNull FilterParser.FactorContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link FilterParser#comparison}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparison(@NotNull FilterParser.ComparisonContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FilterParser#comparison}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparison(@NotNull FilterParser.ComparisonContext ctx);
 }

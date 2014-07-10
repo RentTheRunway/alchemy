@@ -55,13 +55,17 @@ public class TreatmentOverridesResourceTest extends ResourceTest {
 
     @Test
     public void testAddOverride() {
-        final TreatmentOverrideRequest request = new TreatmentOverrideRequest("control", new UserDto("qa"), "qa_control");
+        final TreatmentOverrideRequest request = new TreatmentOverrideRequest("control", "qa", "qa_control");
 
         put(ENDPOINT_OVERRIDES, EXPERIMENT_BAD)
             .entity(request)
             .assertStatus(Status.NOT_FOUND);
 
-        final TreatmentOverrideDto expected = new TreatmentOverrideDto(request.getName(), request.getTreatment());
+        final TreatmentOverrideDto expected = new TreatmentOverrideDto(
+            request.getName(),
+            request.getFilter(),
+            request.getTreatment()
+        );
 
         put(ENDPOINT_OVERRIDES, EXPERIMENT_1)
             .entity(request)

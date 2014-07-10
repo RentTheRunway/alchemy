@@ -36,8 +36,8 @@ public class ActiveTreatmentsResourceTest extends ResourceTest {
             .entity(userDto)
             .assertStatus(Status.NO_CONTENT);
 
-        final TreatmentDto expected1 = MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(user), TreatmentDto.class);
-        final TreatmentDto expected2 = MAPPER.toDto(experiment(EXPERIMENT_2).getTreatment(device), TreatmentDto.class);
+        final TreatmentDto expected1 = MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(user, user.computeAttributes()), TreatmentDto.class);
+        final TreatmentDto expected2 = MAPPER.toDto(experiment(EXPERIMENT_2).getTreatment(device, device.computeAttributes()), TreatmentDto.class);
 
         final TreatmentDto actual1 =
             post(ENDPOINT_ACTIVE_TREATMENT, EXPERIMENT_1)
@@ -74,7 +74,7 @@ public class ActiveTreatmentsResourceTest extends ResourceTest {
     @Test
     public void testGetActiveTreatments() {
         final Map<String, TreatmentDto> expected = ImmutableMap.of(
-            EXPERIMENT_1, MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(user), TreatmentDto.class)
+            EXPERIMENT_1, MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(user, user.computeAttributes()), TreatmentDto.class)
         );
 
         final Map<String, TreatmentDto> actual =
