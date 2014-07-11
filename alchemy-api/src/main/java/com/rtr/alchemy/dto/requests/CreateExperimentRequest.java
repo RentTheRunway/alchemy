@@ -5,8 +5,8 @@ import com.rtr.alchemy.dto.models.TreatmentDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a request for creating an experiment
@@ -17,7 +17,7 @@ public class CreateExperimentRequest {
     private final Integer seed;
     private final String description;
     private final String filter;
-    private final LinkedHashSet<String> hashAttributes;
+    private final Set<String> hashAttributes;
     private final Boolean active;
     @Valid
     private final List<TreatmentDto> treatments;
@@ -30,7 +30,7 @@ public class CreateExperimentRequest {
                                    @JsonProperty("seed") Integer seed,
                                    @JsonProperty("description") String description,
                                    @JsonProperty("filter") String filter,
-                                   @JsonProperty("hashAttributes") LinkedHashSet<String> hashAttributes,
+                                   @JsonProperty("hashAttributes") Set<String> hashAttributes,
                                    @JsonProperty("active") Boolean active,
                                    @JsonProperty("treatments") List<TreatmentDto> treatments,
                                    @JsonProperty("allocations") List<AllocateRequest> allocations,
@@ -62,7 +62,7 @@ public class CreateExperimentRequest {
         return filter;
     }
 
-    public LinkedHashSet<String> getHashAttributes() {
+    public Set<String> getHashAttributes() {
         return hashAttributes;
     }
 

@@ -12,8 +12,8 @@ import com.rtr.alchemy.filtering.FilterExpression;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response.Status;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -84,7 +84,7 @@ public class ExperimentsResourceTest extends ResourceTest {
                 Optional.<Integer>absent(),
                 Optional.of("new description"),
                 Optional.of("device"),
-                Optional.<LinkedHashSet<String>>absent(),
+                Optional.<Set<String>>absent(),
                 Optional.of(false),
                 Optional.<List<TreatmentDto>>absent(),
                 Optional.<List<AllocateRequest>>absent(),

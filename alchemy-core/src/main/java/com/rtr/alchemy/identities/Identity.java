@@ -7,7 +7,6 @@ import com.google.common.collect.Sets;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -44,7 +43,7 @@ public abstract class Identity {
      * @param hashAttributes a set of attributes that should be used to compute the hash code
      * @param attributes a map of attribute values
      */
-    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+    public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
         final IdentityBuilder builder = IdentityBuilder.seed(seed);
         final Iterable<String> names = hashAttributes.isEmpty() ? attributes.keySet() : hashAttributes;
 

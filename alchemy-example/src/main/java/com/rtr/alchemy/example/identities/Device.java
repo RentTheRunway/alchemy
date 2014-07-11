@@ -4,7 +4,7 @@ import com.rtr.alchemy.identities.Attributes;
 import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Attributes({Device.ATTR_DEVICE, Device.ATTR_DEVICE_ID})
 public class Device extends Identity {
@@ -21,7 +21,7 @@ public class Device extends Identity {
     }
 
     @Override
-    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+    public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
         return
             identity(seed)
                 .putString(id)

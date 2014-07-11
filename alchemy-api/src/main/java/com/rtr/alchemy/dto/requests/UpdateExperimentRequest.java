@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 
 import javax.validation.Valid;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a request for updating an experiment
@@ -14,7 +14,7 @@ public class UpdateExperimentRequest {
     private Optional<Integer> seed;
     private Optional<String> description;
     private Optional<String> filter;
-    private Optional<LinkedHashSet<String>> hashAttributes;
+    private Optional<Set<String>> hashAttributes;
     private Optional<Boolean> active;
 
     @Valid
@@ -31,7 +31,7 @@ public class UpdateExperimentRequest {
     public UpdateExperimentRequest(Optional<Integer> seed,
                                    Optional<String> description,
                                    Optional<String> filter,
-                                   Optional<LinkedHashSet<String>> hashAttributes,
+                                   Optional<Set<String>> hashAttributes,
                                    Optional<Boolean> active,
                                    Optional<List<TreatmentDto>> treatments,
                                    Optional<List<AllocateRequest>> allocations,
@@ -57,7 +57,7 @@ public class UpdateExperimentRequest {
         return filter;
     }
 
-    public Optional<LinkedHashSet<String>> getHashAttributes() {
+    public Optional<Set<String>> getHashAttributes() {
         return hashAttributes;
     }
 
@@ -90,7 +90,7 @@ public class UpdateExperimentRequest {
         this.filter = filter;
     }
 
-    public void setHashAttributes(Optional<LinkedHashSet<String>> hashAttributes) {
+    public void setHashAttributes(Optional<Set<String>> hashAttributes) {
         this.hashAttributes = hashAttributes;
     }
 

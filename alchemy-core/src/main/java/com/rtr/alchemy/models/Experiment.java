@@ -19,7 +19,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class Experiment {
-    private static final LinkedHashSet<String> EMPTY_SET = Sets.newLinkedHashSet();
+    private static final Set<String> EMPTY_SET = Sets.newLinkedHashSet();
     private static final Function<TreatmentOverride, String> TREATMENT_INDEXER =
         new Function<TreatmentOverride, String>() {
             @Nullable
@@ -49,7 +48,7 @@ public class Experiment {
     private int seed;
     private String description;
     private FilterExpression filter;
-    private LinkedHashSet<String> hashAttributes;
+    private Set<String> hashAttributes;
     private boolean active;
     private DateTime created;
     private DateTime modified;
@@ -62,7 +61,7 @@ public class Experiment {
                        int seed,
                        String description,
                        FilterExpression filter,
-                       LinkedHashSet<String> hashAttributes,
+                       Set<String> hashAttributes,
                        boolean active,
                        DateTime created,
                        DateTime modified,
@@ -165,8 +164,12 @@ public class Experiment {
         return this;
     }
 
-    public Experiment setHashAttributes(LinkedHashSet<String> hashAttributes) {
-        this.hashAttributes = Objects.firstNonNull(hashAttributes, EMPTY_SET);
+    public Experiment setHashAttributes(Set<String> hashAttributes) {
+        if (hashAttributes == null) {
+            this.hashAttributes = EMPTY_SET;
+        } else {
+            this.hashAttributes = Sets.newLinkedHashSet(hashAttributes);
+        }
         return this;
     }
 
@@ -515,7 +518,7 @@ public class Experiment {
         private int seed;
         private String description;
         private FilterExpression filter;
-        private LinkedHashSet<String> hashAttributes;
+        private Set<String> hashAttributes;
         private boolean active;
         private DateTime created = DateTime.now(DateTimeZone.UTC);
         private DateTime modified  = DateTime.now(DateTimeZone.UTC);
@@ -548,7 +551,7 @@ public class Experiment {
             return this;
         }
 
-        public Builder hashAttributes(Iterable<String> hashAttributes) {
+        public Builder hashAttributes(Set<String> hashAttributes) {
             this.hashAttributes = Sets.newLinkedHashSet(hashAttributes);
             return this;
         }

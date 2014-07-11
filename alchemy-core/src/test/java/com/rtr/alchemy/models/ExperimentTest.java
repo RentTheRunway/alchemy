@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -132,7 +132,7 @@ public class ExperimentTest {
 
     @Test
     public void testRemoveTreatment() {
-        doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<LinkedHashSet<String>>any(), any(AttributesMap.class));
+        doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
 
         final Experiment experiment =
             new Experiment(null, "foo")

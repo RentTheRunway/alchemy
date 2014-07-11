@@ -32,7 +32,6 @@ import org.junit.ClassRule;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -203,7 +202,7 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+        public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
             return identity(seed).putString(name).hash();
         }
 
@@ -254,7 +253,7 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+        public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
             return identity(seed).putString(id).hash();
         }
 

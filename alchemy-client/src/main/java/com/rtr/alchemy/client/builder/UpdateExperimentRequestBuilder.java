@@ -9,7 +9,6 @@ import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import com.rtr.alchemy.dto.requests.UpdateExperimentRequest;
 import com.sun.jersey.api.client.WebResource;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +17,7 @@ public class UpdateExperimentRequestBuilder {
     private Optional<Integer> seed;
     private Optional<String> description;
     private Optional<String> filter;
-    private Optional<LinkedHashSet<String>> hashAttributes;
+    private Optional<Set<String>> hashAttributes;
     private Optional<Boolean> active;
     private Optional<List<TreatmentDto>> treatments;
     private Optional<List<AllocateRequest>> allocations;
@@ -43,13 +42,13 @@ public class UpdateExperimentRequestBuilder {
         return this;
     }
 
-    public UpdateExperimentRequestBuilder setHashAttributes(LinkedHashSet<String> hashAttributes) {
-        this.hashAttributes = Optional.fromNullable(hashAttributes);
+    public UpdateExperimentRequestBuilder setHashAttributes(Set<String> hashAttributes) {
+        this.hashAttributes = Optional.<Set<String>>fromNullable(Sets.newLinkedHashSet(hashAttributes));
         return this;
     }
 
     public UpdateExperimentRequestBuilder setHashAttributes(String ... hashAttributes) {
-        this.hashAttributes = Optional.fromNullable(Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes)));
+        this.hashAttributes = Optional.<Set<String>>fromNullable(Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes)));
         return this;
     }
 

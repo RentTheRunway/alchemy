@@ -16,7 +16,6 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import javax.annotation.Nullable;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public class ExperimentEntity {
     public int seed;
     public String description;
     public String filter;
-    public LinkedHashSet<String> hashAttributes;
+    public List<String> hashAttributes;
 
     @Indexed
     public boolean active;
@@ -64,7 +63,7 @@ public class ExperimentEntity {
             .seed(seed)
             .description(description)
             .filter(filter)
-            .hashAttributes(hashAttributes)
+            .hashAttributes(Sets.newLinkedHashSet(hashAttributes))
             .created(created)
             .modified(modified)
             .activated(activated)
@@ -105,7 +104,7 @@ public class ExperimentEntity {
         activated = experiment.getActivated();
         deactivated = experiment.getDeactivated();
         filter = experiment.getFilter().toString();
-        hashAttributes = Sets.newLinkedHashSet(experiment.getHashAttributes());
+        hashAttributes = Lists.newArrayList(experiment.getHashAttributes());
         treatments = Lists.newArrayList(Collections2.transform(experiment.getTreatments(), TREATMENT_MAPPER));
         allocations = Lists.transform(experiment.getAllocations(), ALLOCATION_MAPPER);
         overrides = Lists.transform(experiment.getOverrides(),TREATMENT_OVERRIDE_MAPPER);
