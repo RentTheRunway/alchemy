@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +20,7 @@ public class IdentityBuilderTest {
     @Test
     public void testHashAll() {
         final Identity identity = mock(Identity.class);
-        doReturn(1L).when(identity).computeHash(anyInt(), Mockito.<LinkedHashSet<String>>any(), any(AttributesMap.class));
+        doReturn(1L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
 
         final long hash =
             IdentityBuilder

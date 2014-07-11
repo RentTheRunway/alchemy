@@ -13,7 +13,7 @@ import com.rtr.alchemy.models.Experiments;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,7 +42,7 @@ public abstract class ExperimentsStoreProviderTest {
         }
 
         @Override
-        public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+        public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
             return identity(seed)
                     .putString(name)
                     .hash();

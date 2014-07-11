@@ -4,7 +4,7 @@ import com.rtr.alchemy.identities.Attributes;
 import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Demonstrates how one may do composite identities, which are complex identities which are made up of sub-identities
@@ -29,7 +29,7 @@ public class Composite extends Identity {
     }
 
     @Override
-    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+    public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
         // we want to compute a hash based on what attribute is preferred (user vs device)
         // we'll say that 'user' supersedes 'device', such that if only 'user' is specified, we hash user,
         // if only device is specified, we hash device, if both are specified, we hash user.  If neither are

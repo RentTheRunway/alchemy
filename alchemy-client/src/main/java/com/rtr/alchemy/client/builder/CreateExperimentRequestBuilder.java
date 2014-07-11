@@ -8,8 +8,8 @@ import com.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import com.sun.jersey.api.client.WebResource;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CreateExperimentRequestBuilder {
     private final String name;
@@ -17,7 +17,7 @@ public class CreateExperimentRequestBuilder {
     private Integer seed;
     private String description;
     private String filter;
-    private LinkedHashSet<String> hashAttributes;
+    private Set<String> hashAttributes;
     private Boolean isActive;
     private final List<TreatmentDto> treatments;
     private final List<AllocateRequest> allocations;
@@ -46,8 +46,8 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder setHashAttributes(LinkedHashSet<String> hashAttributes) {
-        this.hashAttributes = hashAttributes;
+    public CreateExperimentRequestBuilder setHashAttributes(Set<String> hashAttributes) {
+        this.hashAttributes = Sets.newLinkedHashSet(hashAttributes);
         return this;
     }
 

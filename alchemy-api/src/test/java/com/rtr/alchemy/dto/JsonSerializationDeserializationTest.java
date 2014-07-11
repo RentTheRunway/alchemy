@@ -24,8 +24,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -204,7 +204,7 @@ public class JsonSerializationDeserializationTest {
                     Optional.<Integer>absent(),
                     Optional.of("my new experiment"),
                     Optional.of("identified"),
-                    Optional.of(Sets.<String>newLinkedHashSet()),
+                    Optional.<Set<String>>of(Sets.<String>newLinkedHashSet()),
                     Optional.of(true),
                     Optional.<List<TreatmentDto>>of(
                         Lists.newArrayList(

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents an experiment
@@ -16,7 +16,7 @@ public class ExperimentDto {
     private final int seed;
     private final String description;
     private final String filter;
-    private final LinkedHashSet<String> hashAttributes;
+    private final Set<String> hashAttributes;
     private final boolean active;
     private final DateTime created;
     private final DateTime modified;
@@ -31,7 +31,7 @@ public class ExperimentDto {
                          @JsonProperty("seed") int seed,
                          @JsonProperty("description") String description,
                          @JsonProperty("filter") String filter,
-                         @JsonProperty("hashAttributes") LinkedHashSet<String> hashAttributes,
+                         @JsonProperty("hashAttributes") Set<String> hashAttributes,
                          @JsonProperty("active") boolean active,
                          @JsonProperty("created") DateTime created,
                          @JsonProperty("modified") DateTime modified,
@@ -71,7 +71,7 @@ public class ExperimentDto {
         return filter;
     }
 
-    public LinkedHashSet<String> getHashAttributes() {
+    public Set<String> getHashAttributes() {
         return hashAttributes;
     }
 

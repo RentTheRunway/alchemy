@@ -4,7 +4,7 @@ import com.rtr.alchemy.identities.Attributes;
 import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * An example identity
@@ -27,7 +27,7 @@ public class User extends Identity {
     }
 
     @Override
-    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+    public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
         return identity(seed)
             .putString(name)
             .hash();

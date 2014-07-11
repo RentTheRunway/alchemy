@@ -19,8 +19,8 @@ import com.rtr.alchemy.models.TreatmentOverride;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Example code that utilizes the alchemy-core library to interact with experiments directly
@@ -173,7 +173,7 @@ public class LibraryExample {
                 .save();
 
             // These are the attributes that will be requested by the experiment when calling computeHash
-            final LinkedHashSet<String> hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(User.ATTR_IDENTIFIED, Device.ATTR_DEVICE));
+            final Set<String> hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(User.ATTR_IDENTIFIED, Device.ATTR_DEVICE));
 
             final Composite userOnly = new Composite(new User("foo"), null);
             println("treatment for user-only composite: %s", experiments.getActiveTreatment("composite", userOnly));
@@ -200,7 +200,7 @@ public class LibraryExample {
             println();
 
             // Now change our attributes to not be specified to device, now hashes should be different
-            final LinkedHashSet<String> hashAttributes2 = Sets.newLinkedHashSet(Lists.newArrayList(User.ATTR_IDENTIFIED));
+            final Set<String> hashAttributes2 = Sets.newLinkedHashSet(Lists.newArrayList(User.ATTR_IDENTIFIED));
 
             println("hash for user-foo composite: %d", userFoo.computeHash(0, hashAttributes2, userFoo.computeAttributes()));
             println("hash for user-baz composite: %d", userBaz.computeHash(0, hashAttributes2, userBaz.computeAttributes()));
