@@ -1,14 +1,14 @@
 package com.rtr.alchemy.identities;
 
-import com.google.common.collect.Sets;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -19,7 +19,7 @@ public class IdentityBuilderTest {
     @Test
     public void testHashAll() {
         final Identity identity = mock(Identity.class);
-        doReturn(1L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any());
+        doReturn(1L).when(identity).computeHash(anyInt(), Mockito.<LinkedHashSet<String>>any(), any(AttributesMap.class));
 
         final long hash =
             IdentityBuilder
@@ -31,14 +31,13 @@ public class IdentityBuilderTest {
                 .putDouble(1.0)
                 .putFloat(1.0f)
                 .putInt(1)
-                .putIdentity(identity, Sets.<String>newHashSet())
                 .putLong(1L)
                 .putShort((short) 1)
                 .putString("foo")
                 .putNull()
                 .hash();
 
-        assertEquals(-4907526905224643059L, hash);
+        assertEquals(-3880933330945736271L, hash);
     }
 
     @Test
@@ -53,14 +52,13 @@ public class IdentityBuilderTest {
                 .putDouble(null)
                 .putFloat(null)
                 .putInt(null)
-                .putIdentity(null, Sets.<String>newHashSet())
                 .putLong(null)
                 .putShort(null)
                 .putString(null)
                 .putNull()
                 .hash();
 
-        assertEquals(2758870851737752684L, hash);
+        assertEquals(7075199957211664123L, hash);
 
         final long hash1 = IdentityBuilder.seed(0).putBoolean(null).hash();
         final long hash2 = IdentityBuilder.seed(0).putNull().hash();

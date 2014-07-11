@@ -91,6 +91,10 @@ public class Mappers {
     }
 
     public <T> Iterable<T> toDto(Iterable<?> source, Class<T> desinationType) {
+        if (source == null) {
+            return null;
+        }
+
         final ImmutableList.Builder<T> builder = ImmutableList.builder();
         for (final Object item : source) {
             builder.add(toDto(item, desinationType));
@@ -100,6 +104,10 @@ public class Mappers {
     }
 
     public <T> Iterable<T> fromDto(Iterable<?> source, Class<T> desinationType) {
+        if (source == null) {
+            return null;
+        }
+
         final ImmutableList.Builder<T> builder = ImmutableList.builder();
         for (final Object item : source) {
             builder.add(fromDto(item, desinationType));

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class MetadataResourceTest extends ResourceTest {
     private static final String METADATA_IDENTITY_TYPES_ENDPOINT = "/metadata/identityTypes";
     private static final String METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT = "/metadata/identityTypes/{identityType}/schema";
-    private static final String METADATA_IDENTITY_TYPE_SEGMENTS_ENDPOINT = "/metadata/identityTypes/{identityType}/segments";
+    private static final String METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT = "/metadata/identityTypes/{identityType}/attributes";
 
     @Test
     public void testGetIdentityTypes() {
@@ -52,17 +52,17 @@ public class MetadataResourceTest extends ResourceTest {
     }
 
     @Test
-    public void testGetIdentitySegments() {
-        get(METADATA_IDENTITY_TYPE_SEGMENTS_ENDPOINT, "foobar")
+    public void testGetIdentityAttributes() {
+        get(METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT, "foobar")
             .assertStatus(Status.NOT_FOUND);
 
-        final Iterable<String> segments =
-            get(METADATA_IDENTITY_TYPE_SEGMENTS_ENDPOINT, "user")
+        final Iterable<String> attributes =
+            get(METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT, "user")
                 .assertStatus(Status.OK)
                 .result(set(String.class));
 
-        assertNotNull(segments);
-        assertEquals(Sets.newHashSet("anonymous", "identified"), segments);
+        assertNotNull(attributes);
+        assertEquals(Sets.newHashSet("anonymous", "identified"), attributes);
 
     }
 }

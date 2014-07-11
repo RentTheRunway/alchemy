@@ -1,8 +1,5 @@
 {
     "name": "qa_override",
-    "identity": {
-        "type": "mock",
-        "value": "foo"
-    },
-    "treatment": "control"
+    "treatment": "control",
+    "filter": "foo"
 }

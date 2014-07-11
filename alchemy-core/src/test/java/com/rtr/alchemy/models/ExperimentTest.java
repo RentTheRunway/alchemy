@@ -1,7 +1,8 @@
 package com.rtr.alchemy.models;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.rtr.alchemy.filtering.FilterExpression;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
@@ -9,13 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -36,6 +38,7 @@ public class ExperimentTest {
         EqualsVerifier
             .forClass(Experiment.class)
             .withPrefabValues(Experiments.class, mock(Experiments.class), mock(Experiments.class))
+            .withPrefabValues(FilterExpression.class, mock(FilterExpression.class), mock(FilterExpression.class))
             .suppress(Warning.STRICT_INHERITANCE)
             .verify();
     }
@@ -53,11 +56,11 @@ public class ExperimentTest {
     @Test
     public void testAddOverride() {
         final Treatment treatment = new Treatment("bar");
-        final TreatmentOverride override = new TreatmentOverride("override", 0, treatment);
+        final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
             new Experiment(null, "foo")
                 .addTreatment("bar")
-                .addOverride("override", "bar", identity);
+                .addOverride("override", "bar", "true");
 
         assertEquals(treatment, experiment.getTreatments().get(0));
         assertEquals(override, experiment.getOverrides().get(0));
@@ -66,11 +69,11 @@ public class ExperimentTest {
     @Test
     public void testGetOverride() {
         final Treatment treatment = new Treatment("bar");
-        final TreatmentOverride override = new TreatmentOverride("override", 0, treatment);
+        final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
             new Experiment(null, "foo")
                 .addTreatment("bar")
-                .addOverride("override", "bar", identity);
+                .addOverride("override", "bar", "true");
 
         assertEquals(treatment, experiment.getTreatments().get(0));
         assertEquals(override, experiment.getOverride(override.getName()));
@@ -82,7 +85,7 @@ public class ExperimentTest {
             new Experiment(null, "foo")
                 .addTreatment("bar")
                 .allocate("bar", 10)
-                .addOverride("override", "bar", identity);
+                .addOverride("override", "bar", "true");
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getAllocations().size());
@@ -100,7 +103,7 @@ public class ExperimentTest {
         final Experiment experiment =
             new Experiment(null, "foo")
                 .addTreatment("bar")
-                .addOverride("override", "bar", identity);
+                .addOverride("override", "bar", "true");
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getOverrides().size());
@@ -129,7 +132,7 @@ public class ExperimentTest {
 
     @Test
     public void testRemoveTreatment() {
-        doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any());
+        doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<LinkedHashSet<String>>any(), any(AttributesMap.class));
 
         final Experiment experiment =
             new Experiment(null, "foo")
@@ -142,7 +145,7 @@ public class ExperimentTest {
                 .allocate("control", 10)
                 .allocate("cake", 10)
                 .allocate("pie", 10)
-                .addOverride("control_override", "control", identity);
+                .addOverride("control_override", "control", "true");
 
         List<Treatment> treatments = Lists.newArrayList(experiment.getTreatments());
         assertEquals("should contain expected number of treatments", 3, treatments.size());
@@ -177,33 +180,33 @@ public class ExperimentTest {
         assertEquals("should contain no overrides", 0, overrides.size());
     }
 
-    @Test
-    public void testImmutableAllocations() {
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUnmodifiableAllocations() {
         final  Experiment experiment =
             new Experiment(null, "experiment")
                 .addTreatment("foo")
                 .allocate("foo", 10);
 
-        assertTrue(ImmutableList.class.isAssignableFrom(experiment.getAllocations().getClass()));
+        experiment.getAllocations().add(mock(Allocation.class));
     }
 
-    @Test
-    public void testImmutableTreatments() {
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUnmodifiableTreatments() {
         final  Experiment experiment =
             new Experiment(null, "experiment")
                 .addTreatment("foo");
 
-        assertTrue(ImmutableList.class.isAssignableFrom(experiment.getTreatments().getClass()));
+        experiment.getTreatments().add(mock(Treatment.class));
     }
 
-    @Test
-    public void testImmutableOverrides() {
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUnmodifiableOverrides() {
         final  Experiment experiment =
             new Experiment(null, "experiment")
                 .addTreatment("foo")
-                .addOverride("override", "foo", identity);
+                .addOverride("override", "foo", "true");
 
-        assertTrue(ImmutableList.class.isAssignableFrom(experiment.getOverrides().getClass()));
+        experiment.getOverrides().add(mock(TreatmentOverride.class));
     }
 
     @Test
@@ -214,7 +217,7 @@ public class ExperimentTest {
             new Experiment(null, "experiment")
                 .activate()
                 .addTreatment("foo")
-                .addOverride("override", "foo", identity)
+                .addOverride("override", "foo", "true")
                 .allocate("foo", 10);
 
         final Experiment copy = Experiment.copyOf(original);

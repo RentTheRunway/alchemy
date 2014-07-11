@@ -62,7 +62,7 @@ public class AlchemyClient {
     private static final String ENDPOINT_ACTIVE_TREATMENTS = "/active/treatments";
     private static final String ENDPOINT_METADATA_IDENTITY_TYPES = "/metadata/identityTypes";
     private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA = "/metadata/identityTypes/{identityType}/schema";
-    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SEGMENTS = "/metadata/identityTypes/{identityType}/segments";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES = "/metadata/identityTypes/{identityType}/attributes";
 
     /**
      * Constructs a client with the given dropwizard environment
@@ -235,13 +235,13 @@ public class AlchemyClient {
     public void addOverride(String experimentName,
                             String overrideName,
                             String treatmentName,
-                            IdentityDto identity) {
+                            String filter) {
         resource(
             ENDPOINT_OVERRIDES,
             ImmutableMap.of(
                 PARAM_EXPERIMENT_NAME, experimentName
             )
-        ).put(new TreatmentOverrideRequest(treatmentName, identity, overrideName));
+        ).put(new TreatmentOverrideRequest(treatmentName, filter, overrideName));
     }
 
     public UpdateExperimentRequestBuilder updateExperiment(String experimentName) {
@@ -348,10 +348,10 @@ public class AlchemyClient {
         ).get(JsonSchema.class);
     }
 
-    public Set<String> getIdentitySegments(String identityType) {
+    public Set<String> getIdentityAttributes(String identityType) {
         return resource(
-            ENDPOINT_METADATA_IDENTITY_TYPE_SEGMENTS,
-            ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
+                ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES,
+                ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
         ).get(set(String.class));
     }
 

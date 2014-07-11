@@ -6,12 +6,17 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.rtr.alchemy.dto.identities.IdentityDto;
+import com.rtr.alchemy.identities.Identity;
+import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.service.metadata.IdentitiesMetadata;
 import com.rtr.alchemy.service.metadata.IdentityMetadata;
 import io.dropwizard.setup.Environment;
 
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -29,12 +34,14 @@ public class MetadataResource extends BaseResource {
     private final Map<String, Class<?>> identityTypesByName;
     private final IdentitiesMetadata metadata;
     private final JsonSchemaGenerator schemaGenerator;
+    private final Mappers mapper;
 
     @Inject
-    public MetadataResource(Environment environment, IdentitiesMetadata metadata) {
+    public MetadataResource(Environment environment, IdentitiesMetadata metadata, Mappers mapper) {
         this.metadata = metadata;
         this.identityTypesByName = Maps.transformValues(metadata, DTO_TYPES_MAPPER);
         this.schemaGenerator = new JsonSchemaGenerator(environment.getObjectMapper());
+        this.mapper = mapper;
     }
 
     @GET
@@ -51,10 +58,17 @@ public class MetadataResource extends BaseResource {
     }
 
     @GET
-    @Path("/identityTypes/{identityType}/segments")
-    public Set<String> getSegments(@PathParam("identityType") String identityType) throws JsonMappingException {
+    @Path("/identityTypes/{identityType}/attributes")
+    public Set<String> getAttributes(@PathParam("identityType") String identityType) throws JsonMappingException {
         final IdentityMetadata metadata = ensureExists(this.metadata.get(identityType));
-        return metadata.getSegments();
+        return metadata.getAttributes();
+    }
+
+    @POST
+    @Path("/identity/attributes")
+    public Map<String, Object> computeAttributes(@Valid IdentityDto request) {
+        final Identity identity = ensureExists(mapper.fromDto(request, Identity.class));
+        return identity.computeAttributes();
     }
 
     private static class MetadataDtoTypesMapper implements Function<IdentityMetadata, Class<?>> {

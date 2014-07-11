@@ -1,7 +1,9 @@
 package com.rtr.alchemy.db.mongo.models;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.rtr.alchemy.db.mongo.util.DateTimeConverter;
 import com.rtr.alchemy.models.Allocation;
 import com.rtr.alchemy.models.Experiment;
@@ -14,9 +16,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import javax.annotation.Nullable;
-
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * An entity that mirrors Experiment
@@ -33,7 +34,8 @@ public class ExperimentEntity {
     public String name;
     public int seed;
     public String description;
-    public Set<String> segments;
+    public String filter;
+    public LinkedHashSet<String> hashAttributes;
 
     @Indexed
     public boolean active;
@@ -61,7 +63,8 @@ public class ExperimentEntity {
         builder
             .seed(seed)
             .description(description)
-            .segments(segments)
+            .filter(filter)
+            .hashAttributes(hashAttributes)
             .created(created)
             .modified(modified)
             .activated(activated)
@@ -82,7 +85,7 @@ public class ExperimentEntity {
 
         if (overrides != null) {
             for (final TreatmentOverrideEntity override : overrides) {
-                builder.addOverride(override.name, override.hash, override.treatment);
+                builder.addOverride(override.name, override.filter, override.treatment);
             }
         }
 
@@ -101,8 +104,9 @@ public class ExperimentEntity {
         modified = experiment.getModified();
         activated = experiment.getActivated();
         deactivated = experiment.getDeactivated();
-        segments = experiment.getSegments();
-        treatments = Lists.transform(experiment.getTreatments(), TREATMENT_MAPPER);
+        filter = experiment.getFilter().toString();
+        hashAttributes = Sets.newLinkedHashSet(experiment.getHashAttributes());
+        treatments = Lists.newArrayList(Collections2.transform(experiment.getTreatments(), TREATMENT_MAPPER));
         allocations = Lists.transform(experiment.getAllocations(), ALLOCATION_MAPPER);
         overrides = Lists.transform(experiment.getOverrides(),TREATMENT_OVERRIDE_MAPPER);
     }

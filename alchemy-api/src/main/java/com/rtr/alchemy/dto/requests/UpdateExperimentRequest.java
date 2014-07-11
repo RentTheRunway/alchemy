@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 
 import javax.validation.Valid;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents a request for updating an experiment
@@ -13,7 +13,8 @@ import java.util.Set;
 public class UpdateExperimentRequest {
     private Optional<Integer> seed;
     private Optional<String> description;
-    private Optional<Set<String>> segments;
+    private Optional<String> filter;
+    private Optional<LinkedHashSet<String>> hashAttributes;
     private Optional<Boolean> active;
 
     @Valid
@@ -29,14 +30,16 @@ public class UpdateExperimentRequest {
 
     public UpdateExperimentRequest(Optional<Integer> seed,
                                    Optional<String> description,
-                                   Optional<Set<String>> segments,
+                                   Optional<String> filter,
+                                   Optional<LinkedHashSet<String>> hashAttributes,
                                    Optional<Boolean> active,
                                    Optional<List<TreatmentDto>> treatments,
                                    Optional<List<AllocateRequest>> allocations,
                                    Optional<List<TreatmentOverrideRequest>> overrides) {
         this.seed = seed;
         this.description = description;
-        this.segments = segments;
+        this.filter = filter;
+        this.hashAttributes = hashAttributes;
         this.active = active;
         this.treatments = treatments;
         this.allocations = allocations;
@@ -50,8 +53,12 @@ public class UpdateExperimentRequest {
         return description;
     }
 
-    public Optional<Set<String>> getSegments() {
-        return segments;
+    public Optional<String> getFilter() {
+        return filter;
+    }
+
+    public Optional<LinkedHashSet<String>> getHashAttributes() {
+        return hashAttributes;
     }
 
     public Optional<Boolean> getActive() {
@@ -79,8 +86,12 @@ public class UpdateExperimentRequest {
         this.description = description;
     }
 
-    public void setSegments(Optional<Set<String>> segments) {
-        this.segments = segments;
+    public void setFilter(Optional<String> filter) {
+        this.filter = filter;
+    }
+
+    public void setHashAttributes(Optional<LinkedHashSet<String>> hashAttributes) {
+        this.hashAttributes = hashAttributes;
     }
 
     public void setActive(Optional<Boolean> active) {

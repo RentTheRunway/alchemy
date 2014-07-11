@@ -7,8 +7,10 @@ import com.rtr.alchemy.db.ExperimentsCache;
 import com.rtr.alchemy.db.ExperimentsStoreProvider;
 import com.rtr.alchemy.db.ExperimentsStore;
 import com.rtr.alchemy.db.Filter;
+import com.rtr.alchemy.filtering.FilterExpression;
+import com.rtr.alchemy.identities.Attributes;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.Segments;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,22 +31,23 @@ public class ExperimentsTest {
     private ExperimentsCache cache;
     private Experiments experiments;
 
-    @Segments({"foo", "bar"})
+    @Attributes({"foo", "bar"})
     private static class MyIdentity extends Identity {
-        private final Set<String> segments;
+        private final Set<String> attributes;
 
-        public MyIdentity(String ... segments) {
-            this.segments = Sets.newHashSet(segments);
+        public MyIdentity(String ... attributes) {
+            this.attributes = Sets.newHashSet(attributes);
         }
 
         @Override
-        public long computeHash(int seed, Set<String> segments) {
-            return 0;
-        }
+        public AttributesMap computeAttributes() {
+            final AttributesMap.Builder builder = attributes();
 
-        @Override
-        public Set<String> computeSegments() {
-            return segments;
+            for (String name : attributes) {
+                builder.put(name, true);
+            }
+
+            return builder.build();
         }
     }
 
@@ -69,17 +72,18 @@ public class ExperimentsTest {
     public void testGetActiveTreatment() {
         final Identity identity = mock(Identity.class);
         final Experiment experiment = mock(Experiment.class);
+        doReturn(AttributesMap.empty()).when(identity).computeAttributes();
+        doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
         doReturn(ImmutableMap.of("foo", experiment))
             .when(cache)
             .getActiveExperiments();
         experiments.getActiveTreatment("foo", identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
-        verify(experiment).getOverride(eq(identity));
     }
 
     @Test
-    public void testGetActiveTreatmentUnspecifiedSegments() {
+    public void testGetActiveTreatmentUnspecifiedAttributes() {
         final MyIdentity identity1 = new MyIdentity("foo", "bar", "baz");
         final MyIdentity identity2 = new MyIdentity("baz");
         final MyIdentity identity3 = new MyIdentity("foo");
@@ -89,7 +93,7 @@ public class ExperimentsTest {
                 .create("exp1")
                 .addTreatment("control")
                 .allocate("control", 100)
-                .setSegments("baz")
+                .setFilter(FilterExpression.of("baz"))
                 .activate()
                 .save();
 
@@ -98,7 +102,7 @@ public class ExperimentsTest {
                 .create("exp2")
                 .addTreatment("control")
                 .allocate("control", 100)
-                .setSegments("bar")
+                .setFilter(FilterExpression.of("bar"))
                 .activate()
                 .save();
 
@@ -109,27 +113,27 @@ public class ExperimentsTest {
             )
         ).when(cache).getActiveExperiments();
 
-        // baz was not specified in @Segments
+        // baz was not specified in @Attributes
         assertNull(experiments.getActiveTreatment("exp1", identity1));
         assertNull(experiments.getActiveTreatment("exp1", identity2));
 
-        // bar was specified in @Segments
+        // bar was specified in @Attributes
         assertNotNull(experiments.getActiveTreatment("exp2", identity1));
         assertNull(experiments.getActiveTreatment("exp2", identity2));
         assertNull(experiments.getActiveTreatment("exp2", identity3));
     }
 
     @Test
-    public void testGetActiveTreatmentNoSegments() {
+    public void testGetActiveTreatmentNoAttributes() {
         final Identity identity = mock(Identity.class);
-        doReturn(Sets.newHashSet("baz")).when(identity).computeSegments();
+        doReturn(AttributesMap.empty()).when(identity).computeAttributes();
 
         final Experiment exp =
             experiments
                 .create("exp")
                 .addTreatment("control")
                 .allocate("control", 100)
-                .setSegments("baz")
+                .setFilter(FilterExpression.of("baz"))
                 .activate()
                 .save();
 
@@ -139,7 +143,7 @@ public class ExperimentsTest {
             )
         ).when(cache).getActiveExperiments();
 
-        // identity does not have @Segments
+        // identity does not have @Attributes
         assertNull(experiments.getActiveTreatment("exp", identity));
     }
 
@@ -147,13 +151,14 @@ public class ExperimentsTest {
     public void testGetActiveTreatments() {
         final Experiment experiment = mock(Experiment.class);
         final Identity identity = mock(Identity.class);
+        doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
+        doReturn(AttributesMap.empty()).when(identity).computeAttributes();
         doReturn(ImmutableMap.of("foo", experiment))
             .when(cache)
             .getActiveExperiments();
         experiments.getActiveTreatments(identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
-        verify(experiment).getOverride(eq(identity));
     }
 
     @Test

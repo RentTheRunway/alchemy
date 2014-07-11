@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -15,13 +16,13 @@ import java.util.concurrent.ExecutionException;
  */
 public abstract class Identity {
     protected static final Set<String> EMPTY = Collections.unmodifiableSet(Sets.<String>newHashSet());
-    private static final LoadingCache<Class<?>, Set<String>> SEGMENTS_CACHE =
+    private static final LoadingCache<Class<?>, Set<String>> ATTRIBUTES_CACHE =
         CacheBuilder
             .newBuilder()
             .build(new CacheLoader<Class<?>, Set<String>>() {
                 @Override
                 public Set<String> load(@Nonnull Class<?> clazz) throws Exception {
-                    final Segments annotation = clazz.getAnnotation(Segments.class);
+                    final Attributes annotation = clazz.getAnnotation(Attributes.class);
                     if (annotation == null) {
                         return EMPTY;
                     }
@@ -30,7 +31,7 @@ public abstract class Identity {
                     Collections.addAll(result, annotation.value());
 
                     for (final Class<? extends Identity> identity : annotation.identities()) {
-                        result.addAll(SEGMENTS_CACHE.get(identity));
+                        result.addAll(ATTRIBUTES_CACHE.get(identity));
                     }
 
                     return result;
@@ -40,49 +41,53 @@ public abstract class Identity {
     /**
      * generates a hash code used to assign identity to treatment
      * @param seed a seed value to randomize the resulting hash from experiment to experiment for the same identity
-     * @param segments a set of segment values that are being expected for a given experiment that the hash is being computed for
+     * @param hashAttributes a set of attributes that should be used to compute the hash code
+     * @param attributes a map of attribute values
      */
-    public abstract long computeHash(int seed, Set<String> segments);
+    public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
+        final IdentityBuilder builder = IdentityBuilder.seed(seed);
+        final Iterable<String> names = hashAttributes.isEmpty() ? attributes.keySet() : hashAttributes;
 
-    /**
-     * generates a list of segments that categorize this identity for filtering
-     */
-    public Set<String> computeSegments() {
-        return EMPTY;
+        for (String name : names) {
+            final Class<?> type = attributes.getType(name);
+
+            if (type == String.class) {
+                builder.putString(attributes.getString(name));
+            } else if (type == Long.class) {
+                builder.putLong(attributes.getNumber(name));
+            } else if (type == Boolean.class) {
+                builder.putBoolean(attributes.getBoolean(name));
+            }
+        }
+
+        return builder.hash();
     }
 
+    /**
+     * generates a list of attributes that describe this identity for filtering
+     */
+    public abstract AttributesMap computeAttributes();
+
+    /**
+     * Convenience method for getting an identity builder given a seed
+     */
     protected IdentityBuilder identity(int seed) {
         return IdentityBuilder.seed(seed);
     }
 
-    protected Set<String> segments(String ... segments) {
-        final Set<String> result = Sets.newHashSet();
-
-        for (final String segment : segments) {
-            if (segment != null) {
-                result.add(segment);
-            }
-        }
-
-        return result;
-    }
-
-    protected Set<String> segments(Identity ... identities) {
-        final Set<String> result = Sets.newHashSet();
-        for (final Identity identity : identities) {
-            if (identity != null) {
-                result.addAll(identity.computeSegments());
-            }
-        }
-        return result;
+    /**
+     * Convenience method for getting an attributes map builder
+     */
+    protected AttributesMap.Builder attributes() {
+        return AttributesMap.newBuilder();
     }
 
     /**
-     * Get a list of possible segment values that can be returned by this identity
+     * Get a list of possible attribute values that can be returned by this identity
      */
-    public static <T extends Identity> Set<String> getSupportedSegments(Class<T> clazz) {
+    public static <T extends Identity> Set<String> getSupportedAttributes(Class<T> clazz) {
         try {
-            return SEGMENTS_CACHE.get(clazz);
+            return ATTRIBUTES_CACHE.get(clazz);
         } catch (final ExecutionException e) {
             throw new RuntimeException(e);
         }

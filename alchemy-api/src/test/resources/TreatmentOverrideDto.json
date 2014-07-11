@@ -1,4 +1,5 @@
 {
     "name": "qa_override",
-    "treatment": "control"
+    "treatment": "control",
+    "filter": "true"
 }

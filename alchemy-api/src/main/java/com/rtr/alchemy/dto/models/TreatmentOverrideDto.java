@@ -8,16 +8,23 @@ import com.google.common.base.Objects;
  */
 public class TreatmentOverrideDto {
     private final String name;
+    private final String filter;
     private final String treatment;
 
     public TreatmentOverrideDto(@JsonProperty("name") String name,
+                                @JsonProperty("filter") String filter,
                                 @JsonProperty("treatment") String treatment) {
         this.name = name;
+        this.filter = filter;
         this.treatment = treatment;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getFilter() {
+        return filter;
     }
 
     public String getTreatment() {
@@ -26,7 +33,7 @@ public class TreatmentOverrideDto {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, treatment);
+        return Objects.hashCode(name, filter, treatment);
     }
 
     @Override
@@ -38,6 +45,7 @@ public class TreatmentOverrideDto {
         final TreatmentOverrideDto other = (TreatmentOverrideDto) obj;
         return
             Objects.equal(name, other.name) &&
+            Objects.equal(filter, other.filter) &&
             Objects.equal(treatment, other.treatment);
     }
 }

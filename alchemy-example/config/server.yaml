@@ -1,10 +1,10 @@
 server:
   applicationConnectors:
     - type: http
-      port: 8000
+      port: 8080
   adminConnectors:
     - type: http
-      port: 8001
+      port: 8081
 
 identities:
   com.rtr.alchemy.example.identities.User:

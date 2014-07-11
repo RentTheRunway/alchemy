@@ -5,8 +5,8 @@ import com.rtr.alchemy.dto.models.TreatmentDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents a request for creating an experiment
@@ -16,7 +16,8 @@ public class CreateExperimentRequest {
     private final String name;
     private final Integer seed;
     private final String description;
-    private final Set<String> segments;
+    private final String filter;
+    private final LinkedHashSet<String> hashAttributes;
     private final Boolean active;
     @Valid
     private final List<TreatmentDto> treatments;
@@ -28,7 +29,8 @@ public class CreateExperimentRequest {
     public CreateExperimentRequest(@JsonProperty("name") String name,
                                    @JsonProperty("seed") Integer seed,
                                    @JsonProperty("description") String description,
-                                   @JsonProperty("segments") Set<String> segments,
+                                   @JsonProperty("filter") String filter,
+                                   @JsonProperty("hashAttributes") LinkedHashSet<String> hashAttributes,
                                    @JsonProperty("active") Boolean active,
                                    @JsonProperty("treatments") List<TreatmentDto> treatments,
                                    @JsonProperty("allocations") List<AllocateRequest> allocations,
@@ -36,7 +38,8 @@ public class CreateExperimentRequest {
         this.name = name;
         this.seed = seed;
         this.description = description;
-        this.segments = segments;
+        this.filter = filter;
+        this.hashAttributes = hashAttributes;
         this.active = active;
         this.treatments = treatments;
         this.allocations = allocations;
@@ -55,8 +58,12 @@ public class CreateExperimentRequest {
         return description;
 
     }
-    public Set<String> getSegments() {
-        return segments;
+    public String getFilter() {
+        return filter;
+    }
+
+    public LinkedHashSet<String> getHashAttributes() {
+        return hashAttributes;
     }
 
     public Boolean isActive() {

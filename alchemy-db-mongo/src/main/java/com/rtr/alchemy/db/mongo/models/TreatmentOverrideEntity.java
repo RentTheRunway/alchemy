@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public class TreatmentOverrideEntity {
     public String name;
     public String treatment;
-    public long hash;
+    public String filter;
 
     public static TreatmentOverrideEntity from(TreatmentOverride override) {
         return new TreatmentOverrideEntity(override);
@@ -25,6 +25,6 @@ public class TreatmentOverrideEntity {
     private TreatmentOverrideEntity(TreatmentOverride override) {
         this.name = override.getName();
         this.treatment = override.getTreatment().getName();
-        this.hash = override.getHash();
+        this.filter = override.getFilter().toString();
     }
 }

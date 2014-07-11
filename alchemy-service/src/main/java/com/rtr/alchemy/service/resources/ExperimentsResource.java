@@ -9,7 +9,7 @@ import com.rtr.alchemy.dto.requests.AllocateRequest;
 import com.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import com.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import com.rtr.alchemy.dto.requests.UpdateExperimentRequest;
-import com.rtr.alchemy.identities.Identity;
+import com.rtr.alchemy.filtering.FilterExpression;
 import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
@@ -67,8 +67,15 @@ public class ExperimentsResource extends BaseResource {
         final Experiment experiment =
             experiments
                 .create(request.getName())
-                .setDescription(request.getDescription())
-                .setSegments(request.getSegments());
+                .setDescription(request.getDescription());
+
+        if (request.getFilter() != null) {
+            experiment.setFilter(FilterExpression.of(request.getFilter()));
+        }
+
+        if (request.getHashAttributes() != null) {
+            experiment.setHashAttributes(request.getHashAttributes());
+        }
 
         if (request.getSeed() != null) {
             experiment.setSeed(request.getSeed());
@@ -88,8 +95,7 @@ public class ExperimentsResource extends BaseResource {
 
         if (request.getOverrides() != null) {
             for (final TreatmentOverrideRequest override : request.getOverrides()) {
-                final Identity identity = mapper.fromDto(override.getIdentity(), Identity.class);
-                experiment.addOverride(override.getName(), override.getTreatment(), identity);
+                experiment.addOverride(override.getName(), override.getTreatment(), override.getFilter());
             }
         }
 
@@ -120,8 +126,12 @@ public class ExperimentsResource extends BaseResource {
             experiment.setDescription(request.getDescription().orNull());
         }
 
-        if (request.getSegments() != null && request.getSegments().isPresent()) {
-            experiment.setSegments(request.getSegments().orNull());
+        if (request.getFilter() != null && request.getFilter().isPresent()) {
+            experiment.setFilter(FilterExpression.of(request.getFilter().orNull()));
+        }
+
+        if (request.getHashAttributes() != null && request.getHashAttributes().isPresent()) {
+            experiment.setHashAttributes(request.getHashAttributes().orNull());
         }
 
         // only remove treatments not present in request, otherwise we wipe out existing allocations
@@ -167,7 +177,7 @@ public class ExperimentsResource extends BaseResource {
                     experiment.addOverride(
                         override.getName(),
                         override.getTreatment(),
-                        mapper.fromDto(override.getIdentity(), Identity.class)
+                        override.getFilter()
                     );
                 }
             }

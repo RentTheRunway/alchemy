@@ -1,18 +1,19 @@
 package com.rtr.alchemy.models;
 
 import com.google.common.base.Objects;
+import com.rtr.alchemy.filtering.FilterExpression;
 
 /**
  * Represents a treatment override assigned to a specific hash value
  */
 public class TreatmentOverride {
     private final String name;
-    private final long hash;
+    private final FilterExpression filter;
     private final Treatment treatment;
 
-    public TreatmentOverride(String name, long hash, Treatment treatment) {
+    public TreatmentOverride(String name, FilterExpression filter, Treatment treatment) {
         this.name = name;
-        this.hash = hash;
+        this.filter = filter;
         this.treatment = treatment;
     }
 
@@ -20,8 +21,8 @@ public class TreatmentOverride {
         return name;
     }
 
-    public long getHash() {
-        return hash;
+    public FilterExpression getFilter() {
+        return filter;
     }
 
     public Treatment getTreatment() {
@@ -30,7 +31,7 @@ public class TreatmentOverride {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, hash, treatment);
+        return Objects.hashCode(name, treatment);
     }
 
     @Override
@@ -43,7 +44,6 @@ public class TreatmentOverride {
 
         return
             Objects.equal(name, other.name) &&
-            Objects.equal(hash, other.hash) &&
             Objects.equal(treatment, other.treatment);
     }
 
@@ -53,7 +53,7 @@ public class TreatmentOverride {
             Objects
                 .toStringHelper(this)
                 .add("name", name)
-                .add("hash", hash)
+                .add("filter", filter)
                 .add("treatment", treatment)
                 .toString();
     }

@@ -24,8 +24,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -90,7 +90,8 @@ public class JsonSerializationDeserializationTest {
             "my_experiment",
             0,
             "my new experiment",
-            Sets.newHashSet("identified"),
+            "identified",
+            Sets.<String>newLinkedHashSet(),
             true,
             new DateTime(0),
             new DateTime(1),
@@ -107,6 +108,7 @@ public class JsonSerializationDeserializationTest {
             Lists.newArrayList(
                 new TreatmentOverrideDto(
                     "qa_override",
+                    "true",
                     "control"
                 )
             )
@@ -123,6 +125,7 @@ public class JsonSerializationDeserializationTest {
         assertJson(
             new TreatmentOverrideDto(
                 "qa_override",
+                "true",
                 "control"
             )
         );
@@ -165,7 +168,8 @@ public class JsonSerializationDeserializationTest {
                 "my_experiment",
                 0,
                 "my new experiment",
-                Sets.newHashSet("identified"),
+                "identified",
+                Sets.<String>newLinkedHashSet(),
                 true,
                 Lists.newArrayList(
                     new TreatmentDto("control", "the base case"),
@@ -176,7 +180,7 @@ public class JsonSerializationDeserializationTest {
                         new AllocateRequest("x", 10)
                 ),
                 Lists.newArrayList(
-                    new TreatmentOverrideRequest("control", new MockIdentityDto("foo"), "qa_override")
+                    new TreatmentOverrideRequest("control", "foo", "qa_override")
                 )
             )
         );
@@ -187,7 +191,7 @@ public class JsonSerializationDeserializationTest {
         assertJson(
             new TreatmentOverrideRequest(
                 "control",
-                new MockIdentityDto("foo"),
+                "foo",
                 "qa_override"
             )
         );
@@ -199,7 +203,8 @@ public class JsonSerializationDeserializationTest {
             new UpdateExperimentRequest(
                     Optional.<Integer>absent(),
                     Optional.of("my new experiment"),
-                    Optional.of((Set<String>) Sets.newHashSet("identified")),
+                    Optional.of("identified"),
+                    Optional.of(Sets.<String>newLinkedHashSet()),
                     Optional.of(true),
                     Optional.<List<TreatmentDto>>of(
                         Lists.newArrayList(
@@ -215,7 +220,7 @@ public class JsonSerializationDeserializationTest {
                     ),
                     Optional.<List<TreatmentOverrideRequest>>of(
                         Lists.newArrayList(
-                            new TreatmentOverrideRequest("control", new MockIdentityDto("foo"), "qa_override")
+                            new TreatmentOverrideRequest("control", "foo", "qa_override")
                         )
                     )
             )

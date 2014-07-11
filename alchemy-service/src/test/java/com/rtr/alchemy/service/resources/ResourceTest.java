@@ -8,8 +8,10 @@ import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
 import com.rtr.alchemy.db.memory.MemoryStoreProvider;
 import com.rtr.alchemy.dto.identities.IdentityDto;
+import com.rtr.alchemy.filtering.FilterExpression;
+import com.rtr.alchemy.identities.Attributes;
+import com.rtr.alchemy.identities.AttributesMap;
 import com.rtr.alchemy.identities.Identity;
-import com.rtr.alchemy.identities.Segments;
 import com.rtr.alchemy.mapping.Mapper;
 import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.models.Experiment;
@@ -30,6 +32,7 @@ import org.junit.ClassRule;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,8 +67,8 @@ public abstract class ResourceTest {
     protected static final String EXP_2_TREATMENT_3 = "static";
     protected static final String EXP_3_TREATMENT_1 = "control";
     protected static final String EXP_4_TREATMENT_1 = "control";
-    protected static final String SEGMENT_IDENTIFIED = "identified";
-    protected static final String SEGMENT_DEVICE = "device";
+    protected static final String ATTR_IDENTIFIED = "identified";
+    protected static final String ATTR_DEVICE = "device";
     protected final List<ClientResponse> openResponses = Lists.newArrayList();
 
     @ClassRule
@@ -95,7 +98,7 @@ public abstract class ResourceTest {
                 .addResource(new TreatmentOverridesResource(EXPERIMENTS, MAPPER))
                 .addResource(new ExperimentsResource(EXPERIMENTS, MAPPER))
                 .addResource(new ActiveTreatmentsResource(EXPERIMENTS, MAPPER))
-                .addResource(new MetadataResource(environment, metadata))
+                .addResource(new MetadataResource(environment, metadata, MAPPER))
                 .build();
     }
 
@@ -107,20 +110,20 @@ public abstract class ResourceTest {
             .create(EXPERIMENT_1)
             .setDescription("do people want pie or cake?")
             .activate()
-            .setSegments(SEGMENT_IDENTIFIED)
+            .setFilter(FilterExpression.of(ATTR_IDENTIFIED))
             .addTreatment(EXP_1_TREATMENT_1)
             .addTreatment(EXP_1_TREATMENT_2)
             .addTreatment(EXP_1_TREATMENT_3)
             .allocate(EXP_1_TREATMENT_1, 50)
             .allocate(EXP_1_TREATMENT_2, 25)
             .allocate(EXP_1_TREATMENT_3, 25)
-            .addOverride(EXP_1_OVERRIDE, EXP_1_TREATMENT_2, new User(EXP_1_OVERRIDE_USER))
+            .addOverride(EXP_1_OVERRIDE, EXP_1_TREATMENT_2, EXP_1_OVERRIDE_USER)
             .save();
 
         EXPERIMENTS
             .create(EXPERIMENT_2)
             .activate()
-            .setSegments(SEGMENT_DEVICE)
+            .setFilter(FilterExpression.of(ATTR_DEVICE))
             .addTreatment(EXP_2_TREATMENT_1)
             .addTreatment(EXP_2_TREATMENT_2)
             .addTreatment(EXP_2_TREATMENT_3)
@@ -187,7 +190,7 @@ public abstract class ResourceTest {
         return EXPERIMENTS.get(name);
     }
 
-    @Segments({"anonymous", "identified"})
+    @Attributes({"anonymous", "identified"})
     protected static class User extends Identity {
         private final String name;
 
@@ -200,13 +203,16 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long computeHash(int seed, Set<String> segments) {
+        public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
             return identity(seed).putString(name).hash();
         }
 
         @Override
-        public Set<String> computeSegments() {
-            return segments(name == null ? "anonymous" : "identified");
+        public AttributesMap computeAttributes() {
+            return
+                    name == null ?
+                    attributes().put("anonymous", true).build() :
+                    attributes().put("identified", true).build();
         }
     }
 
@@ -235,7 +241,7 @@ public abstract class ResourceTest {
         }
     }
 
-    @Segments({"device"})
+    @Attributes({"device"})
     protected static class Device extends Identity {
         private final String id;
 
@@ -248,13 +254,13 @@ public abstract class ResourceTest {
         }
 
         @Override
-        public long computeHash(int seed, Set<String> segments) {
+        public long computeHash(int seed, LinkedHashSet<String> hashAttributes, AttributesMap attributes) {
             return identity(seed).putString(id).hash();
         }
 
         @Override
-        public Set<String> computeSegments() {
-            return segments("device");
+        public AttributesMap computeAttributes() {
+            return attributes().put("device", true).build();
         }
     }
 
