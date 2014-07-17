@@ -1,10 +1,14 @@
 package com.rtr.alchemy.service.resources;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.rtr.alchemy.dto.models.AllocationDto;
 import com.rtr.alchemy.dto.models.TreatmentDto;
 import com.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.Response.Status;
 
 import static org.junit.Assert.assertEquals;
@@ -14,6 +18,7 @@ import static org.junit.Assert.assertNull;
 public class TreatmentsResourceTest extends ResourceTest {
     private static final String TREATMENTS_ENDPOINT = "/experiments/{experimentName}/treatments";
     private static final String TREATMENT_ENDPOINT = "/experiments/{experimentName}/treatments/{treatment}";
+    private static final String ALLOCATIONS_ENDPOINT = "/experiments/{experimentName}/allocations";
 
     @Test
     public void testGetTreatments() {
@@ -100,6 +105,21 @@ public class TreatmentsResourceTest extends ResourceTest {
                 .result(TreatmentDto.class);
 
         assertEquals(request.getDescription().orNull(), treatment.getDescription());
+
+        final Iterable<AllocationDto> allocations =
+            get(ALLOCATIONS_ENDPOINT, EXPERIMENT_1)
+                .assertStatus(Status.OK)
+                .result(iterable(AllocationDto.class));
+
+        // Make sure we didn't lose our allocations for this treatment
+        assertNotNull(
+            Iterables.find(allocations, new Predicate<AllocationDto>() {
+                @Override
+                public boolean apply(@Nullable AllocationDto input) {
+                    return input != null && input.getTreatment().equals(EXP_1_TREATMENT_1);
+                }
+            })
+        );
     }
 
     @Test
