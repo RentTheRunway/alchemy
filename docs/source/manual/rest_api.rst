@@ -313,6 +313,22 @@ Treatments
 |
 |
 
+``POST /experiments/{experimentName}/treatments/{treatmentName}``
+
+**Response:** *404 Not Found* if experiment or treatment not found, otherwise *204 No Content*
+
+**Example Payload:**
+
+.. code-block:: json
+
+    {
+        "description": "new description"
+    }
+
+|
+|
+|
+
 ``DELETE /experiments/{experimentName}/treatments``
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*

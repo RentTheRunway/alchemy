@@ -29,6 +29,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -141,6 +142,30 @@ public class AlchemyClientTest {
         final TreatmentDto treatment = client.getTreatment("exp", "control");
         assertEquals("control", treatment.getName());
         assertEquals("the control", treatment.getDescription());
+
+        client.addTreatment("exp", "control");
+        final TreatmentDto treatment2 = client.getTreatment("exp", "control");
+
+        assertEquals("control", treatment2.getName());
+        assertNull(treatment2.getDescription());
+    }
+
+    @Test
+    public void testUpdateTreatment() {
+        client
+            .createExperiment("exp")
+            .apply();
+
+        client.addTreatment("exp", "control", "the control");
+        client
+            .updateTreatment("exp", "control")
+            .setDescription("new description")
+            .apply();
+
+        final TreatmentDto treatment = client.getTreatment("exp", "control");
+        assertEquals("control", treatment.getName());
+        assertEquals("new description", treatment.getDescription());
+
     }
 
     @Test

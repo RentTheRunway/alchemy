@@ -1,6 +1,8 @@
 package com.rtr.alchemy.service.resources;
 
+import com.google.common.base.Optional;
 import com.rtr.alchemy.dto.models.TreatmentDto;
+import com.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response.Status;
@@ -74,6 +76,30 @@ public class TreatmentsResourceTest extends ResourceTest {
             .assertStatus(Status.NO_CONTENT);
 
         assertNull(experiment(EXPERIMENT_1).getTreatment(EXP_1_TREATMENT_1));
+    }
+
+    @Test
+    public void testUpdateTreatment() {
+        final UpdateTreatmentRequest request = new UpdateTreatmentRequest(Optional.of("new description"));
+
+        post(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1)
+            .entity(request)
+            .assertStatus(Status.NOT_FOUND);
+
+        post(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD)
+            .entity(request)
+            .assertStatus(Status.NOT_FOUND);
+
+        post(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1)
+            .entity(request)
+            .assertStatus(Status.NO_CONTENT);
+
+        final TreatmentDto treatment =
+            get(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1)
+                .assertStatus(Status.OK)
+                .result(TreatmentDto.class);
+
+        assertEquals(request.getDescription().orNull(), treatment.getDescription());
     }
 
     @Test
