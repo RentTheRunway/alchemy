@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.rtr.alchemy.client.builder.CreateExperimentRequestBuilder;
 import com.rtr.alchemy.client.builder.UpdateAllocationsRequestBuilder;
 import com.rtr.alchemy.client.builder.UpdateExperimentRequestBuilder;
+import com.rtr.alchemy.client.builder.UpdateTreatmentRequestBuilder;
 import com.rtr.alchemy.dto.identities.IdentityDto;
 import com.rtr.alchemy.dto.models.AllocationDto;
 import com.rtr.alchemy.dto.models.ExperimentDto;
@@ -305,6 +306,18 @@ public class AlchemyClient {
                 PARAM_TREATMENT_NAME, treatmentName
             )
         ).delete();
+    }
+
+    public UpdateTreatmentRequestBuilder updateTreatment(String experimentName, String treatmentName) {
+        return new UpdateTreatmentRequestBuilder(
+            resource(
+                    ENDPOINT_TREATMENT,
+                    ImmutableMap.of(
+                        PARAM_EXPERIMENT_NAME, experimentName,
+                        PARAM_TREATMENT_NAME, treatmentName
+                    )
+            )
+        );
     }
 
     public void clearTreatments(String experimentName) {

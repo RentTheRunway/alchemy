@@ -2,6 +2,7 @@ package com.rtr.alchemy.service.resources;
 
 import com.google.inject.Inject;
 import com.rtr.alchemy.dto.models.TreatmentDto;
+import com.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
 import com.rtr.alchemy.mapping.Mappers;
 import com.rtr.alchemy.models.Experiment;
 import com.rtr.alchemy.models.Experiments;
@@ -11,6 +12,7 @@ import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -74,6 +76,21 @@ public class TreatmentsResource extends BaseResource {
         experiment
             .removeTreatment(treatmentName)
             .save();
+    }
+
+    @POST
+    @Path("/{treatmentName}")
+    public void updateTreatment(@PathParam("experimentName") String experimentName,
+                                @PathParam("treatmentName") String treatmentName,
+                                @Valid UpdateTreatmentRequest request) {
+        final Experiment experiment = ensureExists(experiments.get(experimentName));
+        final Treatment treatment = ensureExists(ensureExists(experiment).getTreatment(treatmentName));
+
+        if (request.getDescription() != null) {
+            treatment.setDescription(request.getDescription().orNull());
+        }
+
+        experiment.save();
     }
 
     @DELETE
