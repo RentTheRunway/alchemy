@@ -19,22 +19,24 @@ public class ExperimentIterable implements Iterable<Experiment> {
 
     @Override
     public Iterator<Experiment> iterator() {
-        return new Iterator<Experiment>() {
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
+        return ExceptionSafeIterator.wrap(
+            new Iterator<Experiment>() {
+                @Override
+                public boolean hasNext() {
+                    return iterator.hasNext();
+                }
 
-            @Override
-            public Experiment next() {
-                final ExperimentEntity entity = iterator.next();
-                return entity.toExperiment(factory.createBuilder(entity.name));
-            }
+                @Override
+                public Experiment next() {
+                    final ExperimentEntity entity = iterator.next();
+                    return entity.toExperiment(factory.createBuilder(entity.name));
+                }
 
-            @Override
-            public void remove() {
-                iterator.remove();
+                @Override
+                public void remove() {
+                    iterator.remove();
+                }
             }
-        };
+        );
     }
 }
