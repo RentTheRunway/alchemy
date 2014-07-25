@@ -1,26 +1,27 @@
-.. _man-rest-api:
+[< back to Manual](../manual.md)
 
-################
-Alchemy REST API
-################
+#Alchemy REST API
 
-.. highlight:: text
+The `alchemy-service` module provides you with a baseline dropwizard service, that given an appropriate configuration, will host a RESTful API that can be used to interact with experiments.
 
-.. rubric:: The ``alchemy-service`` module provides you with a baseline dropwizard service, that given an appropriate configuration, will host a RESTful API that can be used to interact with experiments.
+- Endpoints
+  * [Experiments](#experiments)
+  * [Treatments](#treatments)
+  * [Allocations](#allocations)
+  * [Treatment Overrides](#treatment_overrides)
+  * [Active Treatments](#active_treatments)
+  * [Metadata](#metadata)
 
-These are the currently implemented endpoints:
+<a name="experiments"></a>
+###Experiments
 
-Experiments
------------
-
-``GET /experiments``
+`GET /experiments`
 
 **Response:** *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     [
         {
             "name": "pie_vs_cake",
@@ -68,19 +69,15 @@ Experiments
             ]
         }
     ]
+```
 
-|
-|
-|
-
-``GET /experiments/{experimentName}``
+`GET /experiments/{experimentName}`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "name": "pie_vs_cake",
         "description": "My experiment",
@@ -126,19 +123,15 @@ Experiments
             }
         ]
     }
+```
 
-|
-|
-|
-
-``PUT /experiments``
+`PUT /experiments`
 
 **Response:** *201 Created*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "name": "pie_vs_cake",
         "description": "My experiment",
@@ -182,19 +175,15 @@ Experiments
             }
         ]
     }
+```
 
-|
-|
-|
-
-``POST /experiments/{experimentName}``
+`POST /experiments/{experimentName}`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "description": "new description",
         "active": false,
@@ -236,30 +225,23 @@ Experiments
             }
         ]
     }
+```
 
-|
-|
-|
-
-``DELETE /experiments/{experimentName}``
+`DELETE /experiments/{experimentName}`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*
 
-|
-|
-|
 
-Treatments
-----------
+<a name="treatments"></a>
+###Treatments
 
-``GET /experiments/{experimentName}/treatments``
+`GET /experiments/{experimentName}/treatments`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     [
         {
             "name": "cake",
@@ -274,88 +256,65 @@ Treatments
             "description": "3.141"
         }
     ]
+```
 
-|
-|
-|
-
-``GET /experiments/{experimentName}/treatments/{treatmentName}``
+`GET /experiments/{experimentName}/treatments/{treatmentName}`
 
 **Response:** *404 Not Found* if experiment or treatment not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "name": "cake",
         "description": "the cake is a lie"
     }
+```
 
-|
-|
-|
-
-``PUT /experiments/{experimentName}/treatments``
+`PUT /experiments/{experimentName}/treatments`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *201 Created*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "name": "new_treatment",
         "description": "my new treatment"
     }
+```
 
-|
-|
-|
-
-``POST /experiments/{experimentName}/treatments/{treatmentName}``
+`POST /experiments/{experimentName}/treatments/{treatmentName}`
 
 **Response:** *404 Not Found* if experiment or treatment not found, otherwise *204 No Content*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "description": "new description"
     }
+```
 
-|
-|
-|
-
-``DELETE /experiments/{experimentName}/treatments``
+`DELETE /experiments/{experimentName}/treatments`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*
 
-|
-|
-|
-
-``DELETE /experiments/{experimentName}/treatments/{treatmentName}``
+`DELETE /experiments/{experimentName}/treatments/{treatmentName}`
 
 **Response:** *404 Not Found* if experiment or treatment not found, otherwise *204 No Content*
 
-|
-|
-|
 
-Allocations
------------
+<a name="allocations"></a>
+###Allocations
 
-``GET /experiments/{experimentName}/allocations``
+`GET /experiments/{experimentName}/allocations`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     [
         {
             "treatment": "control",
@@ -373,19 +332,15 @@ Allocations
             "size": 20
         }
     ]
+```
 
-|
-|
-|
-
-``POST /experiments/{experimentName}/allocations``
+`POST /experiments/{experimentName}/allocations`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     [
       {
         "action": "allocate",
@@ -404,30 +359,22 @@ Allocations
         "size": 5
       }
     ]
+```
 
-|
-|
-|
-
-``DELETE /experiments/{experimentName}/allocations``
+`DELETE /experiments/{experimentName}/allocations`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*
 
-|
-|
-|
+<a name="treatment_overrides"></a>
+###Treatment Overrides
 
-Treatment Overrides
--------------------
-
-``GET /experiments/{experimentName}/overrides``
+`GET /experiments/{experimentName}/overrides`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     [
         {
             "name": "qa_cake",
@@ -435,100 +382,76 @@ Treatment Overrides
             "filter": "user_name=\"qa\""
         }
     ]
+```
 
-|
-|
-|
-
-``GET /experiments/{experimentName}/overrides/{overrideName}``
+`GET /experiments/{experimentName}/overrides/{overrideName}`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "name": "qa_cake",
         "treatment": "cake"
         "filter": "user_name=\"qa\""
     }
+```
 
-|
-|
-|
-
-``PUT /experiments/{experimentName}/overrides``
+`PUT /experiments/{experimentName}/overrides`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *201 Created*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "name": "qa_override",
         "treatment": "cake",
         "filter": "user_name=\"qa\""
     }
+```
 
-|
-|
-|
-
-``DELETE /experiments/{experimentName}/overrides``
+`DELETE /experiments/{experimentName}/overrides`
 
 **Response:** *404 Not Found* if experiment not found, otherwise *204 No Content*
 
-|
-|
-|
-
-``DELETE /experiments/{experimentName}/overrides/{overrideName}``
+`DELETE /experiments/{experimentName}/overrides/{overrideName}`
 
 **Response:** *404 Not Found* if experiment or override not found, otherwise *204 No Content*
 
-|
-|
-|
+<a name="active_treatments"></a>
+###Active Treatments
 
-Active Treatments
------------------
-
-``POST /active/experiments/{experimentName}/treatment``
+`POST /active/experiments/{experimentName}/treatment`
 
 **Response:** *204 Not Content* if no treatment assigned to identity, otherwise *200 OK*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "type": "user",
         "name": "qa"
     }
+```
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "name": "pie",
         "description": "people want pie"
     }
+```
 
-|
-|
-|
-
-``POST /active/treatments``
+`POST /active/treatments`
 
 **Response:** *200 OK*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     [
         {
             "type": "user",
@@ -539,49 +462,40 @@ Active Treatments
             "name": "10efb20abe0ff1ec"
         }
     ]
+```
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "pie_vs_cake": {
             "name": "cake",
             "description": "people want cake"
         }
     }
+```
+<a name="metadata"></a>
+###Metadata
 
-|
-|
-|
-
-Metadata
---------
-
-``GET /metadata/identityTypes``
+`GET /metadata/identityTypes`
 
 **Response:** *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "user": "com.rtr.alchemy.example.dto.UserDto"
     }
+```
 
-|
-|
-|
-
-``GET /metadata/identityTypes/{identityType}/schema``
+`GET /metadata/identityTypes/{identityType}/schema`
 
 **Response:** *404* Not Found if type was not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "type": "object",
         "properties": {
@@ -590,49 +504,40 @@ Metadata
             }
         }
     }
+```
 
-
-|
-|
-|
-
-``GET /metadata/identityTypes/{identityType}/attributes``
+`GET /metadata/identityTypes/{identityType}/attributes`
 
 **Response:** *404* Not Found if type was not found, otherwise *200 OK*
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     [
         "identified",
         "anonymous"
     ]
+```
 
-
-|
-|
-|
-
-``GET /metadata/identity/attributes``
+`GET /metadata/identity/attributes`
 
 **Response:** *404* Not Found if type was not found, otherwise *200 OK*
 
 **Example Payload:**
 
-.. code-block:: json
-
+```json
     {
         "type": "user",
         "name": "qa"
     }
+```
 
 **Example Response:**
 
-.. code-block:: json
-
+```json
     {
         "user": true,
         "identified": true,
         "user_name": "qa"
     }
+```
