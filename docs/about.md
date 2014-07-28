@@ -18,9 +18,6 @@ Many thanks to: _Gene Trog and Carlo Barbara_
 <a name="faq"></a>
 ###Frequently Asked Questions
 
-**_How is Alchemy licensed?_**
-> It's licensed under the [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html)
-
 **_How can I commit to Alchemy?_**
 >  Go to the [GitHub project](https://github.com/RentTheRunway2/alchemy), fork it, and submit a pull request. 
    We prefer small, single-purpose pull requests over large, multi-purpose ones. We reserve the right to turn
@@ -50,6 +47,8 @@ Many thanks to: _Gene Trog and Carlo Barbara_
   * More robust handling of failed experiment loading in MongoStoreProvider
 - v0.1.7
   * Expose endpoint for updating treatment description  
+- v0.1.8
+  * Changed namespaces to io.rtr
 
 <a name="todo"></a>
 ### Documentation TODOs
