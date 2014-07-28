@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>alchemy-parent</artifactId>
-    <groupId>com.rtr.alchemy</groupId>
+    <groupId>io.rtr.alchemy</groupId>
     <version>0.1.8-SNAPSHOT</version>
   </parent>
   <name>Alchemy REST Service</name>
@@ -17,27 +17,27 @@
       <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-mapping</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-db-mongo</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-db-memory</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -86,7 +86,7 @@
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>com.rtr.alchemy.service.AlchemyService</mainClass>
+                  <mainClass>io.rtr.alchemy.service.AlchemyService</mainClass>
                 </transformer>
               </transformers>
             </configuration>

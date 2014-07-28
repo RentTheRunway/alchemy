@@ -485,7 +485,7 @@ The `alchemy-service` module provides you with a baseline dropwizard service, th
 
 ```json
     {
-        "user": "com.rtr.alchemy.example.dto.UserDto"
+        "user": "io.rtr.alchemy.example.dto.UserDto"
     }
 ```
 
