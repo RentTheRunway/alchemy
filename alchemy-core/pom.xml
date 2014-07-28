@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>alchemy-parent</artifactId>
-    <groupId>com.rtr.alchemy</groupId>
+    <groupId>io.rtr.alchemy</groupId>
     <version>0.1.8-SNAPSHOT</version>
   </parent>
   <name>Alchemy Core Library</name>
@@ -53,13 +53,13 @@
         <version>4.2.2</version>
         <configuration>
           <sourceDirectory>${basedir}/src/main/antlr4</sourceDirectory>
-          <outputDirectory>${basedir}/src/main/java/com/rtr/alchemy/filtering</outputDirectory>
+          <outputDirectory>src/main/java/io/rtr/alchemy/filtering</outputDirectory>
           <libDirectory>/tmp</libDirectory>
           <arguments>
             <argument>-lib</argument>
             <argument>/tmp</argument>
             <argument>-package</argument>
-            <argument>com.rtr.alchemy.filtering</argument>
+            <argument>io.rtr.alchemy.filtering</argument>
           </arguments>
           <options>
             <language>Java</language>

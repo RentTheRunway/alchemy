@@ -7,15 +7,15 @@ server:
       port: 8081
 
 identities:
-  com.rtr.alchemy.example.identities.User:
-    dto: com.rtr.alchemy.example.dto.UserDto
-    mapper: com.rtr.alchemy.example.mappers.UserMapper
+  io.rtr.alchemy.example.identities.User:
+    dto: io.rtr.alchemy.example.dto.UserDto
+    mapper: io.rtr.alchemy.example.mappers.UserMapper
 
 provider:
-  type: com.rtr.alchemy.example.config.MongoStoreProvider
+  type: io.rtr.alchemy.example.config.MongoStoreProvider
   hosts: [ "localhost" ]
   db: experiments
 
 cacheStrategy:
-  type: com.rtr.alchemy.example.config.PeriodicStaleCheckingCacheStrategy
+  type: io.rtr.alchemy.example.config.PeriodicStaleCheckingCacheStrategy
   duration: 1m

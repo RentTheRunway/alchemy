@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>alchemy-parent</artifactId>
-    <groupId>com.rtr.alchemy</groupId>
+    <groupId>io.rtr.alchemy</groupId>
     <version>0.1.8-SNAPSHOT</version>
   </parent>
   <name>Alchemy Service REST Client</name>
@@ -13,7 +13,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -32,7 +32,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.rtr.alchemy</groupId>
+      <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-service</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>

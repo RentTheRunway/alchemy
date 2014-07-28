@@ -2,10 +2,10 @@
   <!-- ANTLR generated files -->
   <Match>
     <Or>
-      <Class name="com.rtr.alchemy.filtering.FilterBaseListener"/>
-      <Class name="com.rtr.alchemy.filtering.FilterLexer"/>
-      <Class name="com.rtr.alchemy.filtering.FilterParser"/>
-      <Class name="com.rtr.alchemy.filtering.FilterListener"/>
+      <Class name="io.rtr.alchemy.filtering.FilterBaseListener"/>
+      <Class name="io.rtr.alchemy.filtering.FilterLexer"/>
+      <Class name="io.rtr.alchemy.filtering.FilterParser"/>
+      <Class name="io.rtr.alchemy.filtering.FilterListener"/>
     </Or>
   </Match>
 </FindBugsFilter>
