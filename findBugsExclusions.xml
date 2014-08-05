@@ -8,4 +8,10 @@
       <Class name="io.rtr.alchemy.filtering.FilterListener"/>
     </Or>
   </Match>
+  <!-- Don't need to implement Serializable for comparator -->
+  <Match>
+    <Or>
+      <Class name="io.rtr.alchemy.db.memory.MemoryExperimentsStore$OrderingComparator" />
+    </Or>
+  </Match>
 </FindBugsFilter>

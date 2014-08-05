@@ -15,7 +15,7 @@ The `alchemy-service` module provides you with a baseline dropwizard service, th
 <a name="experiments"></a>
 ###Experiments
 
-`GET /experiments`
+`GET /experiments?filter=pie&offset=0&limit=1&sort=name`
 
 **Response:** *200 OK*
 

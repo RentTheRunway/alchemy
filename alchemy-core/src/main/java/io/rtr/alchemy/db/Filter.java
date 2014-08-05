@@ -10,11 +10,13 @@ public class Filter {
     private final String filter;
     private final Integer offset;
     private final Integer limit;
+    private final Ordering ordering;
 
-    private Filter(String filter, Integer offset, Integer limit) {
+    private Filter(String filter, Integer offset, Integer limit, Ordering ordering) {
         this.filter = filter;
         this.offset = offset;
         this.limit = limit;
+        this.ordering = ordering;
     }
 
     public static Builder criteria() {
@@ -25,6 +27,7 @@ public class Filter {
         private String filter;
         private Integer offset;
         private Integer limit;
+        private Ordering ordering;
 
         public Builder filter(String filter) {
             this.filter = filter;
@@ -41,8 +44,13 @@ public class Filter {
             return this;
         }
 
+        public Builder ordering(Ordering ordering) {
+            this.ordering = ordering;
+            return this;
+        }
+
         public Filter build() {
-            return new Filter(filter, offset, limit);
+            return new Filter(filter, offset, limit, ordering);
         }
     }
 
@@ -56,6 +64,10 @@ public class Filter {
 
     public Integer getLimit() {
         return limit;
+    }
+
+    public Ordering getOrdering() {
+        return ordering;
     }
 
     @Override

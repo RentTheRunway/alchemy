@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.rtr.alchemy.db.Ordering;
 import io.rtr.alchemy.db.mongo.util.DateTimeConverter;
 import io.rtr.alchemy.models.Allocation;
 import io.rtr.alchemy.models.Experiment;
@@ -29,20 +30,34 @@ public class ExperimentEntity {
     private static final AllocationMapper ALLOCATION_MAPPER = new AllocationMapper();
     private static final TreatmentOverrideMapper TREATMENT_OVERRIDE_MAPPER = new TreatmentOverrideMapper();
 
+    public static final String FIELD_NAME = "name";
     @Id
     public String name;
+
     public int seed;
+
+    public static final String FIELD_DESCRIPTION = "description";
     public String description;
+
     public String filter;
     public List<String> hashAttributes;
 
+    public static final String FIELD_ACTIVE = "active";
     @Indexed
     public boolean active;
 
     public long revision;
+
+    public static final String FIELD_CREATED = "created";
     public DateTime created;
+
+    public static final String FIELD_MODIFIED = "modified";
     public DateTime modified;
+
+    public static final String FIELD_ACTIVATED = "activated";
     public DateTime activated;
+
+    public static final String FIELD_DEACTIVATED = "deactivated";
     public DateTime deactivated;
 
     @Embedded
@@ -56,6 +71,33 @@ public class ExperimentEntity {
 
     public static ExperimentEntity from(Experiment experiment) {
         return new ExperimentEntity(experiment);
+    }
+
+    public static String getFieldName(Ordering.Field field) {
+        switch (field) {
+            case NAME:
+                return ExperimentEntity.FIELD_NAME;
+            case DESCRIPTION:
+                return  ExperimentEntity.FIELD_DESCRIPTION;
+            case ACTIVE:
+                return ExperimentEntity.FIELD_ACTIVE;
+            case CREATED:
+                return ExperimentEntity.FIELD_CREATED;
+            case MODIFIED:
+                return ExperimentEntity.FIELD_MODIFIED;
+            case ACTIVATED:
+                return ExperimentEntity.FIELD_ACTIVATED;
+            case DEACTIVATED:
+                return ExperimentEntity.FIELD_DEACTIVATED;
+            default:
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Unsupported ordering field: %s (%s)",
+                        field,
+                        field.getName()
+                    )
+                );
+        }
     }
 
     public Experiment toExperiment(Experiment.Builder builder) {
