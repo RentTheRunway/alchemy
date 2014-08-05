@@ -97,6 +97,37 @@ public class AlchemyClientTest {
     }
 
     @Test
+    public void testGetExperimentsFiltered() {
+        client
+            .createExperiment("exp")
+            .setDescription("this is an experiment")
+            .activate()
+            .apply();
+
+        client
+            .createExperiment("another_exp")
+            .setDescription("another experiment")
+            .activate()
+            .apply();
+
+        final List<ExperimentDto> experiments1 = client.getExperimentsFiltered().sort("name").limit(1).apply();
+        assertEquals(1, experiments1.size());
+        assertEquals("another_exp", experiments1.get(0).getName());
+
+        final List<ExperimentDto> experiments2 = client.getExperimentsFiltered().sort("name").offset(1).apply();
+        assertEquals(1, experiments2.size());
+        assertEquals("exp", experiments2.get(0).getName());
+
+        final List<ExperimentDto> experiments3 = client.getExperimentsFiltered().sort("-name").offset(1).apply();
+        assertEquals(1, experiments3.size());
+        assertEquals("another_exp", experiments3.get(0).getName());
+
+        final List<ExperimentDto> experiments4 = client.getExperimentsFiltered().filter("another").apply();
+        assertEquals(1, experiments4.size());
+        assertEquals("another_exp", experiments4.get(0).getName());
+    }
+
+    @Test
     public void testUpdateExperiment() {
         client
             .createExperiment("exp")

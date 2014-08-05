@@ -4,9 +4,12 @@ import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Maps;
 import io.rtr.alchemy.client.builder.CreateExperimentRequestBuilder;
+import io.rtr.alchemy.client.builder.GetExperimentsRequestBuilder;
 import io.rtr.alchemy.client.builder.UpdateAllocationsRequestBuilder;
 import io.rtr.alchemy.client.builder.UpdateExperimentRequestBuilder;
 import io.rtr.alchemy.client.builder.UpdateTreatmentRequestBuilder;
@@ -15,6 +18,7 @@ import io.rtr.alchemy.dto.models.AllocationDto;
 import io.rtr.alchemy.dto.models.ExperimentDto;
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
+import io.rtr.alchemy.dto.requests.GetExperimentsRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
@@ -40,7 +44,8 @@ import java.util.concurrent.Executors;
  */
 public class AlchemyClient {
     private static final String CLIENT_NAME = "alchemy-client";
-    private static final Map<String, ?> EMPTY_PARAMS = Maps.newHashMap();
+    private static final Map<String, ?> EMPTY_PATH_PARAMS = Maps.newHashMap();
+    private static final ListMultimap<String, Object> EMPTY_QUERY_PARAMS = ArrayListMultimap.create();
     private static final ClassTypeMappper CLASS_TYPE_MAPPPER = new ClassTypeMappper();
     private final MetricRegistry metricRegistry = new MetricRegistry();
     private final JerseyClientBuilder clientBuilder = new JerseyClientBuilder(metricRegistry);
@@ -64,6 +69,38 @@ public class AlchemyClient {
     private static final String ENDPOINT_METADATA_IDENTITY_TYPES = "/metadata/identityTypes";
     private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA = "/metadata/identityTypes/{identityType}/schema";
     private static final String ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES = "/metadata/identityTypes/{identityType}/attributes";
+
+    private final Function<GetExperimentsRequest, List<ExperimentDto>> GET_EXPERIMENTS_REQUEST_BUILDER =
+        new Function<GetExperimentsRequest, List<ExperimentDto>>() {
+            @Nullable
+            @Override
+            public List<ExperimentDto> apply(@Nullable GetExperimentsRequest request) {
+                if (request == null) {
+                    return null;
+                }
+
+                final ListMultimap<String, Object> queryParams = ArrayListMultimap.create();
+
+                if (request.getFilter() != null) {
+                    queryParams.put("filter", request.getFilter());
+                }
+
+                if (request.getOffset() != null) {
+                    queryParams.put("offset", request.getOffset());
+                }
+
+                if (request.getLimit() != null) {
+                    queryParams.put("limit", request.getLimit());
+                }
+
+                if (request.getSort() != null) {
+                    queryParams.put("sort", request.getSort());
+                }
+
+                final WebResource.Builder builder = resource(ENDPOINT_EXPERIMENTS, queryParams);
+                return builder.get(list(ExperimentDto.class));
+            }
+        };
 
     /**
      * Constructs a client with the given dropwizard environment
@@ -127,24 +164,49 @@ public class AlchemyClient {
         );
     }
 
-    private URI assembleRequestURI(Map<String, ?> pathParams, String path) {
-        return
+    private URI assembleRequestURI(Map<String, ?> pathParams, ListMultimap<String, Object> queryParams, String path) {
+        final UriBuilder builder =
             UriBuilder
                 .fromUri(configuration.getService())
-                .path(path)
-                .buildFromEncodedMap(pathParams);
+                .path(path);
+
+        for (String queryParam : queryParams.keySet()) {
+            final List<Object> values = queryParams.get(queryParam);
+
+            for (Object value : values) {
+                builder.queryParam(queryParam, value);
+            }
+        }
+
+        return builder.buildFromEncodedMap(pathParams);
     }
 
     protected WebResource.Builder resource(String path, Map<String, ?> pathParams) {
         return
             client
-                .resource(assembleRequestURI(pathParams, path))
+                .resource(assembleRequestURI(pathParams, EMPTY_QUERY_PARAMS, path))
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .type(MediaType.APPLICATION_JSON_TYPE);
+    }
+
+    protected WebResource.Builder resource(String path, ListMultimap<String, Object> queryParams) {
+        return
+            client
+                .resource(assembleRequestURI(EMPTY_PATH_PARAMS, queryParams, path))
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .type(MediaType.APPLICATION_JSON_TYPE);
+    }
+
+    protected WebResource.Builder resource(String path, Map<String, ?> pathParams, ListMultimap<String, Object> queryParams) {
+        return
+            client
+                .resource(assembleRequestURI(pathParams, queryParams, path))
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .type(MediaType.APPLICATION_JSON_TYPE);
     }
 
     protected WebResource.Builder resource(String url) {
-        return resource(url, EMPTY_PARAMS);
+        return resource(url, EMPTY_PATH_PARAMS, EMPTY_QUERY_PARAMS);
     }
 
     protected static <K, V> GenericType<Map<K, V>> map(Class<K> keyType, Class<V> valueType) {
@@ -161,6 +223,10 @@ public class AlchemyClient {
 
     public List<ExperimentDto> getExperiments() {
         return resource(ENDPOINT_EXPERIMENTS).get(list(ExperimentDto.class));
+    }
+
+    public GetExperimentsRequestBuilder getExperimentsFiltered() {
+        return new GetExperimentsRequestBuilder(GET_EXPERIMENTS_REQUEST_BUILDER);
     }
 
     public ExperimentDto getExperiment(String experimentName) {

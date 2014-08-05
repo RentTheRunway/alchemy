@@ -1,8 +1,10 @@
 package io.rtr.alchemy.testing.db;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.Filter;
+import io.rtr.alchemy.db.Ordering;
 import io.rtr.alchemy.filtering.FilterExpression;
 import io.rtr.alchemy.identities.Attributes;
 import io.rtr.alchemy.identities.AttributesMap;
@@ -195,6 +197,94 @@ public abstract class ExperimentsStoreProviderTest {
                         .criteria()
                         .offset(1)
                         .limit(1)
+                        .build()
+                )
+            )
+        );
+    }
+
+    @Test
+    public void testFindExperimentFilterOrdering() {
+        final Experiment fooExp = experiments.create("foo").setDescription("a").save();
+        final Experiment zooExp = experiments.create("zoo").setDescription("b").save();
+        final Experiment barExp = experiments.create("bar").setDescription("c").save();
+
+        assertTrue("should have experiments", experiments.find().iterator().hasNext());
+
+        assertEquals(
+            3,
+            Iterables.size(
+                experiments.find(
+                    Filter
+                        .criteria()
+                        .build()
+                )
+            )
+        );
+
+        assertEquals(
+            Lists.newArrayList(barExp, fooExp, zooExp),
+            Lists.newArrayList(
+                experiments.find(
+                    Filter
+                        .criteria()
+                        .ordering(
+                            Ordering
+                                .newBuilder()
+                                .orderBy(Ordering.Field.NAME)
+                                .build()
+                        )
+                        .build()
+                )
+            )
+        );
+
+        assertEquals(
+            Lists.newArrayList(zooExp, fooExp, barExp),
+            Lists.newArrayList(
+                experiments.find(
+                    Filter
+                        .criteria()
+                        .ordering(
+                            Ordering
+                                .newBuilder()
+                                .orderBy(Ordering.Field.NAME, Ordering.Direction.DESCENDING)
+                                .build()
+                        )
+                        .build()
+                )
+            )
+        );
+
+        assertEquals(
+            Lists.newArrayList(fooExp, zooExp, barExp),
+            Lists.newArrayList(
+                experiments.find(
+                    Filter
+                        .criteria()
+                        .ordering(
+                            Ordering
+                                .newBuilder()
+                                .orderBy(Ordering.Field.DESCRIPTION)
+                                .build()
+                        )
+                        .build()
+                )
+            )
+        );
+
+        assertEquals(
+            Lists.newArrayList(barExp, zooExp, fooExp),
+            Lists.newArrayList(
+                experiments.find(
+                    Filter
+                        .criteria()
+                        .ordering(
+                            Ordering
+                                .newBuilder()
+                                .orderBy(Ordering.Field.DESCRIPTION, Ordering.Direction.DESCENDING)
+                                .build()
+                        )
                         .build()
                 )
             )

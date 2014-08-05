@@ -3,6 +3,7 @@ package io.rtr.alchemy.service.resources;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import io.rtr.alchemy.db.Filter;
+import io.rtr.alchemy.db.Ordering;
 import io.rtr.alchemy.dto.models.ExperimentDto;
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.requests.AllocateRequest;
@@ -48,15 +49,17 @@ public class ExperimentsResource extends BaseResource {
     @GET
     public Iterable<ExperimentDto> getExperiments(@QueryParam("filter") String filterValue,
                                                   @QueryParam("offset") Integer offset,
-                                                  @QueryParam("limit") Integer limit) {
+                                                  @QueryParam("limit") Integer limit,
+                                                  @QueryParam("sort") String sort) {
         return mapper.toDto(
             experiments.find(
-                Filter
-                    .criteria()
-                    .filter(filterValue)
-                    .offset(offset)
-                    .limit(limit)
-                    .build()
+                    Filter
+                        .criteria()
+                        .filter(filterValue)
+                        .offset(offset)
+                        .limit(limit)
+                        .ordering(Ordering.parse(sort))
+                        .build()
             ),
             ExperimentDto.class
         );
