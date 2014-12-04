@@ -18,6 +18,7 @@
     <module>alchemy-db-memory</module>
     <module>alchemy-example</module>
     <module>alchemy-testing</module>
+    <module>alchemy-ui</module>
   </modules>
   <name>Alchemy Project</name>
 
@@ -190,7 +191,7 @@
             </goals>
             <configuration>
               <rules>
-                <DependencyConvergence />
+                <DependencyConvergence/>
               </rules>
             </configuration>
           </execution>

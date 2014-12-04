@@ -1,0 +1,42 @@
+<div class="row actions">
+	<div class="col-md-3"></div>
+		<% if(!obj.model.get('active')) { %>
+			<div class="alert alert-warning col-md-6" role="alert">
+	      <strong>This experiment is not active.</strong> &nbsp;<a href="javascript:void(0)" class="activate-experiment">Activate!</a>
+	    </div>
+		<% } else { %>
+			<div class="alert alert-success col-md-6" role="alert">
+	      <strong>This experiment is active.</strong> &nbsp;<a href="javascript:void(0)" class="deactivate-experiment">Deactivate</a>
+	    </div>
+		<% } %>
+	<div class="col-md-3"></div>
+</div>
+<div class="row">
+	<div class="col-md-6">
+		<div class="allocation">
+			<div class="alloc-pie-chart" style="width:600px;height:300px"></div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="treatments">
+		<h3 class="treatments-title">Treatments</h3>
+		<table class="table table-bordered">
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Allocation</th>
+			</tr>
+			<% _.each(obj.treatment_allocation_map, function(treatment_allocation) { %>
+				<tr>
+					<td><%= treatment_allocation.name %></td>
+					<td><%= treatment_allocation.description %></td>
+					<td><%= treatment_allocation.size %>%</td>
+				</tr>
+			<% }) %>
+			</table>
+		</div>
+		<a class="add-more-treatment" data-placement="right"><i class="fa fa-plus-circle fa-3"></i><span>Add More Treatments</span></a>
+	</div>
+</div>
+
+<!-- <a class="" href="#experiments"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp; Back to Experiments</a> -->
