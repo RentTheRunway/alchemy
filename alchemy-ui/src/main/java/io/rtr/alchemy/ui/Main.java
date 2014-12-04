@@ -1,11 +1,9 @@
 package io.rtr.alchemy.ui;
 
-import java.io.File;
-import java.net.URL;
-
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.*;
 import org.eclipse.jetty.webapp.WebAppContext;
+
+import com.beust.jcommander.JCommander;
 
 /**
  * 
@@ -20,20 +18,22 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) throws Exception{
+        Parameters params = new Parameters();
+        new JCommander(params, args);
+        String env = params.environment.get(0);
+
         String webappDirLocation = "src/main/webapp/";
         
-        //The port that we should run on can be set into an environment variable
-        //Look for that variable and default to 8080 if it isn't there.
         String webPort = System.getenv("PORT");
         if(webPort == null || webPort.isEmpty()) {
-            webPort = "8080";
+            webPort = "8090";
         }
 
         Server server = new Server(Integer.valueOf(webPort));
         WebAppContext root = new WebAppContext();
 
         root.setContextPath("/");
-        root.setDescriptor(webappDirLocation+"/WEB-INF/web.xml");
+        root.setDescriptor(webappDirLocation+"/WEB-INF/web." + env + ".xml");
         root.setResourceBase(webappDirLocation);
         
         //Parent loader priority is a class loader setting that Jetty accepts.
@@ -46,7 +46,7 @@ public class Main {
         server.setHandler(root);
         
         server.start();
-        server.join();   
+        server.join();
     }
 
 }
