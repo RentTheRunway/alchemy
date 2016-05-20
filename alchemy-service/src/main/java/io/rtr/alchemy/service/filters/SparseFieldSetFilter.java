@@ -106,16 +106,6 @@ public class SparseFieldSetFilter implements ContainerResponseFilter {
         return fields;
     }
 
-    private static Set<String> expandFields(String fieldsParam) {
-        final Set<String> fields = Sets.newHashSet();
-
-        for (String field : FIELDS_SPLITTER.split(fieldsParam)) {
-            fields.addAll(subFields(field));
-        }
-
-        return fields;
-    }
-
     private static Set<String> subFields(String field) {
         final List<String> parts = SUB_FIELD_SPLITTER.splitToList(field);
         final Set<String> subFields = Sets.newHashSet();
