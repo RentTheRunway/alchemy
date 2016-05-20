@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import io.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import io.rtr.alchemy.service.config.IdentityMapping;
 import io.rtr.alchemy.service.exceptions.RuntimeExceptionMapper;
+import io.rtr.alchemy.service.filters.SparseFieldSetFilter;
 import io.rtr.alchemy.service.guice.AlchemyModule;
 import io.rtr.alchemy.service.health.ExperimentsDatabaseProviderCheck;
 import io.rtr.alchemy.service.metrics.JmxMetricsManaged;
@@ -48,8 +49,10 @@ public abstract class AlchemyService<T extends Configuration & AlchemyServiceCon
         final Injector injector = Guice.createInjector(module);
         runInjected(injector, configuration, environment);
 
+        environment.jersey().getResourceConfig().getContainerResponseFilters().add(new SparseFieldSetFilter(environment.getObjectMapper()));
         environment.jersey().register(new RuntimeExceptionMapper());
         environment.lifecycle().manage(new JmxMetricsManaged(environment));
+
         registerIdentitySubTypes(configuration, environment);
     }
 
