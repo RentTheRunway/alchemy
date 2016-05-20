@@ -5,7 +5,7 @@
   <groupId>io.rtr.alchemy</groupId>
   <artifactId>alchemy-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.11</version>
+  <version>0.1.11-SNAPSHOT</version>
   <url>www.rtr.io</url>
 
   <modules>
@@ -295,7 +295,7 @@
     <connection>scm:git:git@github.com:RentTheRunway2/alchemy.git</connection>
     <url>https://github.com/RentTheRunway2/alchemy</url>
     <developerConnection>scm:git:git@github.com:RentTheRunway2/alchemy.git</developerConnection>
-    <tag>v0.1.11</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <repositories>
