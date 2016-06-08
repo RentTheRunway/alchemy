@@ -43,7 +43,7 @@ public class SparseFieldSetFilterTest {
     }
 
     private void ensureMediaType() {
-        doReturn(MediaType.APPLICATION_JSON_TYPE).when(request).getMediaType();
+        doReturn(MediaType.APPLICATION_JSON_TYPE).when(response).getMediaType();
     }
 
     private void doFilter(String ... fields) {
@@ -86,7 +86,7 @@ public class SparseFieldSetFilterTest {
 
     @Test
     public void testCorrectMediaType() {
-        doReturn(MediaType.APPLICATION_JSON_TYPE).when(request).getMediaType();
+        doReturn(MediaType.APPLICATION_JSON_TYPE).when(response).getMediaType();
 
         doFilter();
         verify(response).getEntity();
@@ -95,7 +95,7 @@ public class SparseFieldSetFilterTest {
     @Test
     public void testCompatibleMediaType() {
         final MediaType mediaType = MediaType.valueOf("application/json; charset=utf-8");
-        doReturn(mediaType).when(request).getMediaType();
+        doReturn(mediaType).when(response).getMediaType();
 
         doFilter();
         verify(response).getEntity();

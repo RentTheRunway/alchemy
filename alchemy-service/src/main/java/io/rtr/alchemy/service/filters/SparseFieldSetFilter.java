@@ -23,7 +23,6 @@ import java.util.Set;
  * field names, or dot-delimited field names (for nested fields)
  */
 public class SparseFieldSetFilter implements ContainerResponseFilter {
-    private static final Splitter FIELDS_SPLITTER = Splitter.on(",");
     private static final Splitter SUB_FIELD_SPLITTER = Splitter.on(".");
     private static final Joiner SUB_FIELD_JOINER = Joiner.on(".");
     private final ObjectMapper mapper;
@@ -34,7 +33,7 @@ public class SparseFieldSetFilter implements ContainerResponseFilter {
 
     @Override
     public ContainerResponse filter(ContainerRequest request, ContainerResponse response) {
-        if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(request.getMediaType())) {
+        if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.getMediaType())) {
             return response;
         }
 
