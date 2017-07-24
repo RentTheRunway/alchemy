@@ -1,6 +1,6 @@
 [< back to Manual](../manual.md)
 
-#Alchemy Core
+# Alchemy Core
 
 The `alchemy-core` module is the core module required to create and configure A/B experiments and to query which treaments a given identity is assigned to.
 
@@ -14,7 +14,7 @@ The `alchemy-core` module is the core module required to create and configure A/
   * [Code Example](#example)
   
 <a name="terminology"></a>
-###Terminology
+### Terminology
 
 * `Treatment` - Represents a possible user experience or outcome of an experiment
 * `Identity` - A unique representation of an entity that is mapped to a random treatment in an experiment, such as a user
@@ -27,14 +27,14 @@ The `alchemy-core` module is the core module required to create and configure A/
 * `Experiment` - A collection of treatments, allocations, and overrides
 
 <a name="identities"></a>
-###Identities
+### Identities
 
 Identities uniquely identify a user or source which should be assigned treatments for experiments.  An identity is usually a structured object of properties, which then generates a flattened map of attribute name and value pairs.  This attribute map is used for filtering an identity and generating a hash from the identity.
 The experiment itself is what determines which attributes are hashed to uniquely identify a given identity.  This allows for scenarios where an identity may have both user information and device information, but the experiment may want to only take device information into account.  The computation of the hash can also be overridden
 altogether, but, care must be taken in that the attributes to be used to generate the hash are still respected.
 
 <a name="custom_identity"></a>
-###Implementing a Custom Identity
+### Implementing a Custom Identity
 
 New identities can be implemented as needed.  You need to extend the Identity class and implement `computeAttributes()` and add the `@Attributes` annotation.  The ``@Attributes`` annotation specifies all possible attribute names an identity can generate.  Any attributes not specified in `@Attributes` will be ignored.
 You may optionally implement `computeHash()` as well, although it's recommended against, since the default implementation should suit your needs.  If you do override ``computeHash()``, it is recommended that the built-in hash builder be used by calling `identity()` with the seed value and then specifying the individual fields to be used to generate the hash.  
@@ -122,7 +122,7 @@ Lastly, you will need to implement a mapper that maps to/from your identity DTO 
 ```
 
 <a name="composite_identities"></a>
-###Composite Identities
+### Composite Identities
 A composite identity is an identity that is composed of two or more underlying identities and may have complex criteria for which underlying identity contributes to the computed hash.
 As an example, suppose you have an identity that represents a `device` with an id and an identity that represents as `user` with an id.  A composite identity could contain both, since both of these pieces of information may be available at the same time.
 Next, suppose at first, the user is anonymous, so you opt to use the hash code generated from `device`. At a later time when the user logs in and is then identified, you may want to continue to use `device`.  For another experiment, you
@@ -216,7 +216,7 @@ On the experiment itself, you could then specify `hashAttributes` to be `["devic
 We can specify this by including the `identities` value in the `@Attributes` annotation, which will then automatically include the filter that those identities return.
 
 <a name="custom_provider"></a>
-###Implementing a Custom Database Provider
+### Implementing a Custom Database Provider
 
 In alchemy, the regular CRUD methods and querying what treatment an identity is assigned to is separated into two storage components: `ExperimentStore` and `ExperimentCache`.
 An `Experiment` object contains all the data it needs to define an experiment, treatments, and which identities are assigned to which users.  As a result, all CRUD operations
@@ -225,7 +225,7 @@ A `ExperimentDatabaseProvider` is a simple factory for creating the store and ca
 The `alchemy-db-memory` module contains an example implementation of a database provider that features a cache and store that stores experiments in memory.  This is great to use for testing as well.
 
 <a name="allocation"></a>
-###Allocation
+### Allocation
 
 In Alchemy, treatments are allocated and assigned to bins. By default, there are 100 bins to correspond to percentages when allocating treatments. Identities are also assigned to bins by computing a hash and mapping that number to a bin number.
 
@@ -240,7 +240,7 @@ If you decide that you would like to reduce "new_banner" to 10%, you could **dea
 Lastly, you can **reallocate** a given amount from one treatment to another.  For example, you could **reallocate** 5% from "control" to "new_banner".  The end result would be that 5% of all users who were assigned to "control" are now assigned to "new_banner", but all other treatment associations are left intact.
 
 <a name="example"></a>
-###Code Example
+### Code Example
 
 In order to interact with experiments or query what treatments identities are assigned to, you will first need to create an instance of `Experiments`.  In the example below, we create our `Experiments` using a database that stores experiments in memory:
 
