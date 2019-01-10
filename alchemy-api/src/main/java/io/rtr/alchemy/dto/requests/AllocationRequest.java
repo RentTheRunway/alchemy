@@ -19,17 +19,17 @@ import javax.validation.constraints.NotNull;
 })
 public abstract class AllocationRequest {
     @NotNull
-    private final String treatment;
+    private final Integer treatment;
     @NotNull
     private final Integer size;
 
-    public AllocationRequest(String treatment,
+    public AllocationRequest(Integer treatment,
                              Integer size) {
         this.treatment = treatment;
         this.size = size;
     }
 
-    public String getTreatment() {
+    public Integer getTreatment() {
         return treatment;
     }
 
@@ -39,7 +39,7 @@ public abstract class AllocationRequest {
 
     @JsonTypeName("allocate")
     public static class Allocate extends AllocationRequest {
-        public Allocate(@JsonProperty("treatment") String treatment,
+        public Allocate(@JsonProperty("treatment") Integer treatment,
                         @JsonProperty("size") Integer size) {
             super(treatment, size);
         }
@@ -47,7 +47,7 @@ public abstract class AllocationRequest {
 
     @JsonTypeName("deallocate")
     public static class Deallocate extends AllocationRequest {
-        public Deallocate(@JsonProperty("treatment") String treatment,
+        public Deallocate(@JsonProperty("treatment") Integer treatment,
                           @JsonProperty("size") Integer size) {
             super(treatment, size);
         }
@@ -56,16 +56,16 @@ public abstract class AllocationRequest {
     @JsonTypeName("reallocate")
     public static class Reallocate extends AllocationRequest {
         @NotNull
-        private final String target;
+        private final Integer target;
 
-        public Reallocate(@JsonProperty("treatment") String treatment,
+        public Reallocate(@JsonProperty("treatment") Integer treatment,
                           @JsonProperty("size") Integer size,
-                          @JsonProperty("target") String target) {
+                          @JsonProperty("target") Integer target) {
             super(treatment, size);
             this.target = target;
         }
 
-        public String getTarget() {
+        public Integer getTarget() {
             return target;
         }
     }

@@ -78,7 +78,7 @@ public class JsonSerializationDeserializationTest {
     @Test
     public void testAllocationDto() {
         assertJson(new AllocationDto(
-            "control",
+            1,
             20,
             10
         ));
@@ -98,18 +98,18 @@ public class JsonSerializationDeserializationTest {
             new DateTime(2),
             new DateTime(3),
             Lists.newArrayList(
-                new TreatmentDto("control", "the base case"),
-                new TreatmentDto("x", "some other condition")
+                new TreatmentDto(1, "the base case"),
+                new TreatmentDto(2, "some other condition")
             ),
             Lists.newArrayList(
-                new AllocationDto("control", 0, 5),
-                new AllocationDto("x", 5, 10)
+                new AllocationDto(1, 0, 5),
+                new AllocationDto(2, 5, 10)
             ),
             Lists.newArrayList(
                 new TreatmentOverrideDto(
                     "qa_override",
                     "true",
-                    "control"
+                    1
                 )
             )
         ));
@@ -117,7 +117,7 @@ public class JsonSerializationDeserializationTest {
 
     @Test
     public void testTreatmentDto() {
-        assertJson(new TreatmentDto("control", "the base case"));
+        assertJson(new TreatmentDto(1, "the base case"));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class JsonSerializationDeserializationTest {
             new TreatmentOverrideDto(
                 "qa_override",
                 "true",
-                "control"
+                1
             )
         );
     }
@@ -151,14 +151,14 @@ public class JsonSerializationDeserializationTest {
 
     @Test
     public void testAllocateRequest() {
-        assertJson(new AllocateRequest("control", 10));
+        assertJson(new AllocateRequest(1, 10));
     }
 
     @Test
     public void testAllocationRequest() {
-        assertJson(new AllocationRequest.Allocate("control", 10));
-        assertJson(new AllocationRequest.Deallocate("control", 10));
-        assertJson(new AllocationRequest.Reallocate("control", 10, "other"));
+        assertJson(new AllocationRequest.Allocate(1, 10));
+        assertJson(new AllocationRequest.Deallocate(1, 10));
+        assertJson(new AllocationRequest.Reallocate(1, 10, 2));
     }
 
     @Test
@@ -172,15 +172,15 @@ public class JsonSerializationDeserializationTest {
                 Sets.<String>newLinkedHashSet(),
                 true,
                 Lists.newArrayList(
-                    new TreatmentDto("control", "the base case"),
-                    new TreatmentDto("x", "some other condition")
+                    new TreatmentDto(1, "the base case"),
+                    new TreatmentDto(2, "some other condition")
                 ),
                 Lists.newArrayList(
-                        new AllocateRequest("control", 5),
-                        new AllocateRequest("x", 10)
+                        new AllocateRequest(1, 5),
+                        new AllocateRequest(2, 10)
                 ),
                 Lists.newArrayList(
-                    new TreatmentOverrideRequest("control", "foo", "qa_override")
+                    new TreatmentOverrideRequest(1, "foo", "qa_override")
                 )
             )
         );
@@ -190,7 +190,7 @@ public class JsonSerializationDeserializationTest {
     public void testTreatmentOverrideRequest() {
         assertJson(
             new TreatmentOverrideRequest(
-                "control",
+                1,
                 "foo",
                 "qa_override"
             )
@@ -208,19 +208,19 @@ public class JsonSerializationDeserializationTest {
                     Optional.of(true),
                     Optional.<List<TreatmentDto>>of(
                         Lists.newArrayList(
-                            new TreatmentDto("control", "the base case"),
-                            new TreatmentDto("x", "some other condition")
+                            new TreatmentDto(1, "the base case"),
+                            new TreatmentDto(2, "some other condition")
                         )
                     ),
                     Optional.<List<AllocateRequest>>of(
                         Lists.newArrayList(
-                            new AllocateRequest("control", 5),
-                            new AllocateRequest("x", 10)
+                            new AllocateRequest(1, 5),
+                            new AllocateRequest(2, 10)
                         )
                     ),
                     Optional.<List<TreatmentOverrideRequest>>of(
                         Lists.newArrayList(
-                            new TreatmentOverrideRequest("control", "foo", "qa_override")
+                            new TreatmentOverrideRequest(1, "foo", "qa_override")
                         )
                     )
             )

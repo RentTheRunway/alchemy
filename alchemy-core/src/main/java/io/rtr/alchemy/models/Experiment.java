@@ -231,7 +231,7 @@ public class Experiment {
     /**
      * Get a treatment with the given name
      */
-    public Treatment getTreatment(String treatmentName) {
+    public Treatment getTreatment(Integer treatmentName) {
         return treatments.get(treatmentName);
     }
 

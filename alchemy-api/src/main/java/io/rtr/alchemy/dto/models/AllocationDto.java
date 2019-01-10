@@ -8,12 +8,12 @@ import com.google.common.base.Objects;
  * Represents an allocation
  */
 public class AllocationDto {
-    private final String treatment;
+    private final Integer treatment;
     private final int offset;
     private final int size;
 
     @JsonCreator
-    public AllocationDto(@JsonProperty("treatment") String treatment,
+    public AllocationDto(@JsonProperty("treatment") Integer treatment,
                          @JsonProperty("offset") int offset,
                          @JsonProperty("size") int size) {
         this.treatment = treatment;
@@ -21,7 +21,7 @@ public class AllocationDto {
         this.size = size;
     }
 
-    public String getTreatment() {
+    public Integer getTreatment() {
         return treatment;
     }
 

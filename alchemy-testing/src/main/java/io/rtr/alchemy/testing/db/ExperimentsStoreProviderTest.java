@@ -317,7 +317,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         assertEquals(
             "expected control treatment",
-            1,
+            Integer.valueOf(1),
             experiments.getActiveTreatment("foo", identity).getName()
         );
 
@@ -328,7 +328,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         assertEquals(
             "expected control treatment",
-            1,
+            Integer.valueOf(1),
             experiments.getActiveTreatment("foo", identity).getName()
         );
 

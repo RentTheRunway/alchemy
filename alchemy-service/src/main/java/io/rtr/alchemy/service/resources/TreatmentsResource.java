@@ -47,7 +47,7 @@ public class TreatmentsResource extends BaseResource {
     @GET
     @Path("/{treatmentName}")
     public TreatmentDto getTreatment(@PathParam("experimentName") String experimentName,
-                                     @PathParam("treatmentName") String treatmentName) {
+                                     @PathParam("treatmentName") Integer treatmentName) {
         return mapper.toDto(
             ensureExists(
                 ensureExists(experiments.get(experimentName)).getTreatment(treatmentName)
@@ -69,7 +69,7 @@ public class TreatmentsResource extends BaseResource {
     @DELETE
     @Path("/{treatmentName}")
     public void removeTreatment(@PathParam("experimentName") String experimentName,
-                                @PathParam("treatmentName") String treatmentName) {
+                                @PathParam("treatmentName") Integer treatmentName) {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
         ensureExists(experiment.getTreatment(treatmentName));
 
@@ -81,7 +81,7 @@ public class TreatmentsResource extends BaseResource {
     @POST
     @Path("/{treatmentName}")
     public void updateTreatment(@PathParam("experimentName") String experimentName,
-                                @PathParam("treatmentName") String treatmentName,
+                                @PathParam("treatmentName") Integer treatmentName,
                                 @Valid UpdateTreatmentRequest request) {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
         final Treatment treatment = ensureExists(ensureExists(experiment).getTreatment(treatmentName));

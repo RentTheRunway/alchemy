@@ -9,11 +9,11 @@ import com.google.common.base.Objects;
 public class TreatmentOverrideDto {
     private final String name;
     private final String filter;
-    private final String treatment;
+    private final Integer treatment;
 
     public TreatmentOverrideDto(@JsonProperty("name") String name,
                                 @JsonProperty("filter") String filter,
-                                @JsonProperty("treatment") String treatment) {
+                                @JsonProperty("treatment") Integer treatment) {
         this.name = name;
         this.filter = filter;
         this.treatment = treatment;
@@ -27,7 +27,7 @@ public class TreatmentOverrideDto {
         return filter;
     }
 
-    public String getTreatment() {
+    public Integer getTreatment() {
         return treatment;
     }
 
