@@ -12,9 +12,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class AllocationsTest {
-    private final Treatment control = new Treatment("control", "This is the control");
-    private final Treatment withLogin = new Treatment("with_login", "User logged in");
-    private final Treatment withoutLogin = new Treatment("without_login", "User didn't log in");
+    private final Treatment control = new Treatment(1, "This is the control");
+    private final Treatment withLogin = new Treatment(2, "User logged in");
+    private final Treatment withoutLogin = new Treatment(3, "User didn't log in");
 
     @Test
     public void testConstructWithEmptyList() {
@@ -260,8 +260,8 @@ public class AllocationsTest {
 
     @Test
     public void testClear() {
-        final Treatment t1 = new Treatment("control");
-        final Treatment t2 = new Treatment("other");
+        final Treatment t1 = new Treatment(1);
+        final Treatment t2 = new Treatment(2);
         final  Allocations allocations = new Allocations(Lists.newArrayList(
             new Allocation(t1, 0, 5),
             new Allocation(t2, 5, 5)

@@ -9,7 +9,7 @@ import org.mongodb.morphia.annotations.Embedded;
  */
 @Embedded
 public class AllocationEntity {
-    public String treatment;
+    public Integer treatment;
     public int offset;
     public int size;
 

@@ -9,7 +9,7 @@ import org.mongodb.morphia.annotations.Embedded;
  */
 @Embedded
 public class TreatmentEntity {
-    public String name;
+    public Integer name;
     public String description;
 
     public static TreatmentEntity from(Treatment treatment) {

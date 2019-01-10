@@ -7,19 +7,19 @@ import com.google.common.base.Objects;
  */
 
 public class Treatment {
-    private final String name;
+    private final Integer name;
     private String description;
 
-    public Treatment(String name) {
+    public Treatment(Integer name) {
         this(name, null);
     }
 
-    public Treatment(String name, String description) {
+    public Treatment(Integer name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public String getName() {
+    public Integer getName() {
         return name;
     }
 

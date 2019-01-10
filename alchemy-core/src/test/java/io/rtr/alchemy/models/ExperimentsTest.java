@@ -91,8 +91,8 @@ public class ExperimentsTest {
         final Experiment exp1 =
             experiments
                 .create("exp1")
-                .addTreatment("control")
-                .allocate("control", 100)
+                .addTreatment(1)
+                .allocate(1, 100)
                 .setFilter(FilterExpression.of("baz"))
                 .activate()
                 .save();
@@ -100,8 +100,8 @@ public class ExperimentsTest {
         final Experiment exp2 =
             experiments
                 .create("exp2")
-                .addTreatment("control")
-                .allocate("control", 100)
+                .addTreatment(1)
+                .allocate(1, 100)
                 .setFilter(FilterExpression.of("bar"))
                 .activate()
                 .save();
@@ -131,8 +131,8 @@ public class ExperimentsTest {
         final Experiment exp =
             experiments
                 .create("exp")
-                .addTreatment("control")
-                .allocate("control", 100)
+                .addTreatment(1)
+                .allocate(1, 100)
                 .setFilter(FilterExpression.of("baz"))
                 .activate()
                 .save();

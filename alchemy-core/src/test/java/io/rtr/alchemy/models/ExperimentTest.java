@@ -45,22 +45,22 @@ public class ExperimentTest {
 
     @Test
     public void testAddTreatment() {
-        final Treatment treatment = new Treatment("bar");
+        final Treatment treatment = new Treatment(11111);
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar");
+            new Experiment(null, "my_experiment")
+                .addTreatment(11111);
 
         assertEquals(treatment, experiment.getTreatments().iterator().next());
     }
 
     @Test
     public void testAddOverride() {
-        final Treatment treatment = new Treatment("bar");
+        final Treatment treatment = new Treatment(11111);
         final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .addOverride("override", "bar", "true");
+            new Experiment(null, "my_experiment")
+                .addTreatment(11111)
+                .addOverride("override", 11111, "true");
 
         assertEquals(treatment, experiment.getTreatments().get(0));
         assertEquals(override, experiment.getOverrides().get(0));
@@ -68,12 +68,12 @@ public class ExperimentTest {
 
     @Test
     public void testGetOverride() {
-        final Treatment treatment = new Treatment("bar");
+        final Treatment treatment = new Treatment(11111);
         final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .addOverride("override", "bar", "true");
+            new Experiment(null, "my_experiment")
+                .addTreatment(11111)
+                .addOverride("override", 11111, "true");
 
         assertEquals(treatment, experiment.getTreatments().get(0));
         assertEquals(override, experiment.getOverride(override.getName()));
@@ -82,10 +82,10 @@ public class ExperimentTest {
     @Test
     public void testClearTreatments() {
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .allocate("bar", 10)
-                .addOverride("override", "bar", "true");
+            new Experiment(null, "my_experiment")
+                .addTreatment(11111)
+                .allocate(11111, 10)
+                .addOverride("override", 11111, "true");
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getAllocations().size());
@@ -101,9 +101,9 @@ public class ExperimentTest {
     @Test
     public void testClearOverrides() {
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .addOverride("override", "bar", "true");
+            new Experiment(null, "my_experiment")
+                .addTreatment(11111)
+                .addOverride("override", 11111, "true");
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getOverrides().size());
@@ -117,9 +117,9 @@ public class ExperimentTest {
     @Test
     public void testDeallocateAll() {
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .allocate("bar", 10);
+            new Experiment(null, "my_experiment")
+                .addTreatment(11111)
+                .allocate(11111, 10);
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getAllocations().size());
@@ -135,17 +135,17 @@ public class ExperimentTest {
         doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
 
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("control")
-                .addTreatment("cake")
-                .addTreatment("pie")
-                .allocate("control", 10)
-                .allocate("cake", 10)
-                .allocate("pie", 10)
-                .allocate("control", 10)
-                .allocate("cake", 10)
-                .allocate("pie", 10)
-                .addOverride("control_override", "control", "true");
+            new Experiment(null, "my_experiment")
+                .addTreatment(1)
+                .addTreatment(2)
+                .addTreatment(3)
+                .allocate(1, 10)
+                .allocate(2, 10)
+                .allocate(3, 10)
+                .allocate(1, 10)
+                .allocate(2, 10)
+                .allocate(3, 10)
+                .addOverride("control_override", 1, "true");
 
         List<Treatment> treatments = Lists.newArrayList(experiment.getTreatments());
         assertEquals("should contain expected number of treatments", 3, treatments.size());
@@ -156,7 +156,7 @@ public class ExperimentTest {
         List<TreatmentOverride> overrides = Lists.newArrayList(experiment.getOverrides());
         assertEquals("should contain override", 1, overrides.size());
 
-        experiment.removeTreatment("pie");
+        experiment.removeTreatment(3);
 
         treatments = Lists.newArrayList(experiment.getTreatments());
         assertEquals("should contain fewer treatments", 2, treatments.size());
@@ -167,7 +167,7 @@ public class ExperimentTest {
         overrides = Lists.newArrayList(experiment.getOverrides());
         assertEquals("should contain same override", 1, overrides.size());
 
-        experiment.removeTreatment("control");
+        experiment.removeTreatment(1);
 
         treatments = Lists.newArrayList(experiment.getTreatments());
         assertEquals("should contain fewer treatments", 1, treatments.size());
@@ -184,8 +184,8 @@ public class ExperimentTest {
     public void testUnmodifiableAllocations() {
         final  Experiment experiment =
             new Experiment(null, "experiment")
-                .addTreatment("foo")
-                .allocate("foo", 10);
+                .addTreatment(22222)
+                .allocate(22222, 10);
 
         experiment.getAllocations().add(mock(Allocation.class));
     }
@@ -194,7 +194,7 @@ public class ExperimentTest {
     public void testUnmodifiableTreatments() {
         final  Experiment experiment =
             new Experiment(null, "experiment")
-                .addTreatment("foo");
+                .addTreatment(22222);
 
         experiment.getTreatments().add(mock(Treatment.class));
     }
@@ -203,8 +203,8 @@ public class ExperimentTest {
     public void testUnmodifiableOverrides() {
         final  Experiment experiment =
             new Experiment(null, "experiment")
-                .addTreatment("foo")
-                .addOverride("override", "foo", "true");
+                .addTreatment(22222)
+                .addOverride("override", 22222, "true");
 
         experiment.getOverrides().add(mock(TreatmentOverride.class));
     }
@@ -216,9 +216,9 @@ public class ExperimentTest {
         final Experiment original =
             new Experiment(null, "experiment")
                 .activate()
-                .addTreatment("foo")
-                .addOverride("override", "foo", "true")
-                .allocate("foo", 10);
+                .addTreatment(22222)
+                .addOverride("override", 22222, "true")
+                .allocate(22222, 10);
 
         final Experiment copy = Experiment.copyOf(original);
 
@@ -232,13 +232,13 @@ public class ExperimentTest {
 
     @Test
     public void testSave() {
-        final Experiment experiment = new Experiment(experiments, "foo").save();
+        final Experiment experiment = new Experiment(experiments, "my_experiment").save();
         verify(experiments).save(eq(experiment));
     }
 
     @Test
     public void testDelete() {
-        final Experiment experiment = new Experiment(experiments, "foo");
+        final Experiment experiment = new Experiment(experiments, "my_experiment");
         experiment.delete();
         verify(experiments).delete(eq(experiment.getName()));
     }
