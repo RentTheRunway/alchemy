@@ -10,7 +10,7 @@ import org.mongodb.morphia.annotations.Embedded;
 @Embedded
 public class TreatmentOverrideEntity {
     public String name;
-    public String treatment;
+    public Integer treatment;
     public String filter;
 
     public static TreatmentOverrideEntity from(TreatmentOverride override) {

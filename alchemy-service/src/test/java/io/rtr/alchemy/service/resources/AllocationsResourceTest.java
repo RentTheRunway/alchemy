@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 public class AllocationsResourceTest extends ResourceTest {
     private static final String ALLOCATIONS_ENDPOINT = "/experiments/{experimentName}/allocations";
 
-    private static Map<String, Integer> countAllocations(Iterable<AllocationDto> allocations) {
-        final Map<String, Integer> result = Maps.newHashMap();
+    private static Map<Integer, Integer> countAllocations(Iterable<AllocationDto> allocations) {
+        final Map<Integer, Integer> result = Maps.newHashMap();
 
         for (final AllocationDto allocation : allocations) {
             final Integer value = result.get(allocation.getTreatment());
@@ -58,7 +58,7 @@ public class AllocationsResourceTest extends ResourceTest {
             .entity(allocationRequest)
             .assertStatus(Status.NOT_FOUND);
 
-        final Map<String, Integer> allocations = ImmutableMap.of(
+        final Map<Integer, Integer> allocations = ImmutableMap.of(
             EXP_1_TREATMENT_1, 50,
             EXP_1_TREATMENT_2, 25,
             EXP_1_TREATMENT_3, 25
@@ -75,7 +75,7 @@ public class AllocationsResourceTest extends ResourceTest {
             .entity(allocationRequest)
             .assertStatus(Status.NO_CONTENT);
 
-        final Map<String, Integer> expectedAllocations = ImmutableMap.of(
+        final Map<Integer, Integer> expectedAllocations = ImmutableMap.of(
             EXP_1_TREATMENT_1, 75,
             EXP_1_TREATMENT_2, 15,
             EXP_1_TREATMENT_3, 10

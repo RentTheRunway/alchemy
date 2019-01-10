@@ -11,17 +11,17 @@ import javax.validation.constraints.NotNull;
  */
 public class TreatmentDto {
     @NotNull
-    private final String name;
+    private final Integer name;
     private final String description;
 
     @JsonCreator
-    public TreatmentDto(@JsonProperty("name") String name,
+    public TreatmentDto(@JsonProperty("name") Integer name,
                         @JsonProperty("description") String description) {
         this.name = name;
         this.description = description;
     }
 
-    public String getName() {
+    public Integer getName() {
         return name;
     }
 

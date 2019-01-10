@@ -55,7 +55,7 @@ public class TreatmentOverridesResourceTest extends ResourceTest {
 
     @Test
     public void testAddOverride() {
-        final TreatmentOverrideRequest request = new TreatmentOverrideRequest("control", "qa", "qa_control");
+        final TreatmentOverrideRequest request = new TreatmentOverrideRequest(1, "qa", "qa_control");
 
         put(ENDPOINT_OVERRIDES, EXPERIMENT_BAD)
             .entity(request)

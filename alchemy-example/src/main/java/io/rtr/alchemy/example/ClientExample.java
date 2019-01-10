@@ -67,11 +67,11 @@ public class ClientExample {
             client
                 .createExperiment("my_experiment")
                 .setDescription("my new experiment")
-                .addTreatment("control", "the default")
-                .addTreatment("pie", "show them pie")
+                .addTreatment(0, "the default")
+                .addTreatment(1, "show them pie")
                 .setFilter("identified")
-                .allocate("control", 25)
-                .allocate("pie", 25)
+                .allocate(0, 25)
+                .allocate(1, 25)
                 .activate()
                 .apply();
 
@@ -93,13 +93,13 @@ public class ClientExample {
             println();
 
             // Let's add an override for our qa person, who obviously likes pie
-            client.addOverride("my_experiment", "qa_pie", "pie", "user_name=qa");
+            client.addOverride("my_experiment", "qa_pie", 1, "user_name=qa");
 
             // Let's also add for comparison, cake
-            client.addTreatment("my_experiment", "cake", "show them cake");
+            client.addTreatment("my_experiment", 2, "show them cake");
             client
                 .updateAllocations("my_experiment")
-                .allocate("cake", 25)
+                .allocate(2, 25)
                 .apply();
 
             // Let's print out our allocations
@@ -113,28 +113,28 @@ public class ClientExample {
             println();
 
             // Let's print out or 'control' treatment
-            final TreatmentDto treatment = client.getTreatment("my_experiment", "control");
+            final TreatmentDto treatment = client.getTreatment("my_experiment", 0);
             println("name: %s, description: %s", treatment.getName(), treatment.getDescription());
             println();
 
             // You know what, who cares about pie or cake? Let's compare beer and wine!
             client.clearTreatments("my_experiment");
-            client.addTreatment("my_experiment", "beer", "beer me!");
-            client.addTreatment("my_experiment", "wine", "wine please");
+            client.addTreatment("my_experiment", 10, "beer me!");
+            client.addTreatment("my_experiment", 20, "wine please");
             client
                 .updateAllocations("my_experiment")
-                .allocate("beer", 90) // slightly biased
-                .allocate("wine", 10)
+                .allocate(10, 90) // slightly biased
+                .allocate(20, 10)
                 .apply();
 
             // Ok, that was unfair, let's fix the allocations
             client.clearAllocations("my_experiment");
-            client.addOverride("my_experiment", "gene_likes_beer", "beer", "user_name=gene");
-            client.addOverride("my_experiment", "qa_wine", "wine", "user_name=qa");
+            client.addOverride("my_experiment", "gene_likes_beer", 10, "user_name=gene");
+            client.addOverride("my_experiment", "qa_wine", 20, "user_name=qa");
             client
                 .updateAllocations("my_experiment")
-                .allocate("beer", 51)
-                .allocate("wine", 49)
+                .allocate(10, 51)
+                .allocate(20, 49)
                 .apply();
 
             // Print out an override
@@ -165,7 +165,7 @@ public class ClientExample {
             println();
 
             // We ran out of wine!
-            client.removeTreatment("my_experiment", "wine");
+            client.removeTreatment("my_experiment", 20);
 
             // Let's nuke it and call it a day
             client.deleteExperiment("my_experiment");

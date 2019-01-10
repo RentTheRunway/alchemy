@@ -295,9 +295,9 @@ public abstract class ExperimentsStoreProviderTest {
     public void testGetActiveTreatment() {
         experiments
             .create("foo")
-            .addTreatment("control")
+            .addTreatment(1)
             .setHashAttributes()
-            .allocate("control", 100)
+            .allocate(1, 100)
             .save();
 
         assertNull(
@@ -317,7 +317,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         assertEquals(
             "expected control treatment",
-            "control",
+            Integer.valueOf(1),
             experiments.getActiveTreatment("foo", identity).getName()
         );
 
@@ -328,7 +328,7 @@ public abstract class ExperimentsStoreProviderTest {
 
         assertEquals(
             "expected control treatment",
-            "control",
+            Integer.valueOf(1),
             experiments.getActiveTreatment("foo", identity).getName()
         );
 
@@ -349,15 +349,15 @@ public abstract class ExperimentsStoreProviderTest {
 
         experiments
             .create("foo")
-            .addTreatment("control")
-            .allocate("control", 100)
+            .addTreatment(1)
+            .allocate(1, 100)
             .setFilter(FilterExpression.of("test"))
             .save();
 
         experiments
             .create("bar")
-            .addTreatment("control")
-            .allocate("control", 100)
+            .addTreatment(1)
+            .allocate(1, 100)
             .setFilter(FilterExpression.of("test"))
             .save();
 
@@ -410,8 +410,8 @@ public abstract class ExperimentsStoreProviderTest {
     public void testExperimentObjectReference() {
         final Experiment obj1 = experiments
             .create("foo")
-            .addTreatment("control")
-            .allocate("control", Allocations.NUM_BINS)
+            .addTreatment(1)
+            .allocate(1, Allocations.NUM_BINS)
             .activate()
             .save();
 

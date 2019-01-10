@@ -9,13 +9,13 @@ import javax.validation.constraints.NotNull;
  */
 public class TreatmentOverrideRequest {
     @NotNull
-    private final String treatment;
+    private final Integer treatment;
     @NotNull
     private final String filter;
     @NotNull
     private final String name;
 
-    public TreatmentOverrideRequest(@JsonProperty("treatment") String treatment,
+    public TreatmentOverrideRequest(@JsonProperty("treatment") Integer treatment,
                                     @JsonProperty("filter") String filter,
                                     @JsonProperty("name") String name) {
         this.treatment = treatment;
@@ -23,7 +23,7 @@ public class TreatmentOverrideRequest {
         this.name = name;
     }
 
-    public String getTreatment() {
+    public Integer getTreatment() {
         return treatment;
     }
 

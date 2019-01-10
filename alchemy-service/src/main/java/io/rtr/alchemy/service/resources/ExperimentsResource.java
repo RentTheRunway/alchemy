@@ -139,7 +139,7 @@ public class ExperimentsResource extends BaseResource {
 
         // only remove treatments not present in request, otherwise we wipe out existing allocations
         if (request.getTreatments() != null) {
-            final Set<String> missingTreatments = Sets.newHashSet();
+            final Set<Integer> missingTreatments = Sets.newHashSet();
             for (final Treatment treatment : experiment.getTreatments()) {
                 missingTreatments.add(treatment.getName());
             }
@@ -157,7 +157,7 @@ public class ExperimentsResource extends BaseResource {
                 }
             }
 
-            for (final String missingTreatment : missingTreatments) {
+            for (final Integer missingTreatment : missingTreatments) {
                 experiment.removeTreatment(missingTreatment);
             }
         }

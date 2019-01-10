@@ -13,18 +13,18 @@ public class UpdateAllocationsRequestBuilder {
         this.allocations = AllocationRequests.of();
     }
 
-    public UpdateAllocationsRequestBuilder allocate(String treatmentName, int size) {
+    public UpdateAllocationsRequestBuilder allocate(Integer treatmentName, int size) {
         allocations.add(new AllocationRequest.Allocate(treatmentName,size));
 
         return this;
     }
 
-    public UpdateAllocationsRequestBuilder deallocate(String treatmentName, int size) {
+    public UpdateAllocationsRequestBuilder deallocate(Integer treatmentName, int size) {
         allocations.add(new AllocationRequest.Deallocate(treatmentName, size));
         return this;
     }
 
-    public UpdateAllocationsRequestBuilder reallocate(final String treatmentName, final String target, final int size) {
+    public UpdateAllocationsRequestBuilder reallocate(final Integer treatmentName, final Integer target, final int size) {
         allocations.add(new AllocationRequest.Reallocate(treatmentName, size, target));
         return this;
     }

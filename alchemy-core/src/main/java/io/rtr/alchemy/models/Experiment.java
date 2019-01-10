@@ -43,7 +43,7 @@ public class Experiment {
     private final Experiments owner;
     private final String name;
     private final Allocations allocations;
-    private final Map<String, Treatment> treatments;
+    private final Map<Integer, Treatment> treatments;
     private final Map<String, TreatmentOverride> overrides;
     private int seed;
     private String description;
@@ -67,7 +67,7 @@ public class Experiment {
                        DateTime modified,
                        DateTime activated,
                        DateTime deactivated,
-                       Map<String, Treatment> treatments,
+                       Map<Integer, Treatment> treatments,
                        Iterable<TreatmentOverride> overrides,
                        Iterable<Allocation> allocations) {
         this.owner = owner;
@@ -231,7 +231,7 @@ public class Experiment {
     /**
      * Get a treatment with the given name
      */
-    public Treatment getTreatment(String treatmentName) {
+    public Treatment getTreatment(Integer treatmentName) {
         return treatments.get(treatmentName);
     }
 
@@ -280,7 +280,7 @@ public class Experiment {
      * Adds a treatment
      * @param name The name
      */
-    public Experiment addTreatment(String name) {
+    public Experiment addTreatment(Integer name) {
         treatments.put(name, new Treatment(name));
         return this;
     }
@@ -290,7 +290,7 @@ public class Experiment {
      * @param name The name
      * @param description The description
      */
-    public Experiment addTreatment(String name, String description) {
+    public Experiment addTreatment(Integer name, String description) {
         treatments.put(name, new Treatment(name, description));
         return this;
     }
@@ -321,7 +321,7 @@ public class Experiment {
      * @param overrideName The name of the override
      * @param filter A filter expression that describes which attributes this override should apply for
      */
-    public Experiment addOverride(String overrideName, String treatmentName, String filter) {
+    public Experiment addOverride(String overrideName, Integer treatmentName, String filter) {
         final FilterExpression filterExp = FilterExpression.of(filter);
         final TreatmentOverride override = new TreatmentOverride(overrideName, filterExp, treatment(treatmentName));
         overrides.put(overrideName, override);
@@ -342,7 +342,7 @@ public class Experiment {
      * Removes all overrides for a given treatment
      * @param treatmentName The treatment to remove overrides for
      */
-    public Experiment removeOverrides(String treatmentName) {
+    public Experiment removeOverrides(Integer treatmentName) {
         final Treatment treatment = treatments.get(treatmentName);
 
         if (treatment == null) {
@@ -364,7 +364,7 @@ public class Experiment {
      * Removes a treatment
      * @param name The treatment
      */
-    public Experiment removeTreatment(String name) {
+    public Experiment removeTreatment(Integer name) {
         final Treatment treatment = treatments.get(name);
         if (treatment == null) {
             return this;
@@ -377,7 +377,7 @@ public class Experiment {
         return this;
     }
 
-    private Treatment treatment(String name) {
+    private Treatment treatment(Integer name) {
         final Treatment treatment = treatments.get(name);
         Preconditions.checkState(treatment != null, "no treatment with name %s defined", name);
         return treatment;
@@ -410,7 +410,7 @@ public class Experiment {
      * @param treatmentName The treatment
      * @param size The number of bins
      */
-    public Experiment allocate(String treatmentName, int size) {
+    public Experiment allocate(Integer treatmentName, int size) {
         allocations.allocate(treatment(treatmentName), size);
 
         return this;
@@ -421,7 +421,7 @@ public class Experiment {
      * @param treatmentName The treatment
      * @param size The number of bins
      */
-    public Experiment deallocate(String treatmentName, int size) {
+    public Experiment deallocate(Integer treatmentName, int size) {
         allocations.deallocate(treatment(treatmentName), size);
         return this;
     }
@@ -432,7 +432,7 @@ public class Experiment {
      * @param destinationTreatmentName The destination treatment
      * @param size The number of bins
      */
-    public Experiment reallocate(String sourceTreatmentName, String destinationTreatmentName, int size) {
+    public Experiment reallocate(Integer sourceTreatmentName, Integer destinationTreatmentName, int size) {
         allocations.reallocate(
             treatment(sourceTreatmentName),
             treatment(destinationTreatmentName),
@@ -524,7 +524,7 @@ public class Experiment {
         private DateTime modified  = DateTime.now(DateTimeZone.UTC);
         private DateTime activated;
         private DateTime deactivated;
-        private final Map<String, Treatment> treatments;
+        private final Map<Integer, Treatment> treatments;
         private final List<TreatmentOverride> overrides;
         private final List<Allocation> allocations;
 
@@ -586,23 +586,23 @@ public class Experiment {
             return this;
         }
 
-        private Treatment getTreatment(String name) {
+        private Treatment getTreatment(Integer name) {
             final Treatment treatment = treatments.get(name);
             Preconditions.checkState(treatment != null, "treatment with name %s must be defined first", name);
             return treatment;
         }
 
-        public Builder addTreatment(String name, String description) {
+        public Builder addTreatment(Integer name, String description) {
             treatments.put(name, new Treatment(name, description));
             return this;
         }
 
-        public Builder addOverride(String name, String filter, String treatmentName) {
+        public Builder addOverride(String name, String filter, Integer treatmentName) {
             overrides.add(new TreatmentOverride(name, FilterExpression.of(filter), getTreatment(treatmentName)));
             return this;
         }
 
-        public Builder addAllocation(String treatmentName, int offset, int size) {
+        public Builder addAllocation(Integer treatmentName, int offset, int size) {
             allocations.add(new Allocation(getTreatment(treatmentName), offset, size));
             return this;
         }

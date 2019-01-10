@@ -36,15 +36,15 @@ public class TreatmentsResourceTest extends ResourceTest {
 
     @Test
     public void testGetTreatment() {
-        get(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1)
+        get(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1.toString())
             .assertStatus(Status.NOT_FOUND);
 
-        get(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD)
+        get(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD.toString())
             .assertStatus(Status.NOT_FOUND);
 
         final TreatmentDto expected = MAPPER.toDto(experiment(EXPERIMENT_1).getTreatment(EXP_1_TREATMENT_1), TreatmentDto.class);
         final TreatmentDto actual =
-            get(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1)
+            get(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1.toString())
                 .assertStatus(Status.OK)
                 .result(TreatmentDto.class);
 
@@ -53,7 +53,7 @@ public class TreatmentsResourceTest extends ResourceTest {
 
     @Test
     public void testAddTreatment() {
-        final TreatmentDto expected = new TreatmentDto("new_treatment", "this is a new treatment");
+        final TreatmentDto expected = new TreatmentDto(1, "this is a new treatment");
 
         put(TREATMENTS_ENDPOINT, EXPERIMENT_BAD)
             .entity(expected)
@@ -69,15 +69,15 @@ public class TreatmentsResourceTest extends ResourceTest {
 
     @Test
     public void testRemoveTreamtment() {
-        delete(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1)
+        delete(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1.toString())
             .assertStatus(Status.NOT_FOUND);
 
-        delete(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD)
+        delete(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD.toString())
             .assertStatus(Status.NOT_FOUND);
 
         assertNotNull(experiment(EXPERIMENT_1).getTreatment(EXP_1_TREATMENT_1));
 
-        delete(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1)
+        delete(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1.toString())
             .assertStatus(Status.NO_CONTENT);
 
         assertNull(experiment(EXPERIMENT_1).getTreatment(EXP_1_TREATMENT_1));
@@ -87,20 +87,20 @@ public class TreatmentsResourceTest extends ResourceTest {
     public void testUpdateTreatment() {
         final UpdateTreatmentRequest request = new UpdateTreatmentRequest(Optional.of("new description"));
 
-        post(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1)
+        post(TREATMENT_ENDPOINT, EXPERIMENT_BAD, EXP_1_TREATMENT_1.toString())
             .entity(request)
             .assertStatus(Status.NOT_FOUND);
 
-        post(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD)
+        post(TREATMENT_ENDPOINT, EXPERIMENT_1, TREATMENT_BAD.toString())
             .entity(request)
             .assertStatus(Status.NOT_FOUND);
 
-        post(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1)
+        post(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1.toString())
             .entity(request)
             .assertStatus(Status.NO_CONTENT);
 
         final TreatmentDto treatment =
-            get(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1)
+            get(TREATMENT_ENDPOINT, EXPERIMENT_1, EXP_1_TREATMENT_1.toString())
                 .assertStatus(Status.OK)
                 .result(TreatmentDto.class);
 

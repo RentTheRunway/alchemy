@@ -168,16 +168,16 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .apply();
 
-        client.addTreatment("exp", "control", "the control");
+        client.addTreatment("exp", 0, "the control");
 
-        final TreatmentDto treatment = client.getTreatment("exp", "control");
-        assertEquals("control", treatment.getName());
+        final TreatmentDto treatment = client.getTreatment("exp", 0);
+        assertEquals(Integer.valueOf(0), treatment.getName());
         assertEquals("the control", treatment.getDescription());
 
-        client.addTreatment("exp", "control");
-        final TreatmentDto treatment2 = client.getTreatment("exp", "control");
+        client.addTreatment("exp", 0);
+        final TreatmentDto treatment2 = client.getTreatment("exp", 0);
 
-        assertEquals("control", treatment2.getName());
+        assertEquals(Integer.valueOf(0), treatment2.getName());
         assertNull(treatment2.getDescription());
     }
 
@@ -187,14 +187,14 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .apply();
 
-        client.addTreatment("exp", "control", "the control");
+        client.addTreatment("exp", 0, "the control");
         client
-            .updateTreatment("exp", "control")
+            .updateTreatment("exp", 0)
             .setDescription("new description")
             .apply();
 
-        final TreatmentDto treatment = client.getTreatment("exp", "control");
-        assertEquals("control", treatment.getName());
+        final TreatmentDto treatment = client.getTreatment("exp", 0);
+        assertEquals(Integer.valueOf(0), treatment.getName());
         assertEquals("new description", treatment.getDescription());
 
     }
@@ -203,10 +203,10 @@ public class AlchemyClientTest {
     public void testRemoveTreatment() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
+            .addTreatment(0)
             .apply();
 
-        client.removeTreatment("exp", "control");
+        client.removeTreatment("exp", 0);
 
         assertEquals(0, client.getTreatments("exp").size());
     }
@@ -215,7 +215,7 @@ public class AlchemyClientTest {
     public void testGetTreatments() {
         client
             .createExperiment("exp")
-            .addTreatment("control", "the control")
+            .addTreatment(0, "the control")
             .apply();
 
         final List<TreatmentDto> treatments = client.getTreatments("exp");
@@ -223,7 +223,7 @@ public class AlchemyClientTest {
         assertEquals(1, treatments.size());
 
         final TreatmentDto treatment = treatments.get(0);
-        assertEquals("control", treatment.getName());
+        assertEquals(Integer.valueOf(0), treatment.getName());
         assertEquals("the control", treatment.getDescription());
     }
 
@@ -231,11 +231,11 @@ public class AlchemyClientTest {
     public void testGetTreatment() {
         client
             .createExperiment("exp")
-            .addTreatment("control", "the control")
+            .addTreatment(0, "the control")
             .apply();
 
-        final TreatmentDto treatment = client.getTreatment("exp", "control");
-        assertEquals("control", treatment.getName());
+        final TreatmentDto treatment = client.getTreatment("exp", 0);
+        assertEquals(Integer.valueOf(0), treatment.getName());
         assertEquals("the control", treatment.getDescription());
     }
 
@@ -243,7 +243,7 @@ public class AlchemyClientTest {
     public void testClearTreatments() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
+            .addTreatment(0)
             .apply();
 
         client.clearTreatments("exp");
@@ -254,8 +254,8 @@ public class AlchemyClientTest {
     public void testGetAllocations() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .allocate("control", 50)
+            .addTreatment(0)
+            .allocate(0, 50)
             .apply();
 
         final List<AllocationDto> allocations = client.getAllocations("exp");
@@ -263,7 +263,7 @@ public class AlchemyClientTest {
         assertEquals(1, allocations.size());
 
         final AllocationDto allocation = allocations.get(0);
-        assertEquals("control", allocation.getTreatment());
+        assertEquals(Integer.valueOf(0), allocation.getTreatment());
         assertEquals(50, allocation.getSize());
     }
 
@@ -271,12 +271,12 @@ public class AlchemyClientTest {
     public void testUpdateAllocations() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
+            .addTreatment(0)
             .apply();
 
         client
             .updateAllocations("exp")
-            .allocate("control", 100)
+            .allocate(0, 100)
             .apply();
 
         assertEquals(1, client.getAllocations("exp").size());
@@ -286,8 +286,8 @@ public class AlchemyClientTest {
     public void testClearAllocations() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .allocate("control", 10)
+            .addTreatment(0)
+            .allocate(0, 10)
             .apply();
 
         client.clearAllocations("exp");
@@ -299,8 +299,8 @@ public class AlchemyClientTest {
     public void testGetOverrides() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .addOverride("override", "control", "identified")
+            .addTreatment(0)
+            .addOverride("override", 0, "identified")
             .apply();
 
         final List<TreatmentOverrideDto> overrides = client.getOverrides("exp");
@@ -309,28 +309,28 @@ public class AlchemyClientTest {
 
         final TreatmentOverrideDto override = overrides.get(0);
         assertEquals("override", override.getName());
-        assertEquals("control", override.getTreatment());
+        assertEquals(Integer.valueOf(0), override.getTreatment());
     }
 
     @Test
     public void testGetOverride() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .addOverride("override", "control", "identified")
+            .addTreatment(0)
+            .addOverride("override", 0, "identified")
             .apply();
 
         final TreatmentOverrideDto override = client.getOverride("exp", "override");
         assertEquals("override", override.getName());
-        assertEquals("control", override.getTreatment());
+        assertEquals(Integer.valueOf(0), override.getTreatment());
     }
 
     @Test
     public void testRemoveOverride() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .addOverride("override", "control", "identified")
+            .addTreatment(0)
+            .addOverride("override", 0, "identified")
             .apply();
 
         client.removeOverride("exp", "override");
@@ -342,8 +342,8 @@ public class AlchemyClientTest {
     public void testClearOverrides() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .addOverride("override", "control", "identified")
+            .addTreatment(0)
+            .addOverride("override", 0, "identified")
             .apply();
 
         client.clearOverrides("exp");
@@ -354,28 +354,28 @@ public class AlchemyClientTest {
     public void testGetActiveTreatment() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .addOverride("override", "control", "identified")
+            .addTreatment(0)
+            .addOverride("override", 0, "identified")
             .activate()
             .apply();
 
         final TreatmentDto treatment = client.getActiveTreatment("exp", new UserDto("foo"));
-        assertEquals("control", treatment.getName());
+        assertEquals(Integer.valueOf(0), treatment.getName());
     }
 
     @Test
     public void testGetActiveTreatments() {
         client
             .createExperiment("exp")
-            .addTreatment("control")
-            .addOverride("override", "control", "identified")
+            .addTreatment(0)
+            .addOverride("override", 0, "identified")
             .activate()
             .apply();
 
         final Map<String, TreatmentDto> treatments = client.getActiveTreatments(new UserDto("foo"));
         assertEquals(1, treatments.size());
         assertTrue(treatments.containsKey("exp"));
-        assertEquals("control", treatments.get("exp").getName());
+        assertEquals(Integer.valueOf(0), treatments.get("exp").getName());
     }
 
     @Test

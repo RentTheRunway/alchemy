@@ -9,17 +9,17 @@ import javax.validation.constraints.NotNull;
  */
 public class AllocateRequest {
     @NotNull
-    private final String treatment;
+    private final Integer treatment;
     @NotNull
     private final Integer size;
 
-    public AllocateRequest(@JsonProperty("treatment") String treatment,
+    public AllocateRequest(@JsonProperty("treatment") Integer treatment,
                            @JsonProperty("size") Integer size) {
         this.treatment = treatment;
         this.size = size;
     }
 
-    public String getTreatment() {
+    public Integer getTreatment() {
         return treatment;
     }
 

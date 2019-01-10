@@ -58,14 +58,14 @@ public class ExperimentsResourceTest extends ResourceTest {
                 null,
                 false,
                 Lists.newArrayList(
-                    new TreatmentDto("control", "the default"),
-                    new TreatmentDto("first_case", "the first case"),
-                    new TreatmentDto("second_case", "the second case")
+                    new TreatmentDto(0, "the default"),
+                    new TreatmentDto(1, "the first case"),
+                    new TreatmentDto(2, "the second case")
                 ),
                 Lists.newArrayList(
-                    new AllocateRequest("control", 10),
-                    new AllocateRequest("first_case", 20),
-                    new AllocateRequest("second_case", 30)
+                    new AllocateRequest(0, 10),
+                    new AllocateRequest(1, 20),
+                    new AllocateRequest(2, 30)
                 ),
                 Lists.<TreatmentOverrideRequest>newArrayList()
             );

@@ -253,7 +253,7 @@ public class AlchemyClient {
         ).get(list(TreatmentDto.class));
     }
 
-    public TreatmentDto getTreatment(String experimentName, String treatmentName) {
+    public TreatmentDto getTreatment(String experimentName, Integer treatmentName) {
         return resource(
             ENDPOINT_TREATMENT,
             ImmutableMap.of(
@@ -286,7 +286,7 @@ public class AlchemyClient {
         return new CreateExperimentRequestBuilder(experimentName, resource(ENDPOINT_EXPERIMENTS));
     }
 
-    public void addTreatment(String experimentName, String treatmentName, String description) {
+    public void addTreatment(String experimentName, Integer treatmentName, String description) {
         resource(
             ENDPOINT_TREATMENTS,
             ImmutableMap.of(
@@ -295,13 +295,13 @@ public class AlchemyClient {
         ).put(new TreatmentDto(treatmentName, description));
     }
 
-    public void addTreatment(String experimentName, String treatmentName) {
+    public void addTreatment(String experimentName, Integer treatmentName) {
         addTreatment(experimentName, treatmentName, null);
     }
 
     public void addOverride(String experimentName,
                             String overrideName,
-                            String treatmentName,
+                            Integer treatmentName,
                             String filter) {
         resource(
             ENDPOINT_OVERRIDES,
@@ -364,7 +364,7 @@ public class AlchemyClient {
         ).delete();
     }
 
-    public void removeTreatment(String experimentName, String treatmentName) {
+    public void removeTreatment(String experimentName, Integer treatmentName) {
         resource(
             ENDPOINT_TREATMENT,
             ImmutableMap.of(
@@ -374,7 +374,7 @@ public class AlchemyClient {
         ).delete();
     }
 
-    public UpdateTreatmentRequestBuilder updateTreatment(String experimentName, String treatmentName) {
+    public UpdateTreatmentRequestBuilder updateTreatment(String experimentName, Integer treatmentName) {
         return new UpdateTreatmentRequestBuilder(
             resource(
                     ENDPOINT_TREATMENT,

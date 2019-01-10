@@ -52,11 +52,11 @@ public class LibraryExample {
             experiments
                 .create("my_experiment")
                 .setDescription("my new experiment")
-                .addTreatment("control", "the default")
-                .addTreatment("pie", "show them pie")
+                .addTreatment(0, "the default")
+                .addTreatment(1, "show them pie")
                 .setFilter(FilterExpression.of("identified"))
-                .allocate("control", 25)
-                .allocate("pie", 25)
+                .allocate(0, 25)
+                .allocate(1, 25)
                 .activate()
                 .save();
 
@@ -79,13 +79,13 @@ public class LibraryExample {
 
             // Let's add an override for our qa person, who obviously likes pie
             experiment
-                .addOverride("qa_pie", "pie", "user_name=qa")
+                .addOverride("qa_pie", 1, "user_name=qa")
                 .save();
 
             // Let's also add for comparison, cake
             experiment
-                .addTreatment("cake", "show them cake")
-                .allocate("cake", 25)
+                .addTreatment(2, "show them cake")
+                .allocate(2, 25)
                 .save();
 
             // Let's print out our allocations
@@ -104,26 +104,26 @@ public class LibraryExample {
             println();
 
             // Let's print out or 'control' treatment
-            final Treatment treatment = experiment.getTreatment("control");
+            final Treatment treatment = experiment.getTreatment(0);
             println("name: %s, description: %s", treatment.getName(), treatment.getDescription());
             println();
 
             // You know what, who cares about pie or cake? Let's compare beer and wine!
             experiment
                 .clearTreatments()
-                .addTreatment("beer", "beer me!")
-                .addTreatment("wine", "wine please")
-                .allocate("beer", 90) // slightly biased
-                .allocate("wine", 10)
+                .addTreatment(5, "beer me!")
+                .addTreatment(8, "wine please")
+                .allocate(5, 90) // slightly biased
+                .allocate(8, 10)
                 .save();
 
             // Ok, that was unfair, let's fix the allocations
             experiment
                 .deallocateAll()
-                .addOverride("gene_likes_beer", "beer", "user_name=gene")
-                .addOverride("qa_wine", "wine", "user_name=qa")
-                .allocate("beer", 51)
-                .allocate("wine", 49)
+                .addOverride("gene_likes_beer", 5, "user_name=gene")
+                .addOverride("qa_wine", 8, "user_name=qa")
+                .allocate(5, 51)
+                .allocate(8, 49)
                 .save();
 
             // Print out an override
@@ -156,7 +156,7 @@ public class LibraryExample {
             println();
 
             // We ran out of wine!
-            experiment.removeTreatment("wine");
+            experiment.removeTreatment(8);
 
             // Let's nuke it and call it a day
             experiments.delete("my_experiment");
@@ -167,8 +167,8 @@ public class LibraryExample {
                  // we want only users that are identified and we prefer to hash on device
                 .setFilter(FilterExpression.of(String.format("%s & %s", User.ATTR_IDENTIFIED, Device.ATTR_DEVICE)))
                 .setHashAttributes(Device.ATTR_DEVICE)
-                .addTreatment("control")
-                .allocate("control", 100)
+                .addTreatment(0)
+                .allocate(0, 100)
                 .activate()
                 .save();
 

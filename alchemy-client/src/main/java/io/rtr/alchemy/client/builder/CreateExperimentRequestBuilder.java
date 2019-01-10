@@ -66,22 +66,22 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder addTreatment(String name) {
+    public CreateExperimentRequestBuilder addTreatment(Integer name) {
         treatments.add(new TreatmentDto(name, null));
         return this;
     }
 
-    public CreateExperimentRequestBuilder addTreatment(String name, String description) {
+    public CreateExperimentRequestBuilder addTreatment(Integer name, String description) {
         treatments.add(new TreatmentDto(name, description));
         return this;
     }
 
-    public CreateExperimentRequestBuilder allocate(String treatmentName, int size) {
+    public CreateExperimentRequestBuilder allocate(Integer treatmentName, int size) {
         allocations.add(new AllocateRequest(treatmentName, size));
         return this;
     }
 
-    public CreateExperimentRequestBuilder addOverride(String name, String treatmentName, String filter) {
+    public CreateExperimentRequestBuilder addOverride(String name, Integer treatmentName, String filter) {
         overrides.add(new TreatmentOverrideRequest(treatmentName, filter, name));
         return this;
     }
