@@ -1,5 +1,8 @@
 language: java
 
+# required for jdk7
+dist: precise
+
 install: echo "I trust Maven."
 
 # don't just run the tests, also run Findbugs and friends
