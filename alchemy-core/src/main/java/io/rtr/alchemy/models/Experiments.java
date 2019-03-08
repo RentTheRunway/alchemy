@@ -14,6 +14,7 @@ import io.rtr.alchemy.identities.AttributesMap;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.caching.CacheStrategyIterable;
 
+import javax.xml.bind.ValidationException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
@@ -163,7 +164,7 @@ public class Experiments implements Closeable {
     /**
      * Creates a new experiment by name, which is not persisted until save is called
      */
-    public Experiment create(String name) {
+    public Experiment create(String name) throws ValidationException {
         return new Experiment(this, name);
     }
 

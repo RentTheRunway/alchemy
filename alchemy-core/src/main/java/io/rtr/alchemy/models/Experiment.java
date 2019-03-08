@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import javax.annotation.Nullable;
+import javax.xml.bind.ValidationException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Represents a collection of user experiences being tested
  */
 
-public class Experiment {
+public class Experiment extends NameValidation {
     private static final Set<String> EMPTY_SET = Sets.newLinkedHashSet();
     private static final Function<TreatmentOverride, String> TREATMENT_INDEXER =
         new Function<TreatmentOverride, String>() {
@@ -88,9 +89,9 @@ public class Experiment {
 
     // used when creating a new experiment
     protected Experiment(Experiments owner,
-                         String name) {
+                         String name) throws ValidationException {
         this.owner = owner;
-        this.name = name;
+        this.name = validate(name);
         this.filter = FilterExpression.alwaysTrue();
         this.hashAttributes = EMPTY_SET;
         this.allocations = new Allocations();
@@ -99,11 +100,11 @@ public class Experiment {
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
     }
 
-    public static Experiment copyOf(Experiment experiment) {
+    public static Experiment copyOf(Experiment experiment) throws ValidationException {
         return  experiment != null ? new Experiment(experiment) : null;
     }
 
-    private Experiment(Experiment toCopy) {
+    private Experiment(Experiment toCopy) throws ValidationException {
         this.owner = toCopy.owner;
         this.name = toCopy.name;
 
@@ -280,7 +281,7 @@ public class Experiment {
      * Adds a treatment
      * @param name The name
      */
-    public Experiment addTreatment(String name) {
+    public Experiment addTreatment(String name) throws ValidationException {
         treatments.put(name, new Treatment(name));
         return this;
     }
@@ -290,7 +291,7 @@ public class Experiment {
      * @param name The name
      * @param description The description
      */
-    public Experiment addTreatment(String name, String description) {
+    public Experiment addTreatment(String name, String description) throws ValidationException {
         treatments.put(name, new Treatment(name, description));
         return this;
     }
@@ -321,7 +322,7 @@ public class Experiment {
      * @param overrideName The name of the override
      * @param filter A filter expression that describes which attributes this override should apply for
      */
-    public Experiment addOverride(String overrideName, String treatmentName, String filter) {
+    public Experiment addOverride(String overrideName, String treatmentName, String filter) throws ValidationException {
         final FilterExpression filterExp = FilterExpression.of(filter);
         final TreatmentOverride override = new TreatmentOverride(overrideName, filterExp, treatment(treatmentName));
         overrides.put(overrideName, override);
@@ -592,12 +593,12 @@ public class Experiment {
             return treatment;
         }
 
-        public Builder addTreatment(String name, String description) {
+        public Builder addTreatment(String name, String description) throws ValidationException {
             treatments.put(name, new Treatment(name, description));
             return this;
         }
 
-        public Builder addOverride(String name, String filter, String treatmentName) {
+        public Builder addOverride(String name, String filter, String treatmentName) throws ValidationException {
             overrides.add(new TreatmentOverride(name, FilterExpression.of(filter), getTreatment(treatmentName)));
             return this;
         }
