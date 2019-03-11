@@ -11,19 +11,19 @@ import javax.validation.ValidationException;
 
 
 
-public class Treatment extends NameValidation {
+public class Treatment {
     private final String name;
     private String description;
 
     public Treatment(String name) throws ValidationException {
         super();
-        this.name = validate(name);
+        this.name = new NameValidation().validate(name);
         this.description = null;
     }
 
     public Treatment(String name, String description) throws ValidationException {
         super();
-        this.name = validate(name);
+        this.name = new NameValidation().validate(name);
         this.description = description;
     }
 

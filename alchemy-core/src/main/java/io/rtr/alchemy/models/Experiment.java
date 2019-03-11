@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Represents a collection of user experiences being tested
  */
 
-public class Experiment extends NameValidation {
+public class Experiment {
     private static final Set<String> EMPTY_SET = Sets.newLinkedHashSet();
     private static final Function<TreatmentOverride, String> TREATMENT_INDEXER =
         new Function<TreatmentOverride, String>() {
@@ -91,7 +91,7 @@ public class Experiment extends NameValidation {
     protected Experiment(Experiments owner,
                          String name) throws ValidationException {
         this.owner = owner;
-        this.name = validate(name);
+        this.name = new NameValidation().validate(name);
         this.filter = FilterExpression.alwaysTrue();
         this.hashAttributes = EMPTY_SET;
         this.allocations = new Allocations();

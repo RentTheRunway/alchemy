@@ -7,13 +7,13 @@ import io.rtr.alchemy.filtering.FilterExpression;
 /**
  * Represents a treatment override assigned to a specific hash value
  */
-public class TreatmentOverride extends NameValidation {
+public class TreatmentOverride {
     private final String name;
     private final FilterExpression filter;
     private final Treatment treatment;
 
     public TreatmentOverride(String name, FilterExpression filter, Treatment treatment) throws ValidationException {
-        this.name = validate(name);
+        this.name = new NameValidation().validate(name);
         this.filter = filter;
         this.treatment = treatment;
     }
