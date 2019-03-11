@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Represents a collection of user experiences being tested
  */
 
-public class Experiment {
+public class Experiment implements Named {
     private static final Set<String> EMPTY_SET = Sets.newLinkedHashSet();
     private static final Function<TreatmentOverride, String> TREATMENT_INDEXER =
         new Function<TreatmentOverride, String>() {
@@ -91,13 +91,14 @@ public class Experiment {
     protected Experiment(Experiments owner,
                          String name) throws ValidationException {
         this.owner = owner;
-        this.name = new NameValidation().validate(name);
+        this.name = name;
         this.filter = FilterExpression.alwaysTrue();
         this.hashAttributes = EMPTY_SET;
         this.allocations = new Allocations();
         this.treatments = Maps.newConcurrentMap();
         this.overrides = Maps.newConcurrentMap();
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
+        validateName();
     }
 
     public static Experiment copyOf(Experiment experiment) throws ValidationException {

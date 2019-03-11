@@ -11,20 +11,18 @@ import javax.validation.ValidationException;
 
 
 
-public class Treatment {
+public class Treatment implements Named {
     private final String name;
     private String description;
 
     public Treatment(String name) throws ValidationException {
-        super();
-        this.name = new NameValidation().validate(name);
-        this.description = null;
+        this(name, null);
     }
 
     public Treatment(String name, String description) throws ValidationException {
-        super();
-        this.name = new NameValidation().validate(name);
+        this.name = name;
         this.description = description;
+        validateName();
     }
 
     public String getName() {
@@ -38,8 +36,6 @@ public class Treatment {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
 
     @Override
     public int hashCode() {

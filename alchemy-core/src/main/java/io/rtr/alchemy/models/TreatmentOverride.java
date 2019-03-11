@@ -1,21 +1,23 @@
 package io.rtr.alchemy.models;
 
 import com.google.common.base.Objects;
-import javax.validation.ValidationException;
 import io.rtr.alchemy.filtering.FilterExpression;
+
+import javax.validation.ValidationException;
 
 /**
  * Represents a treatment override assigned to a specific hash value
  */
-public class TreatmentOverride {
+public class TreatmentOverride implements Named {
     private final String name;
     private final FilterExpression filter;
     private final Treatment treatment;
 
     public TreatmentOverride(String name, FilterExpression filter, Treatment treatment) throws ValidationException {
-        this.name = new NameValidation().validate(name);
+        this.name = name;
         this.filter = filter;
         this.treatment = treatment;
+        validateName();
     }
 
     public String getName() {
