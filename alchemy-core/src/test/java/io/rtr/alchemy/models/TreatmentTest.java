@@ -17,14 +17,15 @@ public class TreatmentTest {
     }
 
     @Test
-    public void testGoodTreatmentName() throws ValidationException {
-        final Treatment treatment = new Treatment("abc", "a good treatment with a good name");
-        assertEquals(treatment.getName(), "abc");
+    public void testValidTreatmentName() throws ValidationException {
+        String name = "abc";
+        final Treatment treatment = new Treatment(name, "a treatment with a valid name");
+        assertEquals(treatment.getName(), name);
     }
 
     @Test(expected = ValidationException.class)
-    public void testBadTreatmentName() throws ValidationException {
-        final Treatment treatment = new Treatment(";;;", "a good treatment with a troublesome name");
+    public void testInvalidTreatmentName() throws ValidationException {
+        final Treatment treatment = new Treatment(";;;", "a treatment with an invalid name");
     }
 
 }

@@ -243,4 +243,17 @@ public class ExperimentTest {
         experiment.delete();
         verify(experiments).delete(eq(experiment.getName()));
     }
+
+    @Test
+    public void testValidName() throws ValidationException {
+        String name = "My1stExperiment";
+        final Experiment experiment = new Experiment(experiments, name);
+        assertEquals(experiment.getName(), name);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testInvalidName() throws ValidationException {
+        String name = "(not a valid name)";
+        final Experiment experiment = new Experiment(experiments, name);
+    }
 }
