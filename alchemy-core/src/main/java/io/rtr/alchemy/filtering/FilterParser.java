@@ -18,7 +18,7 @@ public class FilterParser extends Parser {
 		T__1=1, T__0=2, AND=3, OR=4, NOT=5, NUMBER=6, STRING=7, BOOLEAN=8, IDENTIFIER=9, 
 		COMPARISON=10, WS=11;
 	public static final String[] tokenNames = {
-		"<INVALID>", "'('", "')'", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", 
+		"<INVALID>", "')'", "'('", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", 
 		"IDENTIFIER", "COMPARISON", "WS"
 	};
 	public static final int
@@ -48,13 +48,13 @@ public class FilterParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class ExpContext extends ParserRuleContext {
-		public ExpContext exp() {
-			return getRuleContext(ExpContext.class,0);
-		}
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
 		public TerminalNode OR() { return getToken(FilterParser.OR, 0); }
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
 		public ExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -124,13 +124,13 @@ public class FilterParser extends Parser {
 	}
 
 	public static class TermContext extends ParserRuleContext {
-		public FactorContext factor() {
-			return getRuleContext(FactorContext.class,0);
-		}
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
 		public TerminalNode AND() { return getToken(FilterParser.AND, 0); }
+		public FactorContext factor() {
+			return getRuleContext(FactorContext.class,0);
+		}
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -180,18 +180,18 @@ public class FilterParser extends Parser {
 	}
 
 	public static class FactorContext extends ParserRuleContext {
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public ComparisonContext comparison() {
+			return getRuleContext(ComparisonContext.class,0);
+		}
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
 		public TerminalNode NOT() { return getToken(FilterParser.NOT, 0); }
-		public ValueContext value() {
-			return getRuleContext(ValueContext.class,0);
-		}
 		public FactorContext factor() {
 			return getRuleContext(FactorContext.class,0);
-		}
-		public ComparisonContext comparison() {
-			return getRuleContext(ComparisonContext.class,0);
 		}
 		public FactorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -216,9 +216,9 @@ public class FilterParser extends Parser {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(30); match(1);
+				setState(30); match(2);
 				setState(31); exp(0);
-				setState(32); match(2);
+				setState(32); match(1);
 				}
 				break;
 
@@ -257,13 +257,13 @@ public class FilterParser extends Parser {
 	}
 
 	public static class ComparisonContext extends ParserRuleContext {
-		public List<ValueContext> value() {
-			return getRuleContexts(ValueContext.class);
-		}
 		public ValueContext value(int i) {
 			return getRuleContext(ValueContext.class,i);
 		}
 		public TerminalNode COMPARISON() { return getToken(FilterParser.COMPARISON, 0); }
+		public List<ValueContext> value() {
+			return getRuleContexts(ValueContext.class);
+		}
 		public ComparisonContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -301,9 +301,9 @@ public class FilterParser extends Parser {
 	}
 
 	public static class ConstantContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(FilterParser.STRING, 0); }
 		public TerminalNode BOOLEAN() { return getToken(FilterParser.BOOLEAN, 0); }
 		public TerminalNode NUMBER() { return getToken(FilterParser.NUMBER, 0); }
+		public TerminalNode STRING() { return getToken(FilterParser.STRING, 0); }
 		public ConstantContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -345,10 +345,10 @@ public class FilterParser extends Parser {
 	}
 
 	public static class ValueContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(FilterParser.IDENTIFIER, 0); }
 		public ConstantContext constant() {
 			return getRuleContext(ConstantContext.class,0);
 		}
-		public TerminalNode IDENTIFIER() { return getToken(FilterParser.IDENTIFIER, 0); }
 		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -421,7 +421,7 @@ public class FilterParser extends Parser {
 		"\3\2\2\2\21\22\f\3\2\2\22\23\7\6\2\2\23\25\5\4\3\2\24\21\3\2\2\2\25\30"+
 		"\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\3\3\2\2\2\30\26\3\2\2\2\31\37"+
 		"\5\6\4\2\32\33\5\6\4\2\33\34\7\5\2\2\34\35\5\4\3\2\35\37\3\2\2\2\36\31"+
-		"\3\2\2\2\36\32\3\2\2\2\37\5\3\2\2\2 !\7\3\2\2!\"\5\2\2\2\"#\7\4\2\2#)"+
+		"\3\2\2\2\36\32\3\2\2\2\37\5\3\2\2\2 !\7\4\2\2!\"\5\2\2\2\"#\7\3\2\2#)"+
 		"\3\2\2\2$)\5\f\7\2%)\5\b\5\2&\'\7\7\2\2\')\5\6\4\2( \3\2\2\2($\3\2\2\2"+
 		"(%\3\2\2\2(&\3\2\2\2)\7\3\2\2\2*+\5\f\7\2+,\7\f\2\2,-\5\f\7\2-\t\3\2\2"+
 		"\2./\t\2\2\2/\13\3\2\2\2\60\63\5\n\6\2\61\63\7\13\2\2\62\60\3\2\2\2\62"+
