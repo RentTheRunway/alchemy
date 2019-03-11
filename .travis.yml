@@ -1,6 +1,6 @@
 language: java
 
-# required for jdk7
+# required for jdk8
 dist: precise
 
 install: echo "I trust Maven."
@@ -9,7 +9,7 @@ install: echo "I trust Maven."
 script: mvn verify
 
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 
 # turn on TLS 1.2 for maven so the build doesn't fail
 before_script:
