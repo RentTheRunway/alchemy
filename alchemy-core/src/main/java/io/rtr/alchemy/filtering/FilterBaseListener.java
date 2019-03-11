@@ -17,13 +17,13 @@ public class FilterBaseListener implements FilterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp(@NotNull FilterParser.ExpContext ctx) { }
+	@Override public void enterComparison(@NotNull FilterParser.ComparisonContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp(@NotNull FilterParser.ExpContext ctx) { }
+	@Override public void exitComparison(@NotNull FilterParser.ComparisonContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -56,13 +56,13 @@ public class FilterBaseListener implements FilterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValue(@NotNull FilterParser.ValueContext ctx) { }
+	@Override public void enterExp(@NotNull FilterParser.ExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValue(@NotNull FilterParser.ValueContext ctx) { }
+	@Override public void exitExp(@NotNull FilterParser.ExpContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -82,13 +82,13 @@ public class FilterBaseListener implements FilterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterComparison(@NotNull FilterParser.ComparisonContext ctx) { }
+	@Override public void enterValue(@NotNull FilterParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitComparison(@NotNull FilterParser.ComparisonContext ctx) { }
+	@Override public void exitValue(@NotNull FilterParser.ValueContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

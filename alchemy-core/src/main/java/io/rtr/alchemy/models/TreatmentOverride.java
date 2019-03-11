@@ -1,7 +1,7 @@
 package io.rtr.alchemy.models;
 
 import com.google.common.base.Objects;
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
 import io.rtr.alchemy.filtering.FilterExpression;
 
 /**

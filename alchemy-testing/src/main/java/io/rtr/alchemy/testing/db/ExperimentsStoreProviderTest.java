@@ -15,6 +15,7 @@ import io.rtr.alchemy.models.Experiments;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.ValidationException;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -76,7 +77,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testCreateExperiment() {
+    public void testCreateExperiment() throws ValidationException {
         assertNull("should return null when experiment not found", experiments.get("foo"));
 
         experiments
@@ -87,7 +88,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testDeleteExperiment() {
+    public void testDeleteExperiment() throws ValidationException  {
         experiments
             .create("foo")
             .save();
@@ -100,9 +101,9 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testFindExperimentFilterString() {
+    public void testFindExperimentFilterString() throws ValidationException {
          experiments
-             .create("the foo experiment")
+             .create("the_foo_experiment")
              .setDescription("the bar description")
              .save();
 
@@ -147,7 +148,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testFindExperimentFilterRange() {
+    public void testFindExperimentFilterRange() throws ValidationException {
         experiments.create("exp1").save();
         experiments.create("exp2").save();
         experiments.create("exp3").save();
@@ -204,7 +205,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testFindExperimentFilterOrdering() {
+    public void testFindExperimentFilterOrdering() throws ValidationException  {
         final Experiment fooExp = experiments.create("foo").setDescription("a").save();
         final Experiment zooExp = experiments.create("zoo").setDescription("b").save();
         final Experiment barExp = experiments.create("bar").setDescription("c").save();
@@ -292,7 +293,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testGetActiveTreatment() {
+    public void testGetActiveTreatment() throws ValidationException {
         experiments
             .create("foo")
             .addTreatment("control")
@@ -344,7 +345,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testGetActiveTreatments() {
+    public void testGetActiveTreatments() throws ValidationException {
         final Identity identity = new TestIdentity("test");
 
         experiments
@@ -391,7 +392,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testGetActiveExperiments() {
+    public void testGetActiveExperiments() throws ValidationException {
         experiments
             .create("foo")
             .save();
@@ -407,7 +408,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testExperimentObjectReference() {
+    public void testExperimentObjectReference() throws ValidationException {
         final Experiment obj1 = experiments
             .create("foo")
             .addTreatment("control")

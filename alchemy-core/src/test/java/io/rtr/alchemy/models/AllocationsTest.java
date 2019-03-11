@@ -3,6 +3,7 @@ package io.rtr.alchemy.models;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
+import javax.validation.ValidationException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -12,9 +13,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class AllocationsTest {
-    private final Treatment control = new Treatment("control", "This is the control");
-    private final Treatment withLogin = new Treatment("with_login", "User logged in");
-    private final Treatment withoutLogin = new Treatment("without_login", "User didn't log in");
+    private static final Treatment control, withLogin, withoutLogin;
+    static {
+        // based on https://stackoverflow.com/questions/8367950/cant-define-a-private-static-final-variable-because-it-throws-an-exception
+        Treatment tmp1 = null;
+        Treatment tmp2= null;
+        Treatment tmp3= null;
+        try {
+            tmp1 = new Treatment("control", "This is the control");
+            tmp2 = new Treatment("with_login", "User logged in");
+            tmp3= new Treatment("without_login", "User didn't log in");
+        } catch(ValidationException e) {
+            // do nothing
+        }
+        control = tmp1;
+        withLogin = tmp2;
+        withoutLogin = tmp3;
+    }
+
 
     @Test
     public void testConstructWithEmptyList() {
@@ -260,8 +276,16 @@ public class AllocationsTest {
 
     @Test
     public void testClear() {
-        final Treatment t1 = new Treatment("control");
-        final Treatment t2 = new Treatment("other");
+        Treatment t1, t2;
+        try {
+            t1 = new Treatment("control");
+            t2 = new Treatment("other");
+        } catch (ValidationException e) {
+            // this should never happen
+            t1 = null;
+            t2 = null;
+        }
+
         final  Allocations allocations = new Allocations(Lists.newArrayList(
             new Allocation(t1, 0, 5),
             new Allocation(t2, 5, 5)

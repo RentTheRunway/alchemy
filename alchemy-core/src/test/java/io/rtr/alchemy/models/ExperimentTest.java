@@ -9,7 +9,7 @@ import nl.jqno.equalsverifier.Warning;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
 
 import java.util.List;
 import java.util.Set;

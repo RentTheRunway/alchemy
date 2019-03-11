@@ -1,5 +1,5 @@
 package io.rtr.alchemy.models;
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
 
 class NameValidation {
 

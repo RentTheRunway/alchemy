@@ -1,6 +1,6 @@
 package io.rtr.alchemy.models;
 
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;

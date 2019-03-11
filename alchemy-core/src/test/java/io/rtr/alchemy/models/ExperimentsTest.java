@@ -2,7 +2,6 @@ package io.rtr.alchemy.models;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing;
 import io.rtr.alchemy.caching.CacheStrategy;
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
@@ -15,7 +14,7 @@ import io.rtr.alchemy.identities.Identity;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;

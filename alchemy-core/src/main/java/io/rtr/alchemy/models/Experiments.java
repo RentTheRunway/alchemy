@@ -14,7 +14,7 @@ import io.rtr.alchemy.identities.AttributesMap;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.caching.CacheStrategyIterable;
 
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;

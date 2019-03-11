@@ -2,7 +2,8 @@ package io.rtr.alchemy.models;
 
 import com.google.common.base.Objects;
 
-import javax.xml.bind.ValidationException;
+import javax.validation.ValidationException;
+
 
 /**
  * Represents a possible user experience in an experiment
