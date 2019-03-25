@@ -4,10 +4,12 @@ import io.rtr.alchemy.filtering.FilterExpression;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
-
+import javax.validation.ValidationException;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class TreatmentOverrideTest {
+    final Treatment treatment = new Treatment("treatment");
     @Test
     public void testEqualsHashCode() {
         EqualsVerifier
@@ -15,5 +17,18 @@ public class TreatmentOverrideTest {
             .suppress(Warning.STRICT_INHERITANCE)
             .withPrefabValues(FilterExpression.class, mock(FilterExpression.class), mock(FilterExpression.class))
             .verify();
+    }
+
+
+    @Test
+    public void testValidName() throws ValidationException {
+        String name = "a_valid_name";
+        final TreatmentOverride override = new TreatmentOverride(name, mock(FilterExpression.class),treatment);
+        assertEquals(override.getName(), name);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testInvalidTreatmentName() throws ValidationException {
+        final TreatmentOverride override = new TreatmentOverride("an invalid name with spaces", mock(FilterExpression.class),treatment);
     }
 }

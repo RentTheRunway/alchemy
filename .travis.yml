@@ -1,9 +1,16 @@
 language: java
 
+# required for jdk8
+dist: precise
+
 install: echo "I trust Maven."
 
 # don't just run the tests, also run Findbugs and friends
 script: mvn verify
 
 jdk:
-  - oraclejdk7
+  - oraclejdk8
+
+# turn on TLS 1.2 for maven so the build doesn't fail
+before_script:
+  - echo "MAVEN_OPTS='-Dhttps.protocols=TLSv1.2'" > ~/.mavenrc

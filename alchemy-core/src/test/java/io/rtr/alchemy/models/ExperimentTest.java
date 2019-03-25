@@ -9,6 +9,7 @@ import nl.jqno.equalsverifier.Warning;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import javax.validation.ValidationException;
 
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testAddTreatment() {
+    public void testAddTreatment()  throws ValidationException {
         final Treatment treatment = new Treatment("bar");
         final Experiment experiment =
             new Experiment(null, "foo")
@@ -54,7 +55,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testAddOverride() {
+    public void testAddOverride() throws ValidationException {
         final Treatment treatment = new Treatment("bar");
         final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
@@ -67,7 +68,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testGetOverride() {
+    public void testGetOverride() throws ValidationException {
         final Treatment treatment = new Treatment("bar");
         final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
@@ -80,7 +81,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testClearTreatments() {
+    public void testClearTreatments()  throws ValidationException {
         final Experiment experiment =
             new Experiment(null, "foo")
                 .addTreatment("bar")
@@ -99,7 +100,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testClearOverrides() {
+    public void testClearOverrides() throws ValidationException  {
         final Experiment experiment =
             new Experiment(null, "foo")
                 .addTreatment("bar")
@@ -115,7 +116,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testDeallocateAll() {
+    public void testDeallocateAll()  throws ValidationException {
         final Experiment experiment =
             new Experiment(null, "foo")
                 .addTreatment("bar")
@@ -131,7 +132,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testRemoveTreatment() {
+    public void testRemoveTreatment() throws ValidationException  {
         doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
 
         final Experiment experiment =
@@ -181,7 +182,7 @@ public class ExperimentTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUnmodifiableAllocations() {
+    public void testUnmodifiableAllocations()  throws ValidationException {
         final  Experiment experiment =
             new Experiment(null, "experiment")
                 .addTreatment("foo")
@@ -191,7 +192,7 @@ public class ExperimentTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUnmodifiableTreatments() {
+    public void testUnmodifiableTreatments()  throws ValidationException {
         final  Experiment experiment =
             new Experiment(null, "experiment")
                 .addTreatment("foo");
@@ -200,7 +201,7 @@ public class ExperimentTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUnmodifiableOverrides() {
+    public void testUnmodifiableOverrides()  throws ValidationException {
         final  Experiment experiment =
             new Experiment(null, "experiment")
                 .addTreatment("foo")
@@ -210,7 +211,7 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testCopyOf() {
+    public void testCopyOf()  throws ValidationException {
         assertNull(Experiment.copyOf(null));
 
         final Experiment original =
@@ -231,15 +232,28 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testSave() {
+    public void testSave()  throws ValidationException {
         final Experiment experiment = new Experiment(experiments, "foo").save();
         verify(experiments).save(eq(experiment));
     }
 
     @Test
-    public void testDelete() {
+    public void testDelete()  throws ValidationException {
         final Experiment experiment = new Experiment(experiments, "foo");
         experiment.delete();
         verify(experiments).delete(eq(experiment.getName()));
+    }
+
+    @Test
+    public void testValidName() throws ValidationException {
+        String name = "My1stExperiment";
+        final Experiment experiment = new Experiment(experiments, name);
+        assertEquals(experiment.getName(), name);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testInvalidName() throws ValidationException {
+        String name = "(not a valid name)";
+        final Experiment experiment = new Experiment(experiments, name);
     }
 }

@@ -14,6 +14,7 @@ import io.rtr.alchemy.identities.Identity;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.ValidationException;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
@@ -83,7 +84,7 @@ public class ExperimentsTest {
     }
 
     @Test
-    public void testGetActiveTreatmentUnspecifiedAttributes() {
+    public void testGetActiveTreatmentUnspecifiedAttributes() throws ValidationException {
         final MyIdentity identity1 = new MyIdentity("foo", "bar", "baz");
         final MyIdentity identity2 = new MyIdentity("baz");
         final MyIdentity identity3 = new MyIdentity("foo");
@@ -124,7 +125,7 @@ public class ExperimentsTest {
     }
 
     @Test
-    public void testGetActiveTreatmentNoAttributes() {
+    public void testGetActiveTreatmentNoAttributes() throws ValidationException {
         final Identity identity = mock(Identity.class);
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
 
@@ -169,14 +170,14 @@ public class ExperimentsTest {
     }
 
     @Test
-    public void testCreate() {
+    public void testCreate() throws ValidationException {
         experiments.create("foo");
         verifyZeroInteractions(store);
         verifyZeroInteractions(cache);
     }
 
     @Test
-    public void testSave() {
+    public void testSave() throws ValidationException {
         final Experiment experiment = experiments.create("foo").save();
         verify(store).save(eq(experiment));
         verifyZeroInteractions(cache);

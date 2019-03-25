@@ -9,15 +9,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface FilterListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link FilterParser#exp}.
+	 * Enter a parse tree produced by {@link FilterParser#comparison}.
 	 * @param ctx the parse tree
 	 */
-	void enterExp(@NotNull FilterParser.ExpContext ctx);
+	void enterComparison(@NotNull FilterParser.ComparisonContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FilterParser#exp}.
+	 * Exit a parse tree produced by {@link FilterParser#comparison}.
 	 * @param ctx the parse tree
 	 */
-	void exitExp(@NotNull FilterParser.ExpContext ctx);
+	void exitComparison(@NotNull FilterParser.ComparisonContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link FilterParser#constant}.
@@ -42,15 +42,15 @@ public interface FilterListener extends ParseTreeListener {
 	void exitTerm(@NotNull FilterParser.TermContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link FilterParser#value}.
+	 * Enter a parse tree produced by {@link FilterParser#exp}.
 	 * @param ctx the parse tree
 	 */
-	void enterValue(@NotNull FilterParser.ValueContext ctx);
+	void enterExp(@NotNull FilterParser.ExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FilterParser#value}.
+	 * Exit a parse tree produced by {@link FilterParser#exp}.
 	 * @param ctx the parse tree
 	 */
-	void exitValue(@NotNull FilterParser.ValueContext ctx);
+	void exitExp(@NotNull FilterParser.ExpContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link FilterParser#factor}.
@@ -64,13 +64,13 @@ public interface FilterListener extends ParseTreeListener {
 	void exitFactor(@NotNull FilterParser.FactorContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link FilterParser#comparison}.
+	 * Enter a parse tree produced by {@link FilterParser#value}.
 	 * @param ctx the parse tree
 	 */
-	void enterComparison(@NotNull FilterParser.ComparisonContext ctx);
+	void enterValue(@NotNull FilterParser.ValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FilterParser#comparison}.
+	 * Exit a parse tree produced by {@link FilterParser#value}.
 	 * @param ctx the parse tree
 	 */
-	void exitComparison(@NotNull FilterParser.ComparisonContext ctx);
+	void exitValue(@NotNull FilterParser.ValueContext ctx);
 }
