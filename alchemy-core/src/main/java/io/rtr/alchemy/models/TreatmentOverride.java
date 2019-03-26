@@ -3,8 +3,6 @@ package io.rtr.alchemy.models;
 import com.google.common.base.Objects;
 import io.rtr.alchemy.filtering.FilterExpression;
 
-import javax.validation.ValidationException;
-
 /**
  * Represents a treatment override assigned to a specific hash value
  */
@@ -13,11 +11,10 @@ public class TreatmentOverride implements Named {
     private final FilterExpression filter;
     private final Treatment treatment;
 
-    public TreatmentOverride(String name, FilterExpression filter, Treatment treatment) throws ValidationException {
+    public TreatmentOverride(String name, FilterExpression filter, Treatment treatment) {
         this.name = name;
         this.filter = filter;
         this.treatment = treatment;
-        validateName();
     }
 
     public String getName() {

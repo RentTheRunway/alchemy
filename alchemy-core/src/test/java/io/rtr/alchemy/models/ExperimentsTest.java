@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import io.rtr.alchemy.caching.CacheStrategy;
 import io.rtr.alchemy.db.ExperimentsCache;
-import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.ExperimentsStore;
+import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.filtering.FilterExpression;
 import io.rtr.alchemy.identities.Attributes;
@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.validation.ValidationException;
+import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
@@ -203,5 +204,21 @@ public class ExperimentsTest {
         experiments.delete("foo");
         verify(store).delete(eq("foo"));
         verifyZeroInteractions(cache);
+    }
+
+    @Test
+    public void testValidateOnSave() {
+        final Treatment treatment = mock(Treatment.class);
+        final TreatmentOverride override = mock(TreatmentOverride.class);
+        final Experiment experiment = mock(Experiment.class);
+
+        doReturn(Collections.singletonList(treatment)).when(experiment).getTreatments();
+        doReturn(Collections.singletonList(override)).when(experiment).getOverrides();
+
+        experiments.save(experiment);
+
+        verify(experiment).validateName();
+        verify(treatment).validateName();
+        verify(override).validateName();
     }
 }
