@@ -2,8 +2,6 @@ package io.rtr.alchemy.models;
 
 import com.google.common.base.Objects;
 
-import javax.validation.ValidationException;
-
 
 /**
  * Represents a possible user experience in an experiment
@@ -15,14 +13,13 @@ public class Treatment implements Named {
     private final String name;
     private String description;
 
-    public Treatment(String name) throws ValidationException {
+    public Treatment(String name) {
         this(name, null);
     }
 
-    public Treatment(String name, String description) throws ValidationException {
+    public Treatment(String name, String description) {
         this.name = name;
         this.description = description;
-        validateName();
     }
 
     public String getName() {

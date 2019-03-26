@@ -30,5 +30,6 @@ public class TreatmentOverrideTest {
     @Test(expected = ValidationException.class)
     public void testInvalidTreatmentName() throws ValidationException {
         final TreatmentOverride override = new TreatmentOverride("an invalid name with spaces", mock(FilterExpression.class),treatment);
+        override.validateName();
     }
 }

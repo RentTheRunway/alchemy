@@ -88,8 +88,7 @@ public class Experiment implements Named {
     }
 
     // used when creating a new experiment
-    protected Experiment(Experiments owner,
-                         String name) throws ValidationException {
+    protected Experiment(Experiments owner, String name) {
         this.owner = owner;
         this.name = name;
         this.filter = FilterExpression.alwaysTrue();
@@ -98,7 +97,6 @@ public class Experiment implements Named {
         this.treatments = Maps.newConcurrentMap();
         this.overrides = Maps.newConcurrentMap();
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
-        validateName();
     }
 
     public static Experiment copyOf(Experiment experiment) throws ValidationException {

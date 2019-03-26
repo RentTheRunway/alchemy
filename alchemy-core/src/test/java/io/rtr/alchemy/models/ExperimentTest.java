@@ -255,5 +255,6 @@ public class ExperimentTest {
     public void testInvalidName() throws ValidationException {
         String name = "(not a valid name)";
         final Experiment experiment = new Experiment(experiments, name);
+        experiment.validateName();
     }
 }

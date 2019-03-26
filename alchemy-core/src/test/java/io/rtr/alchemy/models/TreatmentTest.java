@@ -26,6 +26,7 @@ public class TreatmentTest {
     @Test(expected = ValidationException.class)
     public void testInvalidTreatmentName() throws ValidationException {
         final Treatment treatment = new Treatment(";;;", "a treatment with an invalid name");
+        treatment.validateName();
     }
 
 }

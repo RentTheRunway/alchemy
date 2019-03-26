@@ -156,7 +156,11 @@ public class Experiments implements Closeable {
     /**
      * Persists a specific experiment by name
      */
-    public void save(Experiment experiment) {
+    public void save(Experiment experiment) throws ValidationException {
+        experiment.validateName();
+        experiment.getTreatments().forEach(Treatment::validateName);
+        experiment.getOverrides().forEach(TreatmentOverride::validateName);
+
         store.save(experiment);
         strategy.onSave(experiment, context);
     }
