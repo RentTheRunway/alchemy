@@ -1,6 +1,6 @@
 package io.rtr.alchemy.db.mongo;
 
-import com.mongodb.MongoException;
+import com.mongodb.DuplicateKeyException;
 import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
 import io.rtr.alchemy.db.mongo.models.MetadataEntity;
 import org.mongodb.morphia.AdvancedDatastore;
@@ -32,7 +32,7 @@ public class RevisionManager {
         try {
             ds.insert(MetadataEntity.of(NAME, Long.MIN_VALUE));
             return Long.MIN_VALUE;
-        } catch (final MongoException.DuplicateKey e) {
+        } catch (DuplicateKeyException e) {
             return getValue();
         }
     }

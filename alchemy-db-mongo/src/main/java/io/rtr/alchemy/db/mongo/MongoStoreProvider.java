@@ -5,15 +5,13 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.ExperimentsStore;
+import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.mongo.util.DateTimeConverter;
 import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.Morphia;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -32,12 +30,20 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
                                List<MongoCredential> credentials,
                                MongoClientOptions options,
                                String database) {
+        this(
+            options == null ?
+            new MongoClient(hosts, credentials) :
+            new MongoClient(hosts, credentials, options),
+            database
+        );
+    }
 
+    public MongoStoreProvider(MongoClient client, String database) {
         final Morphia morphia = new Morphia();
         morphia.getMapper().getOptions().setStoreEmpties(true);
         morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
-        client = options == null ? new MongoClient(hosts, credentials) : new MongoClient(hosts, credentials, options);
 
+        this.client = client;
         final AdvancedDatastore ds = (AdvancedDatastore) morphia.createDatastore(client, database);
         final RevisionManager revisionManager = new RevisionManager(ds);
         this.store = new MongoExperimentsStore(ds, revisionManager);
@@ -55,7 +61,7 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         client.close();
     }
 
@@ -91,7 +97,7 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
             return this;
         }
 
-        public MongoStoreProvider build() throws UnknownHostException {
+        public MongoStoreProvider build() {
             if (hosts.isEmpty()) {
                 hosts.add(new ServerAddress(ServerAddress.defaultHost(), ServerAddress.defaultPort()));
             }
