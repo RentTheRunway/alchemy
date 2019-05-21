@@ -1,11 +1,10 @@
 package io.rtr.alchemy.db.mongo;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.testing.db.ExperimentsStoreProviderTest;
 import org.junit.Ignore;
-
-import java.net.UnknownHostException;
 
 import static org.junit.Assert.fail;
 
@@ -27,7 +26,7 @@ public class MongoStoreProviderTest extends ExperimentsStoreProviderTest {
         try {
             client = new MongoClient();
             client.dropDatabase(DATABASE_NAME);
-        } catch (final UnknownHostException e) {
+        } catch (MongoException e) {
             fail("could not delete database");
         } finally {
             if (client != null) {
