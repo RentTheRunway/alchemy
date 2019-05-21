@@ -3,7 +3,7 @@
   <parent>
     <artifactId>alchemy-parent</artifactId>
     <groupId>io.rtr.alchemy</groupId>
-    <version>0.1.15-SNAPSHOT</version>
+    <version>0.1.15</version>
   </parent>
   <name>Alchemy REST Service</name>
   <description>REST service for hosting Alchemy as a service</description>
