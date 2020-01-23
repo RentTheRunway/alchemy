@@ -1,7 +1,6 @@
 package io.rtr.alchemy.service.exceptions;
 
 import com.google.common.collect.Maps;
-import com.sun.jersey.api.container.MappableContainerException;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -41,7 +40,7 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
         final Response.Status status = EXCEPTION_MAPPINGS.get(e.getClass());
 
         if (status == null) {
-            throw new MappableContainerException(e);
+            throw new WebApplicationException(e);
         }
 
         return Response

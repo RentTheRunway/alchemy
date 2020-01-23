@@ -1,5 +1,6 @@
 package io.rtr.alchemy.models;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 
@@ -53,7 +54,7 @@ public class Treatment implements Named {
     @Override
     public String toString() {
         return
-            Objects
+            MoreObjects
                 .toStringHelper(this)
                 .add("name", name)
                 .add("description", description)

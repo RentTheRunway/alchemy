@@ -2,13 +2,16 @@ package io.rtr.alchemy.client.builder;
 
 import io.rtr.alchemy.dto.requests.AllocationRequest;
 import io.rtr.alchemy.dto.requests.AllocationRequests;
-import com.sun.jersey.api.client.WebResource;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 
 public class UpdateAllocationsRequestBuilder {
-    private final WebResource.Builder builder;
+    private final Invocation.Builder builder;
     private final AllocationRequests allocations;
 
-    public UpdateAllocationsRequestBuilder(WebResource.Builder builder) {
+    public UpdateAllocationsRequestBuilder(Invocation.Builder builder) {
         this.builder = builder;
         this.allocations = AllocationRequests.of();
     }
@@ -30,6 +33,6 @@ public class UpdateAllocationsRequestBuilder {
     }
 
     public void apply() {
-        builder.post(allocations);
+        builder.post(Entity.entity(allocations, MediaType.APPLICATION_JSON_TYPE));
     }
 }

@@ -8,9 +8,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerResponse;
-import com.sun.jersey.spi.container.ContainerResponseFilter;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 
 import javax.ws.rs.core.MediaType;
 import java.util.Iterator;
@@ -29,37 +30,6 @@ public class SparseFieldSetFilter implements ContainerResponseFilter {
 
     public SparseFieldSetFilter(ObjectMapper mapper) {
         this.mapper = mapper;
-    }
-
-    @Override
-    public ContainerResponse filter(ContainerRequest request, ContainerResponse response) {
-        if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.getMediaType())) {
-            return response;
-        }
-
-        final List<String> fieldsParam = request.getQueryParameters().get("fields");
-        if (fieldsParam == null) {
-            return response;
-        }
-
-        final Object entity = response.getEntity();
-
-        if (entity == null) {
-            return response;
-        }
-
-        final JsonNode tree = mapper.convertValue(entity, JsonNode.class);
-        final Set<String> fields = expandFields(fieldsParam);
-
-        if (tree.isObject()) {
-            filterFields("", (ObjectNode) tree, fields);
-            response.setEntity(tree);
-        } else if (tree.isArray()) {
-            filterFields("", (ArrayNode) tree, fields);
-            response.setEntity(tree);
-        }
-
-        return response;
     }
 
     private static void filterFields(String parent, ObjectNode objectNode, Set<String> fields) {
@@ -114,5 +84,34 @@ public class SparseFieldSetFilter implements ContainerResponseFilter {
         }
 
         return subFields;
+    }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext response) {
+        if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.getMediaType())) {
+            return;
+        }
+
+        final List<String> fieldsParam = requestContext.getHeaders().get("fields");
+        if (fieldsParam == null) {
+            return;
+        }
+
+        final Object entity = response.getEntity();
+
+        if (entity == null) {
+            return;
+        }
+
+        final JsonNode tree = mapper.convertValue(entity, JsonNode.class);
+        final Set<String> fields = expandFields(fieldsParam);
+
+        if (tree.isObject()) {
+            filterFields("", (ObjectNode) tree, fields);
+            response.setEntity(tree);
+        } else if (tree.isArray()) {
+            filterFields("", (ArrayNode) tree, fields);
+            response.setEntity(tree);
+        }
     }
 }

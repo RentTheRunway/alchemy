@@ -5,22 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerResponse;
 import io.dropwizard.jackson.Jackson;
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -28,16 +26,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class SparseFieldSetFilterTest {
-    private ContainerRequest request;
-    private ContainerResponse response;
+    private ContainerRequestContext request;
+    private ContainerResponseContext response;
     private ObjectMapper mapper;
     private SparseFieldSetFilter filter;
     private JsonNode responseEntity;
 
     @Before
     public void setUp() {
-        request = mock(ContainerRequest.class);
-        response = mock(ContainerResponse.class);
+        request = mock(ContainerRequestContext.class);
+        response = mock(ContainerResponseContext.class);
         mapper = Jackson.newObjectMapper();
         filter = new SparseFieldSetFilter(mapper);
     }
@@ -47,9 +45,9 @@ public class SparseFieldSetFilterTest {
     }
 
     private void doFilter(String ... fields) {
-        final MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
+        final MultivaluedMap<String, String> queryParams = new MultivaluedStringMap();
         queryParams.put("fields", Lists.newArrayList(fields));
-        doReturn(queryParams).when(request).getQueryParameters();
+        doReturn(queryParams).when(request).getHeaders();
 
         final ObjectNode entity = mapper.createObjectNode();
         entity.put("name", "foo");
@@ -65,13 +63,10 @@ public class SparseFieldSetFilterTest {
         entity.put("person", personNode);
 
         doReturn(entity).when(response).getEntity();
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                responseEntity = (ObjectNode) invocation.getArguments()[0];
-                return null;
-            }
-        }).when(response).setEntity(Matchers.anyObject());
+        doAnswer(invocation -> {
+            responseEntity = (ObjectNode) invocation.getArguments()[0];
+            return null;
+        }).when(response).setEntity(any());
 
         filter.filter(request, response);
     }

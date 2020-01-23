@@ -1,5 +1,6 @@
 package io.rtr.alchemy.models;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.rtr.alchemy.filtering.FilterExpression;
 
@@ -50,7 +51,7 @@ public class TreatmentOverride implements Named {
     @Override
     public String toString() {
         return
-            Objects
+            MoreObjects
                 .toStringHelper(this)
                 .add("name", name)
                 .add("filter", filter)

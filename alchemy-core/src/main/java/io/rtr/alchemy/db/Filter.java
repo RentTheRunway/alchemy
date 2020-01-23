@@ -1,5 +1,6 @@
 package io.rtr.alchemy.db;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -93,7 +94,7 @@ public class Filter {
     @Override
     public String toString() {
         return
-            Objects
+            MoreObjects
                 .toStringHelper(this)
                 .add("filter", filter)
                 .add("offset", offset)

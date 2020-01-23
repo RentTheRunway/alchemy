@@ -2,7 +2,12 @@ package io.rtr.alchemy.example;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dropwizard.configuration.ConfigurationFactory;
+import io.dropwizard.configuration.DefaultConfigurationFactoryFactory;
+import io.dropwizard.validation.BaseValidator;
 import io.rtr.alchemy.client.AlchemyClient;
 import io.rtr.alchemy.client.AlchemyClientConfiguration;
 import io.rtr.alchemy.dto.models.AllocationDto;
@@ -10,13 +15,11 @@ import io.rtr.alchemy.dto.models.ExperimentDto;
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import io.rtr.alchemy.example.dto.UserDto;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import io.dropwizard.configuration.ConfigurationFactory;
 import io.dropwizard.jackson.Jackson;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.ws.rs.WebApplicationException;
 import java.io.File;
 import java.util.Map;
 
@@ -33,14 +36,15 @@ public class ClientExample {
     }
 
     private static AlchemyClient buildClient(String configurationFile) throws Exception {
-        final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        final Validator validator = BaseValidator.newValidator();
         final ObjectMapper mapper = Jackson.newObjectMapper();
-        final ConfigurationFactory<AlchemyClientConfiguration> configurationFactory = new ConfigurationFactory<>(
-            AlchemyClientConfiguration.class,
-            validator,
-            mapper,
-            ""
-        );
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        final ConfigurationFactory<AlchemyClientConfiguration> configurationFactory =
+            new DefaultConfigurationFactoryFactory<AlchemyClientConfiguration>().create(
+                AlchemyClientConfiguration.class,
+                validator,
+                mapper,
+                "");
 
         return new AlchemyClient(
             configurationFactory.build(new File(configurationFile))
@@ -170,8 +174,8 @@ public class ClientExample {
             // Let's nuke it and call it a day
             client.deleteExperiment("my_experiment");
 
-        } catch (final UniformInterfaceException uie) {
-            println("ERROR, HTTP %d: %s", uie.getResponse().getStatus(), uie.getResponse().getEntity(String.class));
+        } catch (final WebApplicationException uie) {
+            println("ERROR, HTTP %d: %s", uie.getResponse().getStatus(), uie.getResponse().getEntity());
         }
     }
 }

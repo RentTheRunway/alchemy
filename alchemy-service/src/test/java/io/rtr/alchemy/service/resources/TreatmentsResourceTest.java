@@ -1,6 +1,5 @@
 package io.rtr.alchemy.service.resources;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import io.rtr.alchemy.dto.models.AllocationDto;
@@ -10,6 +9,7 @@ import org.junit.Test;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response.Status;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -104,7 +104,7 @@ public class TreatmentsResourceTest extends ResourceTest {
                 .assertStatus(Status.OK)
                 .result(TreatmentDto.class);
 
-        assertEquals(request.getDescription().orNull(), treatment.getDescription());
+        assertEquals(request.getDescription().orElse(null), treatment.getDescription());
 
         final Iterable<AllocationDto> allocations =
             get(ALLOCATIONS_ENDPOINT, EXPERIMENT_1)

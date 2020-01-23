@@ -1,6 +1,5 @@
 package io.rtr.alchemy.service.resources;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import io.rtr.alchemy.dto.models.ExperimentDto;
 import io.rtr.alchemy.dto.models.TreatmentDto;
@@ -13,6 +12,7 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -81,14 +81,14 @@ public class ExperimentsResourceTest extends ResourceTest {
     public void testUpdateExperiment() {
         final UpdateExperimentRequest request =
             new UpdateExperimentRequest(
-                Optional.<Integer>absent(),
+                Optional.empty(),
                 Optional.of("new description"),
                 Optional.of("device"),
-                Optional.<Set<String>>absent(),
+                Optional.empty(),
                 Optional.of(false),
-                Optional.<List<TreatmentDto>>absent(),
-                Optional.<List<AllocateRequest>>absent(),
-                Optional.<List<TreatmentOverrideRequest>>absent()
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
             );
 
         final ExperimentDto expected = MAPPER.toDto(

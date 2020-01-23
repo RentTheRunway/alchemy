@@ -1,6 +1,7 @@
 package io.rtr.alchemy.models;
 
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -74,8 +75,8 @@ public class Experiment implements Named {
         this.owner = owner;
         this.name = name;
         this.description = description;
-        this.filter = Objects.firstNonNull(filter, FilterExpression.alwaysTrue());
-        this.hashAttributes = Objects.firstNonNull(hashAttributes, EMPTY_SET);
+        this.filter = MoreObjects.firstNonNull(filter, FilterExpression.alwaysTrue());
+        this.hashAttributes = MoreObjects.firstNonNull(hashAttributes, EMPTY_SET);
         this.active = active;
         this.created = created;
         this.modified = modified;
@@ -482,7 +483,7 @@ public class Experiment implements Named {
     @Override
     public String toString() {
         return
-            Objects
+            MoreObjects
                 .toStringHelper(this)
                 .add("name", name)
                 .add("description", description)

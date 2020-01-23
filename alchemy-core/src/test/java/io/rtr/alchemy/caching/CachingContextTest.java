@@ -45,7 +45,7 @@ public class CachingContextTest {
     public void testInvalidate() {
         context.invalidate("foo", false);
         verifyNoMoreInteractions(executorService);
-        verify(cache).invalidate(eq("foo"), any(Experiment.Builder.class));
+        verify(cache).invalidate(eq("foo"), any());
     }
 
     @Test
