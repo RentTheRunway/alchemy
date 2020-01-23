@@ -388,18 +388,18 @@ public class AlchemyClientTest {
         assertEquals(UserDto.class, userType);
     }
 
-//    @Test
-//    public void testGetIdentitySchema() {
-//        final JsonSchema map = client.getIdentitySchema("user");
-//        assertNotNull(map);
-//        assertTrue(
-//            map
-//                .asObjectSchema()
-//                .getProperties()
-//                .get("name")
-//                .isStringSchema()
-//        );
-//    }
+    @Test
+    public void testGetIdentitySchema() {
+        final JsonSchema map = client.getIdentitySchema("user");
+        assertNotNull(map);
+        assertTrue(
+            map
+                .asObjectSchema()
+                .getProperties()
+                .get("name")
+                .isStringSchema()
+        );
+    }
 
     @Test
     public void testGetIdentityAttributes() {

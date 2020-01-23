@@ -51,7 +51,7 @@ public class JsonSerializationDeserializationTest {
         try {
             assertEquals(mapper.readTree(jsonTree.toString()),  mapper.readTree(objectTree.toString()));
         } catch (IOException e) {
-            System.out.println(new StringBuilder("Error while reading tree: ").append( e.getMessage()));
+            System.out.println(new StringBuilder("Error while reading tree: ").append(e.getMessage()));
         }
     }
 
