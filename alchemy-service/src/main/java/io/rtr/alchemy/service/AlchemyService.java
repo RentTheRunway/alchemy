@@ -42,7 +42,7 @@ public abstract class AlchemyService<T extends Configuration & AlchemyServiceCon
 
     @Override
     public void run(final T configuration, final Environment environment) throws Exception {
-         Preconditions.checkState(configuration instanceof AlchemyServiceConfiguration);
+        Preconditions.checkState(configuration instanceof AlchemyServiceConfiguration);
 
         final AlchemyModule module = new AlchemyModule(configuration, environment);
         environment.lifecycle().manage(module);
