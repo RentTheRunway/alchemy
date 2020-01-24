@@ -46,7 +46,7 @@ public class AlchemyClient {
     private static final String CLIENT_NAME = "alchemy-client";
     private static final Map<String, ?> EMPTY_PATH_PARAMS = Maps.newHashMap();
     private static final ListMultimap<String, Object> EMPTY_QUERY_PARAMS = ArrayListMultimap.create();
-    private static final ClassTypeMappper CLASS_TYPE_MAPPPER = new ClassTypeMappper();
+    private static final ClassTypeMapper CLASS_TYPE_MAPPER = new ClassTypeMapper();
     private final MetricRegistry metricRegistry = new MetricRegistry();
     private final JerseyClientBuilder clientBuilder = new JerseyClientBuilder(metricRegistry);
     private final Client client;
@@ -295,7 +295,7 @@ public class AlchemyClient {
             ImmutableMap.of(
                 PARAM_EXPERIMENT_NAME, experimentName
             )
-        ).put(Entity.entity(new TreatmentDto(treatmentName, description), MediaType.APPLICATION_JSON_TYPE));
+        ).put(Entity.json(new TreatmentDto(treatmentName, description)));
     }
 
     public void addTreatment(String experimentName, String treatmentName) {
@@ -425,7 +425,7 @@ public class AlchemyClient {
     public Map<String, Class<? extends IdentityDto>> getIdentityTypes() {
         final Map<String, Class> map = resource(ENDPOINT_METADATA_IDENTITY_TYPES).get(map(String.class, Class.class));
 
-        return Maps.transformValues(map, CLASS_TYPE_MAPPPER);
+        return Maps.transformValues(map, CLASS_TYPE_MAPPER);
     }
 
     public JsonSchema getIdentitySchema(String identityType) {
@@ -442,7 +442,7 @@ public class AlchemyClient {
         ).get(set(String.class));
     }
 
-    private static class ClassTypeMappper implements Function<Class, Class<? extends IdentityDto>> {
+    private static class ClassTypeMapper implements Function<Class, Class<? extends IdentityDto>> {
         @Nullable
         @Override
         @SuppressWarnings("unchecked")

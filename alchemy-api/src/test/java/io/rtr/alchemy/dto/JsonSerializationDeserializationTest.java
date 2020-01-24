@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -51,7 +52,7 @@ public class JsonSerializationDeserializationTest {
         try {
             assertEquals(mapper.readTree(jsonTree.toString()),  mapper.readTree(objectTree.toString()));
         } catch (IOException e) {
-            System.out.println(new StringBuilder("Error while reading tree: ").append(e.getMessage()));
+            fail(e.getMessage());
         }
     }
 
