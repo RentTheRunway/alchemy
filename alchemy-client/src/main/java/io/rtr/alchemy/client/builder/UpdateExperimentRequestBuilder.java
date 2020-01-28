@@ -1,19 +1,21 @@
 package io.rtr.alchemy.client.builder;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.requests.AllocateRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import io.rtr.alchemy.dto.requests.UpdateExperimentRequest;
-import com.sun.jersey.api.client.WebResource;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class UpdateExperimentRequestBuilder {
-    private final WebResource.Builder builder;
+    private final Invocation.Builder builder;
     private Optional<Integer> seed;
     private Optional<String> description;
     private Optional<String> filter;
@@ -23,7 +25,7 @@ public class UpdateExperimentRequestBuilder {
     private Optional<List<AllocateRequest>> allocations;
     private Optional<List<TreatmentOverrideRequest>> overrides;
 
-    public UpdateExperimentRequestBuilder(WebResource.Builder builder) {
+    public UpdateExperimentRequestBuilder(Invocation.Builder builder) {
         this.builder = builder;
     }
 
@@ -33,22 +35,22 @@ public class UpdateExperimentRequestBuilder {
     }
 
     public UpdateExperimentRequestBuilder setDescription(String description) {
-        this.description = Optional.fromNullable(description);
+        this.description = Optional.ofNullable(description);
         return this;
     }
 
     public UpdateExperimentRequestBuilder setFilter(String filter) {
-        this.filter = Optional.fromNullable(filter);
+        this.filter = Optional.ofNullable(filter);
         return this;
     }
 
     public UpdateExperimentRequestBuilder setHashAttributes(Set<String> hashAttributes) {
-        this.hashAttributes = Optional.<Set<String>>fromNullable(Sets.newLinkedHashSet(hashAttributes));
+        this.hashAttributes = Optional.ofNullable(Sets.newLinkedHashSet(hashAttributes));
         return this;
     }
 
     public UpdateExperimentRequestBuilder setHashAttributes(String ... hashAttributes) {
-        this.hashAttributes = Optional.<Set<String>>fromNullable(Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes)));
+        this.hashAttributes = Optional.ofNullable(Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes)));
         return this;
     }
 
@@ -63,22 +65,22 @@ public class UpdateExperimentRequestBuilder {
     }
 
     public UpdateExperimentRequestBuilder setTreatments(List<TreatmentDto> treatments) {
-        this.treatments = Optional.fromNullable(treatments);
+        this.treatments = Optional.ofNullable(treatments);
         return this;
     }
 
     public UpdateExperimentRequestBuilder setAllocations(List<AllocateRequest> allocations) {
-        this.allocations = Optional.fromNullable(allocations);
+        this.allocations = Optional.ofNullable(allocations);
         return this;
     }
 
     public UpdateExperimentRequestBuilder setOverrides(List<TreatmentOverrideRequest> overrides) {
-        this.overrides = Optional.fromNullable(overrides);
+        this.overrides = Optional.ofNullable(overrides);
         return this;
     }
 
     public void apply() {
-        builder.post(
+        builder.post(Entity.entity(
             new UpdateExperimentRequest(
                 seed,
                 description,
@@ -88,7 +90,7 @@ public class UpdateExperimentRequestBuilder {
                 treatments,
                 allocations,
                 overrides
-            )
+            ), MediaType.APPLICATION_JSON_TYPE)
         );
     }
 

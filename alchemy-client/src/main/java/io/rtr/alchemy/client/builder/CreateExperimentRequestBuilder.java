@@ -6,14 +6,17 @@ import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.requests.AllocateRequest;
 import io.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
-import com.sun.jersey.api.client.WebResource;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import java.util.List;
 import java.util.Set;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
 public class CreateExperimentRequestBuilder {
     private final String name;
-    private final WebResource.Builder builder;
+    private final Invocation.Builder builder;
     private Integer seed;
     private String description;
     private String filter;
@@ -23,7 +26,7 @@ public class CreateExperimentRequestBuilder {
     private final List<AllocateRequest> allocations;
     private final List<TreatmentOverrideRequest> overrides;
 
-    public CreateExperimentRequestBuilder(String name, WebResource.Builder builder) {
+    public CreateExperimentRequestBuilder(String name, Invocation.Builder builder) {
         this.name = name;
         this.builder = builder;
         this.treatments = Lists.newArrayList();
@@ -51,7 +54,7 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder setHashAttributes(String ... hashAttributes) {
+    public CreateExperimentRequestBuilder setHashAttributes(String... hashAttributes) {
         this.hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes));
         return this;
     }
@@ -87,7 +90,7 @@ public class CreateExperimentRequestBuilder {
     }
 
     public void apply() {
-        builder.put(
+        builder.put(Entity.entity(
             new CreateExperimentRequest(
                 name,
                 seed,
@@ -97,7 +100,7 @@ public class CreateExperimentRequestBuilder {
                 isActive,
                 treatments,
                 allocations,
-                overrides)
-        );
+                overrides),
+            APPLICATION_JSON));
     }
 }

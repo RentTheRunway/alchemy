@@ -20,18 +20,18 @@ import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import io.rtr.alchemy.dto.requests.GetExperimentsRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.jackson.Jackson;
 import io.dropwizard.setup.Environment;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
+import org.glassfish.hk2.utilities.reflection.ParameterizedTypeImpl;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class AlchemyClient {
     private static final String CLIENT_NAME = "alchemy-client";
     private static final Map<String, ?> EMPTY_PATH_PARAMS = Maps.newHashMap();
     private static final ListMultimap<String, Object> EMPTY_QUERY_PARAMS = ArrayListMultimap.create();
-    private static final ClassTypeMappper CLASS_TYPE_MAPPPER = new ClassTypeMappper();
+    private static final ClassTypeMapper CLASS_TYPE_MAPPER = new ClassTypeMapper();
     private final MetricRegistry metricRegistry = new MetricRegistry();
     private final JerseyClientBuilder clientBuilder = new JerseyClientBuilder(metricRegistry);
     private final Client client;
@@ -97,7 +97,7 @@ public class AlchemyClient {
                     queryParams.put("sort", request.getSort());
                 }
 
-                final WebResource.Builder builder = resource(ENDPOINT_EXPERIMENTS, queryParams);
+                final Invocation.Builder builder = resource(ENDPOINT_EXPERIMENTS, queryParams);
                 return builder.get(list(ExperimentDto.class));
             }
         };
@@ -181,44 +181,47 @@ public class AlchemyClient {
         return builder.buildFromEncodedMap(pathParams);
     }
 
-    protected WebResource.Builder resource(String path, Map<String, ?> pathParams) {
+    protected Invocation.Builder resource(String path, Map<String, ?> pathParams) {
         return
             client
-                .resource(assembleRequestURI(pathParams, EMPTY_QUERY_PARAMS, path))
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .type(MediaType.APPLICATION_JSON_TYPE);
+                .target(assembleRequestURI(pathParams, EMPTY_QUERY_PARAMS, path))
+                .request()
+                .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
-    protected WebResource.Builder resource(String path, ListMultimap<String, Object> queryParams) {
+    protected Invocation.Builder resource(String path, ListMultimap<String, Object> queryParams) {
         return
             client
-                .resource(assembleRequestURI(EMPTY_PATH_PARAMS, queryParams, path))
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .type(MediaType.APPLICATION_JSON_TYPE);
+                .target(assembleRequestURI(EMPTY_PATH_PARAMS, queryParams, path))
+                .request()
+                .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
-    protected WebResource.Builder resource(String path, Map<String, ?> pathParams, ListMultimap<String, Object> queryParams) {
+    protected Invocation.Builder resource(String path, Map<String, ?> pathParams, ListMultimap<String, Object> queryParams) {
         return
             client
-                .resource(assembleRequestURI(pathParams, queryParams, path))
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .type(MediaType.APPLICATION_JSON_TYPE);
+                .target(assembleRequestURI(pathParams, queryParams, path))
+                .request()
+                .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
-    protected WebResource.Builder resource(String url) {
+    protected Invocation.Builder resource(String url) {
         return resource(url, EMPTY_PATH_PARAMS, EMPTY_QUERY_PARAMS);
     }
 
     protected static <K, V> GenericType<Map<K, V>> map(Class<K> keyType, Class<V> valueType) {
-        return new GenericType<Map<K, V>>(ParameterizedTypeImpl.make(Map.class, new Type[] {keyType, valueType}, null)) {};
+        return new GenericType<>(new ParameterizedTypeImpl(Map.class, keyType, valueType) {
+        });
     }
 
     protected static <T> GenericType<List<T>> list(Class<T> elementType) {
-        return new GenericType<List<T>>(ParameterizedTypeImpl.make(List.class, new Type[] {elementType}, null)) {};
+        return new GenericType<>(new ParameterizedTypeImpl(List.class, elementType) {
+        });
     }
 
     protected static <T> GenericType<Set<T>> set(Class<T> elementType) {
-        return new GenericType<Set<T>>(ParameterizedTypeImpl.make(Set.class, new Type[] {elementType}, null)) {};
+        return new GenericType<>(new ParameterizedTypeImpl(Set.class, elementType) {
+        });
     }
 
     public List<ExperimentDto> getExperiments() {
@@ -292,7 +295,7 @@ public class AlchemyClient {
             ImmutableMap.of(
                 PARAM_EXPERIMENT_NAME, experimentName
             )
-        ).put(new TreatmentDto(treatmentName, description));
+        ).put(Entity.json(new TreatmentDto(treatmentName, description)));
     }
 
     public void addTreatment(String experimentName, String treatmentName) {
@@ -308,7 +311,10 @@ public class AlchemyClient {
             ImmutableMap.of(
                 PARAM_EXPERIMENT_NAME, experimentName
             )
-        ).put(new TreatmentOverrideRequest(treatmentName, filter, overrideName));
+        ).put(Entity.entity(
+            new TreatmentOverrideRequest(treatmentName, filter, overrideName),
+            MediaType.APPLICATION_JSON_TYPE)
+        );
     }
 
     public UpdateExperimentRequestBuilder updateExperiment(String experimentName) {
@@ -335,15 +341,17 @@ public class AlchemyClient {
             ImmutableMap.of(
                 PARAM_EXPERIMENT_NAME, experimentName
             )
-        ).post(TreatmentDto.class, identity);
+        ).post(
+            Entity.entity(identity, MediaType.APPLICATION_JSON_TYPE),
+            TreatmentDto.class);
     }
 
     public Map<String, TreatmentDto> getActiveTreatments(IdentityDto identity) {
         return
             resource(ENDPOINT_ACTIVE_TREATMENTS)
                 .post(
-                    map(String.class, TreatmentDto.class), identity
-                );
+                    Entity.entity(identity, MediaType.APPLICATION_JSON_TYPE),
+                    map(String.class, TreatmentDto.class));
     }
 
     public void deleteExperiment(String experimentName) {
@@ -377,11 +385,11 @@ public class AlchemyClient {
     public UpdateTreatmentRequestBuilder updateTreatment(String experimentName, String treatmentName) {
         return new UpdateTreatmentRequestBuilder(
             resource(
-                    ENDPOINT_TREATMENT,
-                    ImmutableMap.of(
-                        PARAM_EXPERIMENT_NAME, experimentName,
-                        PARAM_TREATMENT_NAME, treatmentName
-                    )
+                ENDPOINT_TREATMENT,
+                ImmutableMap.of(
+                    PARAM_EXPERIMENT_NAME, experimentName,
+                    PARAM_TREATMENT_NAME, treatmentName
+                )
             )
         );
     }
@@ -417,7 +425,7 @@ public class AlchemyClient {
     public Map<String, Class<? extends IdentityDto>> getIdentityTypes() {
         final Map<String, Class> map = resource(ENDPOINT_METADATA_IDENTITY_TYPES).get(map(String.class, Class.class));
 
-        return Maps.transformValues(map, CLASS_TYPE_MAPPPER);
+        return Maps.transformValues(map, CLASS_TYPE_MAPPER);
     }
 
     public JsonSchema getIdentitySchema(String identityType) {
@@ -429,12 +437,12 @@ public class AlchemyClient {
 
     public Set<String> getIdentityAttributes(String identityType) {
         return resource(
-                ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES,
-                ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
+            ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES,
+            ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
         ).get(set(String.class));
     }
 
-    private static class ClassTypeMappper implements Function<Class, Class<? extends IdentityDto>> {
+    private static class ClassTypeMapper implements Function<Class, Class<? extends IdentityDto>> {
         @Nullable
         @Override
         @SuppressWarnings("unchecked")

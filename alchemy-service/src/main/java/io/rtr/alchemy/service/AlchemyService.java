@@ -1,6 +1,7 @@
 package io.rtr.alchemy.service;
 
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.base.Preconditions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.rtr.alchemy.service.config.AlchemyServiceConfiguration;
@@ -41,18 +42,16 @@ public abstract class AlchemyService<T extends Configuration & AlchemyServiceCon
 
     @Override
     public void run(final T configuration, final Environment environment) throws Exception {
-        assert configuration instanceof AlchemyServiceConfiguration;
+        Preconditions.checkState(configuration instanceof AlchemyServiceConfiguration);
 
         final AlchemyModule module = new AlchemyModule(configuration, environment);
         environment.lifecycle().manage(module);
 
         final Injector injector = Guice.createInjector(module);
         runInjected(injector, configuration, environment);
-
-        environment.jersey().getResourceConfig().getContainerResponseFilters().add(new SparseFieldSetFilter(environment.getObjectMapper()));
+        environment.jersey().register(new SparseFieldSetFilter(environment.getObjectMapper()));
         environment.jersey().register(new RuntimeExceptionMapper());
         environment.lifecycle().manage(new JmxMetricsManaged(environment));
-
         registerIdentitySubTypes(configuration, environment);
     }
 

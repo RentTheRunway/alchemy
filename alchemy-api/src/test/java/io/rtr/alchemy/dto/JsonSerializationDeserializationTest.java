@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.dropwizard.jackson.Jackson;
 import io.rtr.alchemy.dto.identities.IdentityDto;
 import io.rtr.alchemy.dto.models.AllocationDto;
 import io.rtr.alchemy.dto.models.ExperimentDto;
@@ -17,7 +17,6 @@ import io.rtr.alchemy.dto.requests.AllocationRequest;
 import io.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import io.rtr.alchemy.dto.requests.UpdateExperimentRequest;
-import io.dropwizard.jackson.Jackson;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +24,10 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -48,7 +49,11 @@ public class JsonSerializationDeserializationTest {
         final JsonNode jsonTree = readTreeFromResource(resourceFile);
         final JsonNode objectTree = mapper.valueToTree(value);
 
-        assertEquals(jsonTree, objectTree);
+        try {
+            assertEquals(mapper.readTree(jsonTree.toString()),  mapper.readTree(objectTree.toString()));
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     private void assertJson(Object value) {
@@ -201,7 +206,7 @@ public class JsonSerializationDeserializationTest {
     public void testUpdateExperimentRequest() {
         assertJson(
             new UpdateExperimentRequest(
-                    Optional.<Integer>absent(),
+                    Optional.empty(),
                     Optional.of("my new experiment"),
                     Optional.of("identified"),
                     Optional.<Set<String>>of(Sets.<String>newLinkedHashSet()),

@@ -20,7 +20,7 @@
       <artifactId>dropwizard-validation</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson</groupId>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-guava</artifactId>
     </dependency>
   </dependencies>

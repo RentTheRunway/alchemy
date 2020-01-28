@@ -122,19 +122,19 @@ public class ExperimentsResource extends BaseResource {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
 
         if (request.getSeed() != null && request.getSeed().isPresent()) {
-            experiment.setSeed(request.getSeed().or(0));
+            experiment.setSeed(request.getSeed().orElse(0));
         }
 
         if (request.getDescription() != null) {
-            experiment.setDescription(request.getDescription().orNull());
+            experiment.setDescription(request.getDescription().orElse(null));
         }
 
         if (request.getFilter() != null && request.getFilter().isPresent()) {
-            experiment.setFilter(FilterExpression.of(request.getFilter().orNull()));
+            experiment.setFilter(FilterExpression.of(request.getFilter().orElse(null)));
         }
 
         if (request.getHashAttributes() != null && request.getHashAttributes().isPresent()) {
-            experiment.setHashAttributes(request.getHashAttributes().orNull());
+            experiment.setHashAttributes(request.getHashAttributes().orElse(null));
         }
 
         // only remove treatments not present in request, otherwise we wipe out existing allocations

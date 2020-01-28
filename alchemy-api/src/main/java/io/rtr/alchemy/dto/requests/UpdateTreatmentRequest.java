@@ -1,6 +1,6 @@
 package io.rtr.alchemy.dto.requests;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 public class UpdateTreatmentRequest {
     private Optional<String> description;

@@ -3,7 +3,6 @@ package io.rtr.alchemy.service.resources;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
 import io.rtr.alchemy.db.memory.MemoryStoreProvider;
@@ -19,9 +18,12 @@ import io.rtr.alchemy.models.Experiments;
 import io.rtr.alchemy.service.mapping.CoreMappings;
 import io.rtr.alchemy.service.metadata.IdentitiesMetadata;
 import io.rtr.alchemy.service.metadata.IdentityMetadata;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.SyncInvoker;
+import javax.ws.rs.core.GenericType;
+
 import io.dropwizard.jackson.Jackson;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.ResourceTestRule;
@@ -35,6 +37,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +71,7 @@ public abstract class ResourceTest {
     protected static final String EXP_4_TREATMENT_1 = "control";
     protected static final String ATTR_IDENTIFIED = "identified";
     protected static final String ATTR_DEVICE = "device";
-    protected final List<ClientResponse> openResponses = Lists.newArrayList();
+    protected final List<Response> openResponses = Lists.newArrayList();
 
     @ClassRule
     public static final ResourceTestRule RESOURCES;
@@ -146,7 +149,7 @@ public abstract class ResourceTest {
 
     @After
     public void tearDown() {
-        for (final ClientResponse response : openResponses) {
+        for (final Response response : openResponses) {
             response.close();
         }
     }
@@ -164,7 +167,8 @@ public abstract class ResourceTest {
     }
 
     private static final Pattern PATH_PARAM_PATTERN = Pattern.compile("(\\{[^}]+})");
-    private static WebResource.Builder resource(String url, String ... pathParams) {
+
+    private static Invocation.Builder resource(String url, String... pathParams) {
         String substUrl = url;
         Matcher matcher = PATH_PARAM_PATTERN.matcher(url);
         int index = 0;
@@ -180,8 +184,8 @@ public abstract class ResourceTest {
 
         return RESOURCES
             .client()
-            .resource(substUrl)
-            .type(MediaType.APPLICATION_JSON_TYPE)
+            .target(substUrl)
+            .request()
             .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
@@ -288,58 +292,48 @@ public abstract class ResourceTest {
         }
     }
 
-    private ResourceAssertion assertion(ClientResponse response) {
+    private ResourceAssertion assertion(Response response) {
         openResponses.add(response);
         return new ResourceAssertion(response);
     }
 
-    protected ResourceAssertion get(String url, String ... pathParams) {
-        return assertion(resource(url, pathParams).get(ClientResponse.class));
+    protected ResourceAssertion get(String url, String... pathParams) {
+        return assertion(resource(url, pathParams).get(Response.class));
     }
 
-    protected ResourceAssertionBuilder put(String url, String ... pathParams) {
-        return new ResourceAssertionBuilder(new Function<WebResource.Builder, ClientResponse>() {
-            @Override
-            public ClientResponse apply(WebResource.Builder input) {
-                return input.put(ClientResponse.class);
-            }
-        }, resource(url, pathParams));
+    protected ResourceAssertionBuilder put(String url, String... pathParams) {
+        return new ResourceAssertionBuilder(SyncInvoker::put, resource(url, pathParams));
     }
 
     protected ResourceAssertionBuilder post(String url, String ... pathParams) {
-        return new ResourceAssertionBuilder(new Function<WebResource.Builder, ClientResponse>() {
-            @Override
-            public ClientResponse apply(WebResource.Builder input) {
-                return input.post(ClientResponse.class);
-            }
-        }, resource(url, pathParams));
+        return new ResourceAssertionBuilder(SyncInvoker::post, resource(url, pathParams));
     }
 
-    protected ResourceAssertion delete(String url, String ... pathParams) {
-        return assertion(resource(url, pathParams).delete(ClientResponse.class));
+    protected ResourceAssertion delete(String url, String... pathParams) {
+        return assertion(resource(url, pathParams).delete(Response.class));
     }
 
     protected class ResourceAssertionBuilder {
-        private final Function<WebResource.Builder, ClientResponse> action;
-        private final WebResource.Builder resource;
+        private final BiFunction<Invocation.Builder, Entity, Response> action;
+        private final Invocation.Builder resource;
 
-        public ResourceAssertionBuilder(Function<WebResource.Builder, ClientResponse> action,
-                                        WebResource.Builder resource) {
+        public ResourceAssertionBuilder(BiFunction<Invocation.Builder, Entity, Response> action,
+                                        Invocation.Builder resource) {
             this.action = action;
             this.resource = resource;
         }
 
         public ResourceAssertion entity(Object entity) {
-            final ClientResponse response = action.apply(resource.entity(entity));
+            final Response response = action.apply(resource, Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
             openResponses.add(response);
             return new ResourceAssertion(response);
         }
     }
 
     protected static class ResourceAssertion {
-        private final ClientResponse response;
+        private final Response response;
 
-        public ResourceAssertion(ClientResponse response) {
+        public ResourceAssertion(Response response) {
             this.response = response;
         }
 
@@ -349,11 +343,11 @@ public abstract class ResourceTest {
         }
 
         public <T> T result(Class<T> clazz) {
-            return response.getEntity(clazz);
+            return response.readEntity(clazz);
         }
 
         public <T> T result(GenericType<T> type) {
-            return response.getEntity(type);
+            return response.readEntity(type);
         }
     }
 }

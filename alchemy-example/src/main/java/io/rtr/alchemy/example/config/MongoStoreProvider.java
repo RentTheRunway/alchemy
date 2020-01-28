@@ -58,9 +58,9 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         final io.rtr.alchemy.db.mongo.MongoStoreProvider.Builder builder = io.rtr.alchemy.db.mongo.MongoStoreProvider.newBuilder();
         for (final HostAndPort host : hosts) {
             if (!host.hasPort()) {
-                builder.addHost(new ServerAddress(host.getHostText()));
+                builder.addHost(new ServerAddress(host.getHost()));
             } else {
-                builder.addHost(new ServerAddress(host.getHostText(), host.getPort()));
+                builder.addHost(new ServerAddress(host.getHost(), host.getPort()));
             }
         }
 

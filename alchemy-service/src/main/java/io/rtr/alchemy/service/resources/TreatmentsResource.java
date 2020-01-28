@@ -87,7 +87,7 @@ public class TreatmentsResource extends BaseResource {
         final Treatment treatment = ensureExists(ensureExists(experiment).getTreatment(treatmentName));
 
         if (request.getDescription() != null) {
-            treatment.setDescription(request.getDescription().orNull());
+            treatment.setDescription(request.getDescription().orElse(null));
         }
 
         experiment.save();

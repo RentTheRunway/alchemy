@@ -12,12 +12,12 @@ import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.service.AlchemyService;
 import io.rtr.alchemy.service.config.AlchemyServiceConfigurationImpl;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.net.URI;
@@ -157,7 +157,7 @@ public class AlchemyClientTest {
         try {
             client.getExperiment("exp");
             fail("should have throw an exception");
-        } catch (final UniformInterfaceException e) {
+        } catch (final WebApplicationException e) {
             assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getResponse().getStatus());
         }
     }

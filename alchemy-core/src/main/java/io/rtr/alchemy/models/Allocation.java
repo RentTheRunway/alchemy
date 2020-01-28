@@ -1,5 +1,6 @@
 package io.rtr.alchemy.models;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -50,7 +51,7 @@ public class Allocation {
     @Override
     public String toString() {
         return
-            Objects
+            MoreObjects
                 .toStringHelper(this)
                 .add("treatment", treatment)
                 .add("offset", offset)
