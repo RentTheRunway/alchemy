@@ -3,7 +3,7 @@
   <parent>
     <artifactId>alchemy-parent</artifactId>
     <groupId>io.rtr.alchemy</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
   <name>Alchemy Mapper Library</name>
   <description>Library for implementing mapping of DTO to BO to DB</description>
