@@ -498,6 +498,7 @@ The `alchemy-service` module provides you with a baseline dropwizard service, th
 ```json
     {
         "type": "object",
+        "id":"urn:jsonschema:io:rtr:alchemy:example:dto:UserDto",
         "properties": {
             "name": {
                 "type": "string"
