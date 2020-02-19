@@ -20,7 +20,6 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
         // 400 - Bad Request
         register(Response.Status.BAD_REQUEST,
             IllegalArgumentException.class,
-            IllegalStateException.class,
             NullPointerException.class
         );
     }

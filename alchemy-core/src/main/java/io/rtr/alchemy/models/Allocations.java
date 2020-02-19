@@ -121,7 +121,7 @@ public class Allocations {
      * @param size The number of bins
      */
     public void allocate(Treatment treatment, int size) {
-        Preconditions.checkState(
+        Preconditions.checkArgument(
             getUnallocatedSize() >= size,
             "not enough free bins to allocate treatment %s with size %s given %s unallocated bin(s)",
             treatment.getName(),

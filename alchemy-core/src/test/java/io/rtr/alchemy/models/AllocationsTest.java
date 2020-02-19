@@ -92,7 +92,7 @@ public class AllocationsTest {
         new Allocations(allocationList);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAllocatingTooMuch() {
         final Allocations allocations = new Allocations(Lists.<Allocation>newArrayList());
         allocations.allocate(control, Allocations.NUM_BINS + 1);
