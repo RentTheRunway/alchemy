@@ -380,7 +380,7 @@ public class Experiment implements Named {
 
     private Treatment treatment(String name) {
         final Treatment treatment = treatments.get(name);
-        Preconditions.checkState(treatment != null, "no treatment with name %s defined", name);
+        Preconditions.checkArgument(treatment != null, "no treatment with name %s defined", name);
         return treatment;
     }
 
@@ -589,7 +589,7 @@ public class Experiment implements Named {
 
         private Treatment getTreatment(String name) {
             final Treatment treatment = treatments.get(name);
-            Preconditions.checkState(treatment != null, "treatment with name %s must be defined first", name);
+            Preconditions.checkArgument(treatment != null, "treatment with name %s must be defined first", name);
             return treatment;
         }
 

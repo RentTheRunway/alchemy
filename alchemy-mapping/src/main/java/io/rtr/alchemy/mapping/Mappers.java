@@ -60,7 +60,7 @@ public class Mappers {
 
         final Mapper mapper = bySourceType.get(destType);
 
-        Preconditions.checkState(
+        Preconditions.checkArgument(
             mapper != null,
             "No mapper defined from type %s to type %s",
             sourceType,
