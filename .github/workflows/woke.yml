@@ -1,0 +1,14 @@
+name: woke
+on: [ pull_request ]
+
+jobs:
+  woke:
+    name: woke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # For more details, see https://github.com/marketplace/actions/run-woke
+      - uses: get-woke/woke-action@v0
+         with:
+           fail-on-error: true
