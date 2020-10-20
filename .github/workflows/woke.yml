@@ -10,5 +10,5 @@ jobs:
 
       # For more details, see https://github.com/marketplace/actions/run-woke
       - uses: get-woke/woke-action@v0
-         with:
-           fail-on-error: true
+        with:
+          fail-on-error: true
