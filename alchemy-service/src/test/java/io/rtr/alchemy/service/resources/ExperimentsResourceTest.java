@@ -78,6 +78,36 @@ public class ExperimentsResourceTest extends ResourceTest {
     }
 
     @Test
+    public void testAddDuplicateExperiment() {
+        final CreateExperimentRequest request =
+                new CreateExperimentRequest(
+                        "duplicate_experiment_name",
+                        0,
+                        "it will be a duplicate",
+                        null,
+                        null,
+                        false,
+                        Lists.newArrayList(
+                                new TreatmentDto("control", "the default"),
+                                new TreatmentDto("first_case", "the first case")
+                        ),
+                        Lists.newArrayList(
+                                new AllocateRequest("control", 50),
+                                new AllocateRequest("first_case", 50)
+                        ),
+                        Lists.<TreatmentOverrideRequest>newArrayList()
+                );
+
+        put(EXPERIMENTS_ENDPOINT)
+                .entity(request)
+                .assertStatus(Status.CREATED);
+        assertNotNull(experiment("duplicate_experiment_name"));
+        put(EXPERIMENTS_ENDPOINT)
+                .entity(request)
+                .assertStatus(Status.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
     public void testUpdateExperiment() {
         final UpdateExperimentRequest request =
             new UpdateExperimentRequest(
