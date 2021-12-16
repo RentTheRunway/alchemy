@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Java and Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Configure git
+        run: |
+          git config --global user.email "infrastructure+deploy@renttherunway.com"
+          git config --global user.name "rtr-deploy"
+
+      - name: Setup GPG
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+        run: |
+          echo "$GPG_KEY" | base64 -d > private.key
+          gpg --import --batch --yes ./private.key
+          rm ./private.key
+
+      - name: Setup Nexus authentication and GPG passphrase
+        uses: whelk-io/maven-settings-xml-action@v10
+        with:
+          profiles: '[
+          {
+            "id": "gpg",
+            "activation": { "activeByDefault": "true" },
+            "properties": { "gpg.executable": "gpg", "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"}
+          }]'
+          servers: '[
+          {
+            "id": "sonatype-nexus-staging",
+            "username": "${{ secrets.OSS_NEXUS_USERNAME }}",
+            "password": "${{ secrets.OSS_NEXUS_PASSWORD }}"
+          },
+          {
+            "id": "sonatype-nexus-snapshots",
+            "username": "${{ secrets.OSS_NEXUS_USERNAME }}",
+            "password": "${{ secrets.OSS_NEXUS_PASSWORD }}"
+          }]'
+
+      - name: Setup Github SSH key
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Prepare release
+        run: mvn -B release:prepare
+
+      - name: Perform release
+        run: mvn -B release:perform
+
+      - name: A step failed
+        if: ${{ failure() }}
+        run: mvn release:rollback
