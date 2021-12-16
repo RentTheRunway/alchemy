@@ -13,6 +13,7 @@ import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.service.AlchemyService;
 import io.rtr.alchemy.service.config.AlchemyServiceConfigurationImpl;
 import io.dropwizard.testing.junit.DropwizardAppRule;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +36,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class AlchemyClientTest {
+    private static final ArrayList<String> experimentsToBeDeleted = new ArrayList<>();
     private static String getResourcePath(String resourceName) {
         try {
             final URL resourceUrl = AlchemyClientTest.class.getClassLoader().getResource(resourceName);
@@ -65,6 +68,15 @@ public class AlchemyClientTest {
         ));
     }
 
+    @After
+    public void tearDown() {
+        for (final String experimentName : experimentsToBeDeleted) {
+            client.deleteExperiment(experimentName);
+        }
+
+        experimentsToBeDeleted.clear();
+    }
+
     @Test
     public void testCreateExperiment() {
         client
@@ -72,6 +84,7 @@ public class AlchemyClientTest {
             .setDescription("this is an experiment")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final ExperimentDto experiment = client.getExperiment("exp");
         assertEquals("exp", experiment.getName());
@@ -86,6 +99,7 @@ public class AlchemyClientTest {
             .setDescription("this is an experiment")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final List<ExperimentDto> experiments = client.getExperiments();
         assertEquals(1, experiments.size());
@@ -103,12 +117,14 @@ public class AlchemyClientTest {
             .setDescription("this is an experiment")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client
             .createExperiment("another_exp")
             .setDescription("another experiment")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("another_exp");
 
         final List<ExperimentDto> experiments1 = client.getExperimentsFiltered().sort("name").limit(1).apply();
         assertEquals(1, experiments1.size());
@@ -133,6 +149,7 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client
             .updateExperiment("exp")
@@ -167,6 +184,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.addTreatment("exp", "control", "the control");
 
@@ -186,6 +204,7 @@ public class AlchemyClientTest {
         client
             .createExperiment("exp")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.addTreatment("exp", "control", "the control");
         client
@@ -205,6 +224,7 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .addTreatment("control")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.removeTreatment("exp", "control");
 
@@ -217,6 +237,7 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .addTreatment("control", "the control")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final List<TreatmentDto> treatments = client.getTreatments("exp");
 
@@ -233,6 +254,7 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .addTreatment("control", "the control")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final TreatmentDto treatment = client.getTreatment("exp", "control");
         assertEquals("control", treatment.getName());
@@ -245,6 +267,7 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .addTreatment("control")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.clearTreatments("exp");
         assertEquals(0, client.getTreatments("exp").size());
@@ -257,6 +280,7 @@ public class AlchemyClientTest {
             .addTreatment("control")
             .allocate("control", 50)
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final List<AllocationDto> allocations = client.getAllocations("exp");
 
@@ -273,6 +297,7 @@ public class AlchemyClientTest {
             .createExperiment("exp")
             .addTreatment("control")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client
             .updateAllocations("exp")
@@ -289,6 +314,7 @@ public class AlchemyClientTest {
             .addTreatment("control")
             .allocate("control", 10)
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.clearAllocations("exp");
 
@@ -302,6 +328,7 @@ public class AlchemyClientTest {
             .addTreatment("control")
             .addOverride("override", "control", "identified")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final List<TreatmentOverrideDto> overrides = client.getOverrides("exp");
 
@@ -319,6 +346,7 @@ public class AlchemyClientTest {
             .addTreatment("control")
             .addOverride("override", "control", "identified")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final TreatmentOverrideDto override = client.getOverride("exp", "override");
         assertEquals("override", override.getName());
@@ -332,6 +360,7 @@ public class AlchemyClientTest {
             .addTreatment("control")
             .addOverride("override", "control", "identified")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.removeOverride("exp", "override");
 
@@ -345,6 +374,7 @@ public class AlchemyClientTest {
             .addTreatment("control")
             .addOverride("override", "control", "identified")
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         client.clearOverrides("exp");
         assertEquals(0, client.getOverrides("exp").size());
@@ -358,6 +388,7 @@ public class AlchemyClientTest {
             .addOverride("override", "control", "identified")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final TreatmentDto treatment = client.getActiveTreatment("exp", new UserDto("foo"));
         assertEquals("control", treatment.getName());
@@ -371,6 +402,7 @@ public class AlchemyClientTest {
             .addOverride("override", "control", "identified")
             .activate()
             .apply();
+        experimentsToBeDeleted.add("exp");
 
         final Map<String, TreatmentDto> treatments = client.getActiveTreatments(new UserDto("foo"));
         assertEquals(1, treatments.size());
