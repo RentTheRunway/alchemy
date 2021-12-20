@@ -333,15 +333,15 @@
     <licenses>
         <license>
             <name>License</name>
-            <url>https://github.com/RentTheRunway2/alchemy/blob/master/LICENSE</url>
+            <url>https://github.com/RentTheRunway/alchemy/blob/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:RentTheRunway2/alchemy.git</connection>
-        <url>https://github.com/RentTheRunway2/alchemy</url>
-        <developerConnection>scm:git:git@github.com:RentTheRunway2/alchemy.git</developerConnection>
+        <connection>scm:git:git@github.com:RentTheRunway/alchemy.git</connection>
+        <url>https://github.com/RentTheRunway/alchemy</url>
+        <developerConnection>scm:git:git@github.com:RentTheRunway/alchemy.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -386,7 +386,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.4</version>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -394,8 +394,28 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <!-- Prevent `gpg` from using pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <stagingProfileId>5db1fdef03b4db</stagingProfileId>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
