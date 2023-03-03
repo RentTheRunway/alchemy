@@ -7,29 +7,15 @@ on:  # yamllint disable-line rule:truthy
   pull_request:
     branches: [master]
     types: [opened, reopened, synchronize]
-  pull_request_target:
-    branches: [master]
-    types: [opened, reopened, synchronize]
 
 jobs:
   pr-validation:
     name: PR Validation
     runs-on: ubuntu-latest
-    if: |
-      (github.actor != 'dependabot[bot]' && github.event_name != 'pull_request_target') ||
-      (github.actor == 'dependabot[bot]' && github.event_name == 'pull_request_target')
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        if: github.actor != 'dependabot[bot]'
-
-      # See: https://hugo.alliau.me/2021/05/04/migration-to-github-native-dependabot-solutions-for-auto-merge-and-action-secrets/#share-your-secrets-with-dependabot
-      - name: Checkout Repository [Dependabot]
-        uses: actions/checkout@v2
-        if: github.actor == 'dependabot[bot]'
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up JDK 8
         uses: actions/setup-java@v2
@@ -41,10 +27,8 @@ jobs:
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4
         with:
-          maven-version: 3.8.2
+          maven-version: 3.9.0
 
-      # actions/setup-java does not support multiple servers at this time
-      # https://github.com/actions/setup-java/issues/85
       - name: Setup Nexus authentication and GPG passphrase
         uses: whelk-io/maven-settings-xml-action@v20
         with:
@@ -63,4 +47,4 @@ jobs:
             ]
 
       - name: Build And Verify
-        run: mvn -B package
+        run: mvn -B verify
