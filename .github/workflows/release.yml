@@ -13,12 +13,14 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Java and Maven
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          java-version: 8
+          distribution: temurin
+          check-latest: false
 
       - name: Configure git
         run: |
@@ -34,7 +36,7 @@ jobs:
           rm ./private.key
 
       - name: Setup Nexus authentication and GPG passphrase
-        uses: whelk-io/maven-settings-xml-action@v10
+        uses: whelk-io/maven-settings-xml-action@v21
         with:
           profiles: '[
           {
@@ -55,7 +57,7 @@ jobs:
           }]'
 
       - name: Setup Github SSH key
-        uses: webfactory/ssh-agent@v0.4.1
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
