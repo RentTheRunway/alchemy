@@ -5,9 +5,7 @@ import com.google.common.hash.Hashing;
 
 import java.nio.charset.Charset;
 
-/**
- * Used for building a unique identity
- */
+/** Used for building a unique identity */
 public class IdentityBuilder {
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private final Hasher hasher;

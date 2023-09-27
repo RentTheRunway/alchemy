@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * Represents a request for updating an experiment
- */
+/** Represents a request for updating an experiment */
 public class UpdateExperimentRequest {
     private Optional<Integer> seed;
     private Optional<String> description;
@@ -17,25 +15,23 @@ public class UpdateExperimentRequest {
     private Optional<Set<String>> hashAttributes;
     private Optional<Boolean> active;
 
-    @Valid
-    private Optional<List<TreatmentDto>> treatments;
+    @Valid private Optional<List<TreatmentDto>> treatments;
 
-    @Valid
-    private Optional<List<AllocateRequest>> allocations;
+    @Valid private Optional<List<AllocateRequest>> allocations;
 
-    @Valid
-    private Optional<List<TreatmentOverrideRequest>> overrides;
+    @Valid private Optional<List<TreatmentOverrideRequest>> overrides;
 
-    public UpdateExperimentRequest() { }
+    public UpdateExperimentRequest() {}
 
-    public UpdateExperimentRequest(Optional<Integer> seed,
-                                   Optional<String> description,
-                                   Optional<String> filter,
-                                   Optional<Set<String>> hashAttributes,
-                                   Optional<Boolean> active,
-                                   Optional<List<TreatmentDto>> treatments,
-                                   Optional<List<AllocateRequest>> allocations,
-                                   Optional<List<TreatmentOverrideRequest>> overrides) {
+    public UpdateExperimentRequest(
+            Optional<Integer> seed,
+            Optional<String> description,
+            Optional<String> filter,
+            Optional<Set<String>> hashAttributes,
+            Optional<Boolean> active,
+            Optional<List<TreatmentDto>> treatments,
+            Optional<List<AllocateRequest>> allocations,
+            Optional<List<TreatmentOverrideRequest>> overrides) {
         this.seed = seed;
         this.description = description;
         this.filter = filter;
@@ -45,6 +41,7 @@ public class UpdateExperimentRequest {
         this.allocations = allocations;
         this.overrides = overrides;
     }
+
     public Optional<Integer> getSeed() {
         return seed;
     }

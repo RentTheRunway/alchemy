@@ -10,26 +10,31 @@ import static org.mockito.Mockito.mock;
 
 public class TreatmentOverrideTest {
     final Treatment treatment = new Treatment("treatment");
+
     @Test
     public void testEqualsHashCode() {
-        EqualsVerifier
-            .forClass(TreatmentOverride.class)
-            .suppress(Warning.STRICT_INHERITANCE)
-            .withPrefabValues(FilterExpression.class, mock(FilterExpression.class), mock(FilterExpression.class))
-            .verify();
+        EqualsVerifier.forClass(TreatmentOverride.class)
+                .suppress(Warning.STRICT_INHERITANCE)
+                .withPrefabValues(
+                        FilterExpression.class,
+                        mock(FilterExpression.class),
+                        mock(FilterExpression.class))
+                .verify();
     }
-
 
     @Test
     public void testValidName() throws ValidationException {
         String name = "a_valid_name";
-        final TreatmentOverride override = new TreatmentOverride(name, mock(FilterExpression.class),treatment);
+        final TreatmentOverride override =
+                new TreatmentOverride(name, mock(FilterExpression.class), treatment);
         assertEquals(override.getName(), name);
     }
 
     @Test(expected = ValidationException.class)
     public void testInvalidTreatmentName() throws ValidationException {
-        final TreatmentOverride override = new TreatmentOverride("an invalid name with spaces", mock(FilterExpression.class),treatment);
+        final TreatmentOverride override =
+                new TreatmentOverride(
+                        "an invalid name with spaces", mock(FilterExpression.class), treatment);
         override.validateName();
     }
 }

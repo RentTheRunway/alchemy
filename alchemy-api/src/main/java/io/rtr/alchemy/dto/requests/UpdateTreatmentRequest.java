@@ -5,7 +5,7 @@ import java.util.Optional;
 public class UpdateTreatmentRequest {
     private Optional<String> description;
 
-    public UpdateTreatmentRequest() { }
+    public UpdateTreatmentRequest() {}
 
     public UpdateTreatmentRequest(Optional<String> description) {
         this.description = description;

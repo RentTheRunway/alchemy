@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.rtr.alchemy.dto.identities.IdentityDto;
 
-/**
- * An example DTO to be used for service payload
- */
+/** An example DTO to be used for service payload */
 @JsonTypeName("user")
 public class UserDto extends IdentityDto {
     private final String name;

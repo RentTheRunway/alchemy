@@ -37,7 +37,7 @@ public class ExperimentsTest {
     private static class MyIdentity extends Identity {
         private final Set<String> attributes;
 
-        public MyIdentity(String ... attributes) {
+        public MyIdentity(String... attributes) {
             this.attributes = Sets.newHashSet(attributes);
         }
 
@@ -60,11 +60,7 @@ public class ExperimentsTest {
         cache = mock(ExperimentsCache.class);
         doReturn(store).when(provider).getStore();
         doReturn(cache).when(provider).getCache();
-        experiments =
-            Experiments
-                .using(provider)
-                .using(mock(CacheStrategy.class))
-                .build();
+        experiments = Experiments.using(provider).using(mock(CacheStrategy.class)).build();
 
         // suppress initial invalidateAll() call
         reset(cache);
@@ -76,9 +72,7 @@ public class ExperimentsTest {
         final Experiment experiment = mock(Experiment.class);
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
         doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
-        doReturn(ImmutableMap.of("foo", experiment))
-            .when(cache)
-            .getActiveExperiments();
+        doReturn(ImmutableMap.of("foo", experiment)).when(cache).getActiveExperiments();
         experiments.getActiveTreatment("foo", identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
@@ -91,29 +85,29 @@ public class ExperimentsTest {
         final MyIdentity identity3 = new MyIdentity("foo");
 
         final Experiment exp1 =
-            experiments
-                .create("exp1")
-                .addTreatment("control")
-                .allocate("control", 100)
-                .setFilter(FilterExpression.of("baz"))
-                .activate()
-                .save();
+                experiments
+                        .create("exp1")
+                        .addTreatment("control")
+                        .allocate("control", 100)
+                        .setFilter(FilterExpression.of("baz"))
+                        .activate()
+                        .save();
 
         final Experiment exp2 =
-            experiments
-                .create("exp2")
-                .addTreatment("control")
-                .allocate("control", 100)
-                .setFilter(FilterExpression.of("bar"))
-                .activate()
-                .save();
+                experiments
+                        .create("exp2")
+                        .addTreatment("control")
+                        .allocate("control", 100)
+                        .setFilter(FilterExpression.of("bar"))
+                        .activate()
+                        .save();
 
         doReturn(
-            ImmutableMap.of(
-                "exp1", exp1,
-                "exp2", exp2
-            )
-        ).when(cache).getActiveExperiments();
+                        ImmutableMap.of(
+                                "exp1", exp1,
+                                "exp2", exp2))
+                .when(cache)
+                .getActiveExperiments();
 
         // baz was not specified in @Attributes
         assertNull(experiments.getActiveTreatment("exp1", identity1));
@@ -131,19 +125,15 @@ public class ExperimentsTest {
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
 
         final Experiment exp =
-            experiments
-                .create("exp")
-                .addTreatment("control")
-                .allocate("control", 100)
-                .setFilter(FilterExpression.of("baz"))
-                .activate()
-                .save();
+                experiments
+                        .create("exp")
+                        .addTreatment("control")
+                        .allocate("control", 100)
+                        .setFilter(FilterExpression.of("baz"))
+                        .activate()
+                        .save();
 
-        doReturn(
-            ImmutableMap.of(
-                "exp", exp
-            )
-        ).when(cache).getActiveExperiments();
+        doReturn(ImmutableMap.of("exp", exp)).when(cache).getActiveExperiments();
 
         // identity does not have @Attributes
         assertNull(experiments.getActiveTreatment("exp", identity));
@@ -155,9 +145,7 @@ public class ExperimentsTest {
         final Identity identity = mock(Identity.class);
         doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
-        doReturn(ImmutableMap.of("foo", experiment))
-            .when(cache)
-            .getActiveExperiments();
+        doReturn(ImmutableMap.of("foo", experiment)).when(cache).getActiveExperiments();
         experiments.getActiveTreatments(identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();

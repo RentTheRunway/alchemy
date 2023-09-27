@@ -18,9 +18,7 @@ import io.dropwizard.setup.Environment;
 
 import java.util.Map.Entry;
 
-/**
- * Guice module for the service
- */
+/** Guice module for the service */
 public class AlchemyModule extends AbstractModule implements Managed {
     private final AlchemyServiceConfiguration configuration;
     private final Environment environment;
@@ -28,36 +26,35 @@ public class AlchemyModule extends AbstractModule implements Managed {
     private ExperimentsStoreProvider provider;
     private Experiments experiments;
 
-    public AlchemyModule(AlchemyServiceConfiguration configuration,
-                         Environment environment) {
+    public AlchemyModule(AlchemyServiceConfiguration configuration, Environment environment) {
         this.configuration = configuration;
         this.environment = environment;
 
         this.metadata = collectIdentityMetadata(configuration);
     }
 
-    private static IdentitiesMetadata collectIdentityMetadata(AlchemyServiceConfiguration configuration) {
+    private static IdentitiesMetadata collectIdentityMetadata(
+            AlchemyServiceConfiguration configuration) {
         final IdentitiesMetadata metadata = new IdentitiesMetadata();
 
-        for (final Entry<Class<? extends Identity>, IdentityMapping> entry : configuration.getIdentities().entrySet()) {
-            final JsonTypeName typeName = entry.getValue().getDtoType().getAnnotation(JsonTypeName.class);
+        for (final Entry<Class<? extends Identity>, IdentityMapping> entry :
+                configuration.getIdentities().entrySet()) {
+            final JsonTypeName typeName =
+                    entry.getValue().getDtoType().getAnnotation(JsonTypeName.class);
 
             Preconditions.checkNotNull(
-                typeName,
-                "identity DTO %s must specify @%s annotation",
-                entry.getValue().getDtoType().getSimpleName(),
-                JsonTypeName.class.getSimpleName()
-            );
+                    typeName,
+                    "identity DTO %s must specify @%s annotation",
+                    entry.getValue().getDtoType().getSimpleName(),
+                    JsonTypeName.class.getSimpleName());
 
             metadata.put(
-                typeName.value(),
-                new IdentityMetadata(
                     typeName.value(),
-                    entry.getKey(),
-                    entry.getValue().getDtoType(),
-                    entry.getValue().getMapperType()
-                )
-            );
+                    new IdentityMetadata(
+                            typeName.value(),
+                            entry.getKey(),
+                            entry.getValue().getDtoType(),
+                            entry.getValue().getMapperType()));
         }
 
         return metadata;
@@ -96,7 +93,8 @@ public class AlchemyModule extends AbstractModule implements Managed {
         final Mappers mappers = new Mappers();
 
         // identity types
-        for (final Entry<Class<? extends Identity>, IdentityMapping> mapping : configuration.getIdentities().entrySet()) {
+        for (final Entry<Class<? extends Identity>, IdentityMapping> mapping :
+                configuration.getIdentities().entrySet()) {
             final Mapper mapper = mapping.getValue().getMapperType().newInstance();
             mappers.register(mapping.getValue().getDtoType(), mapping.getKey(), mapper);
         }
@@ -107,8 +105,7 @@ public class AlchemyModule extends AbstractModule implements Managed {
     }
 
     @Override
-    public void start() throws Exception {
-    }
+    public void start() throws Exception {}
 
     @Override
     public void stop() throws Exception {

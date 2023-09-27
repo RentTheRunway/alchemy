@@ -8,9 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import javax.validation.constraints.NotNull;
 
-/**
- * Represents requests for multiple allocation actions
- */
+/** Represents requests for multiple allocation actions */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "action")
 @JsonSubTypes({
     @Type(AllocationRequest.Reallocate.class),
@@ -18,13 +16,10 @@ import javax.validation.constraints.NotNull;
     @Type(AllocationRequest.Deallocate.class)
 })
 public abstract class AllocationRequest {
-    @NotNull
-    private final String treatment;
-    @NotNull
-    private final Integer size;
+    @NotNull private final String treatment;
+    @NotNull private final Integer size;
 
-    public AllocationRequest(String treatment,
-                             Integer size) {
+    public AllocationRequest(String treatment, Integer size) {
         this.treatment = treatment;
         this.size = size;
     }
@@ -39,28 +34,28 @@ public abstract class AllocationRequest {
 
     @JsonTypeName("allocate")
     public static class Allocate extends AllocationRequest {
-        public Allocate(@JsonProperty("treatment") String treatment,
-                        @JsonProperty("size") Integer size) {
+        public Allocate(
+                @JsonProperty("treatment") String treatment, @JsonProperty("size") Integer size) {
             super(treatment, size);
         }
     }
 
     @JsonTypeName("deallocate")
     public static class Deallocate extends AllocationRequest {
-        public Deallocate(@JsonProperty("treatment") String treatment,
-                          @JsonProperty("size") Integer size) {
+        public Deallocate(
+                @JsonProperty("treatment") String treatment, @JsonProperty("size") Integer size) {
             super(treatment, size);
         }
     }
 
     @JsonTypeName("reallocate")
     public static class Reallocate extends AllocationRequest {
-        @NotNull
-        private final String target;
+        @NotNull private final String target;
 
-        public Reallocate(@JsonProperty("treatment") String treatment,
-                          @JsonProperty("size") Integer size,
-                          @JsonProperty("target") String target) {
+        public Reallocate(
+                @JsonProperty("treatment") String treatment,
+                @JsonProperty("size") Integer size,
+                @JsonProperty("target") String target) {
             super(treatment, size);
             this.target = target;
         }

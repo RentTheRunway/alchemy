@@ -39,13 +39,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * A Dropwizard client for talking to an instance Alchemy service
- */
+/** A Dropwizard client for talking to an instance Alchemy service */
 public class AlchemyClient {
     private static final String CLIENT_NAME = "alchemy-client";
     private static final Map<String, ?> EMPTY_PATH_PARAMS = Maps.newHashMap();
-    private static final ListMultimap<String, Object> EMPTY_QUERY_PARAMS = ArrayListMultimap.create();
+    private static final ListMultimap<String, Object> EMPTY_QUERY_PARAMS =
+            ArrayListMultimap.create();
     private static final ClassTypeMapper CLASS_TYPE_MAPPER = new ClassTypeMapper();
     private final MetricRegistry metricRegistry = new MetricRegistry();
     private final JerseyClientBuilder clientBuilder = new JerseyClientBuilder(metricRegistry);
@@ -61,114 +60,114 @@ public class AlchemyClient {
     private static final String ENDPOINT_EXPERIMENT = "/experiments/{experimentName}";
     private static final String ENDPOINT_ALLOCATIONS = "/experiments/{experimentName}/allocations";
     private static final String ENDPOINT_TREATMENTS = "/experiments/{experimentName}/treatments";
-    private static final String ENDPOINT_TREATMENT = "/experiments/{experimentName}/treatments/{treatmentName}";
+    private static final String ENDPOINT_TREATMENT =
+            "/experiments/{experimentName}/treatments/{treatmentName}";
     private static final String ENDPOINT_OVERRIDES = "/experiments/{experimentName}/overrides";
-    private static final String ENDPOINT_OVERRIDE = "/experiments/{experimentName}/overrides/{overrideName}";
-    private static final String ENDPOINT_ACTIVE_TREATMENT = "/active/experiments/{experimentName}/treatment";
+    private static final String ENDPOINT_OVERRIDE =
+            "/experiments/{experimentName}/overrides/{overrideName}";
+    private static final String ENDPOINT_ACTIVE_TREATMENT =
+            "/active/experiments/{experimentName}/treatment";
     private static final String ENDPOINT_ACTIVE_TREATMENTS = "/active/treatments";
     private static final String ENDPOINT_METADATA_IDENTITY_TYPES = "/metadata/identityTypes";
-    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA = "/metadata/identityTypes/{identityType}/schema";
-    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES = "/metadata/identityTypes/{identityType}/attributes";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA =
+            "/metadata/identityTypes/{identityType}/schema";
+    private static final String ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES =
+            "/metadata/identityTypes/{identityType}/attributes";
 
-    private final Function<GetExperimentsRequest, List<ExperimentDto>> GET_EXPERIMENTS_REQUEST_BUILDER =
-        new Function<GetExperimentsRequest, List<ExperimentDto>>() {
-            @Nullable
-            @Override
-            public List<ExperimentDto> apply(@Nullable GetExperimentsRequest request) {
-                if (request == null) {
-                    return null;
-                }
+    private final Function<GetExperimentsRequest, List<ExperimentDto>>
+            GET_EXPERIMENTS_REQUEST_BUILDER =
+                    new Function<GetExperimentsRequest, List<ExperimentDto>>() {
+                        @Nullable
+                        @Override
+                        public List<ExperimentDto> apply(@Nullable GetExperimentsRequest request) {
+                            if (request == null) {
+                                return null;
+                            }
 
-                final ListMultimap<String, Object> queryParams = ArrayListMultimap.create();
+                            final ListMultimap<String, Object> queryParams =
+                                    ArrayListMultimap.create();
 
-                if (request.getFilter() != null) {
-                    queryParams.put("filter", request.getFilter());
-                }
+                            if (request.getFilter() != null) {
+                                queryParams.put("filter", request.getFilter());
+                            }
 
-                if (request.getOffset() != null) {
-                    queryParams.put("offset", request.getOffset());
-                }
+                            if (request.getOffset() != null) {
+                                queryParams.put("offset", request.getOffset());
+                            }
 
-                if (request.getLimit() != null) {
-                    queryParams.put("limit", request.getLimit());
-                }
+                            if (request.getLimit() != null) {
+                                queryParams.put("limit", request.getLimit());
+                            }
 
-                if (request.getSort() != null) {
-                    queryParams.put("sort", request.getSort());
-                }
+                            if (request.getSort() != null) {
+                                queryParams.put("sort", request.getSort());
+                            }
 
-                final Invocation.Builder builder = resource(ENDPOINT_EXPERIMENTS, queryParams);
-                return builder.get(list(ExperimentDto.class));
-            }
-        };
+                            final Invocation.Builder builder =
+                                    resource(ENDPOINT_EXPERIMENTS, queryParams);
+                            return builder.get(list(ExperimentDto.class));
+                        }
+                    };
 
-    /**
-     * Constructs a client with the given dropwizard environment
-     */
+    /** Constructs a client with the given dropwizard environment */
     public AlchemyClient(AlchemyClientConfiguration configuration, Environment environment) {
-        this.client = clientBuilder
-            .using(environment)
-            .using(configuration)
-            .build(CLIENT_NAME);
+        this.client = clientBuilder.using(environment).using(configuration).build(CLIENT_NAME);
         this.configuration = configuration;
         configureObjectMapper(configuration, environment.getObjectMapper());
     }
 
-    /**
-     * Constructs a client with the given executor service and object mapper
-     */
-    public AlchemyClient(AlchemyClientConfiguration configuration,
-                         ExecutorService executorService,
-                         ObjectMapper objectMapper) {
-        this.client = clientBuilder
-            .using(executorService, objectMapper)
-            .using(configuration)
-            .build(CLIENT_NAME);
+    /** Constructs a client with the given executor service and object mapper */
+    public AlchemyClient(
+            AlchemyClientConfiguration configuration,
+            ExecutorService executorService,
+            ObjectMapper objectMapper) {
+        this.client =
+                clientBuilder
+                        .using(executorService, objectMapper)
+                        .using(configuration)
+                        .build(CLIENT_NAME);
         this.configuration = configuration;
         configureObjectMapper(configuration, objectMapper);
     }
 
-    /**
-     * Constructs a client with the given executor service
-     */
-    public AlchemyClient(AlchemyClientConfiguration configuration,
-                         ExecutorService executorService) {
+    /** Constructs a client with the given executor service */
+    public AlchemyClient(
+            AlchemyClientConfiguration configuration, ExecutorService executorService) {
         final ObjectMapper mapper = Jackson.newObjectMapper();
-        this.client = clientBuilder
-            .using(executorService, mapper)
-            .using(configuration)
-            .build(CLIENT_NAME);
+        this.client =
+                clientBuilder
+                        .using(executorService, mapper)
+                        .using(configuration)
+                        .build(CLIENT_NAME);
         this.configuration = configuration;
         configureObjectMapper(configuration, mapper);
     }
 
-    /**
-     * Constructs a client with reasonable multi-threading defaults
-     */
+    /** Constructs a client with reasonable multi-threading defaults */
     public AlchemyClient(AlchemyClientConfiguration configuration) {
         final ObjectMapper mapper = Jackson.newObjectMapper();
-        final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        this.client = clientBuilder
-            .using(executorService, mapper)
-            .using(configuration)
-            .build(CLIENT_NAME);
+        final ExecutorService executorService =
+                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.client =
+                clientBuilder
+                        .using(executorService, mapper)
+                        .using(configuration)
+                        .build(CLIENT_NAME);
         this.configuration = configuration;
         configureObjectMapper(configuration, mapper);
     }
 
-    private static void configureObjectMapper(AlchemyClientConfiguration configuration, ObjectMapper mapper) {
+    private static void configureObjectMapper(
+            AlchemyClientConfiguration configuration, ObjectMapper mapper) {
         mapper.registerSubtypes(
-            configuration
-                .getIdentityTypes()
-                .toArray(new Class<?>[configuration.getIdentityTypes().size()])
-        );
+                configuration
+                        .getIdentityTypes()
+                        .toArray(new Class<?>[configuration.getIdentityTypes().size()]));
     }
 
-    private URI assembleRequestURI(Map<String, ?> pathParams, ListMultimap<String, Object> queryParams, String path) {
-        final UriBuilder builder =
-            UriBuilder
-                .fromUri(configuration.getService())
-                .path(path);
+    private URI assembleRequestURI(
+            Map<String, ?> pathParams, ListMultimap<String, Object> queryParams, String path) {
+        final UriBuilder builder = UriBuilder.fromUri(configuration.getService()).path(path);
 
         for (String queryParam : queryParams.keySet()) {
             final List<Object> values = queryParams.get(queryParam);
@@ -182,25 +181,20 @@ public class AlchemyClient {
     }
 
     protected Invocation.Builder resource(String path, Map<String, ?> pathParams) {
-        return
-            client
-                .target(assembleRequestURI(pathParams, EMPTY_QUERY_PARAMS, path))
+        return client.target(assembleRequestURI(pathParams, EMPTY_QUERY_PARAMS, path))
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
     protected Invocation.Builder resource(String path, ListMultimap<String, Object> queryParams) {
-        return
-            client
-                .target(assembleRequestURI(EMPTY_PATH_PARAMS, queryParams, path))
+        return client.target(assembleRequestURI(EMPTY_PATH_PARAMS, queryParams, path))
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
-    protected Invocation.Builder resource(String path, Map<String, ?> pathParams, ListMultimap<String, Object> queryParams) {
-        return
-            client
-                .target(assembleRequestURI(pathParams, queryParams, path))
+    protected Invocation.Builder resource(
+            String path, Map<String, ?> pathParams, ListMultimap<String, Object> queryParams) {
+        return client.target(assembleRequestURI(pathParams, queryParams, path))
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE);
     }
@@ -210,18 +204,15 @@ public class AlchemyClient {
     }
 
     protected static <K, V> GenericType<Map<K, V>> map(Class<K> keyType, Class<V> valueType) {
-        return new GenericType<>(new ParameterizedTypeImpl(Map.class, keyType, valueType) {
-        });
+        return new GenericType<>(new ParameterizedTypeImpl(Map.class, keyType, valueType) {});
     }
 
     protected static <T> GenericType<List<T>> list(Class<T> elementType) {
-        return new GenericType<>(new ParameterizedTypeImpl(List.class, elementType) {
-        });
+        return new GenericType<>(new ParameterizedTypeImpl(List.class, elementType) {});
     }
 
     protected static <T> GenericType<Set<T>> set(Class<T> elementType) {
-        return new GenericType<>(new ParameterizedTypeImpl(Set.class, elementType) {
-        });
+        return new GenericType<>(new ParameterizedTypeImpl(Set.class, elementType) {});
     }
 
     public List<ExperimentDto> getExperiments() {
@@ -233,56 +224,43 @@ public class AlchemyClient {
     }
 
     public ExperimentDto getExperiment(String experimentName) {
-        return resource(
-            ENDPOINT_EXPERIMENT,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).get(ExperimentDto.class);
+        return resource(ENDPOINT_EXPERIMENT, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .get(ExperimentDto.class);
     }
 
     public List<AllocationDto> getAllocations(String experimentName) {
-        return
-            resource(
-                ENDPOINT_ALLOCATIONS,
-                ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName)
-            ).get(list(AllocationDto.class));
+        return resource(
+                        ENDPOINT_ALLOCATIONS,
+                        ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .get(list(AllocationDto.class));
     }
 
     public List<TreatmentDto> getTreatments(String experimentName) {
-        return resource(
-            ENDPOINT_TREATMENTS,
-            ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName)
-        ).get(list(TreatmentDto.class));
+        return resource(ENDPOINT_TREATMENTS, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .get(list(TreatmentDto.class));
     }
 
     public TreatmentDto getTreatment(String experimentName, String treatmentName) {
         return resource(
-            ENDPOINT_TREATMENT,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName,
-                PARAM_TREATMENT_NAME, treatmentName
-            )
-        ).get(TreatmentDto.class);
+                        ENDPOINT_TREATMENT,
+                        ImmutableMap.of(
+                                PARAM_EXPERIMENT_NAME, experimentName,
+                                PARAM_TREATMENT_NAME, treatmentName))
+                .get(TreatmentDto.class);
     }
 
     public List<TreatmentOverrideDto> getOverrides(String experimentName) {
-        return resource(
-            ENDPOINT_OVERRIDES,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).get(list(TreatmentOverrideDto.class));
+        return resource(ENDPOINT_OVERRIDES, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .get(list(TreatmentOverrideDto.class));
     }
 
     public TreatmentOverrideDto getOverride(String experimentName, String overrideName) {
         return resource(
-            ENDPOINT_OVERRIDE,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName,
-                PARAM_OVERRIDE_NAME, overrideName
-            )
-        ).get(TreatmentOverrideDto.class);
+                        ENDPOINT_OVERRIDE,
+                        ImmutableMap.of(
+                                PARAM_EXPERIMENT_NAME, experimentName,
+                                PARAM_OVERRIDE_NAME, overrideName))
+                .get(TreatmentOverrideDto.class);
     }
 
     public CreateExperimentRequestBuilder createExperiment(String experimentName) {
@@ -290,156 +268,118 @@ public class AlchemyClient {
     }
 
     public void addTreatment(String experimentName, String treatmentName, String description) {
-        resource(
-            ENDPOINT_TREATMENTS,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).put(Entity.json(new TreatmentDto(treatmentName, description)));
+        resource(ENDPOINT_TREATMENTS, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .put(Entity.json(new TreatmentDto(treatmentName, description)));
     }
 
     public void addTreatment(String experimentName, String treatmentName) {
         addTreatment(experimentName, treatmentName, null);
     }
 
-    public void addOverride(String experimentName,
-                            String overrideName,
-                            String treatmentName,
-                            String filter) {
-        resource(
-            ENDPOINT_OVERRIDES,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).put(Entity.entity(
-            new TreatmentOverrideRequest(treatmentName, filter, overrideName),
-            MediaType.APPLICATION_JSON_TYPE)
-        );
+    public void addOverride(
+            String experimentName, String overrideName, String treatmentName, String filter) {
+        resource(ENDPOINT_OVERRIDES, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .put(
+                        Entity.entity(
+                                new TreatmentOverrideRequest(treatmentName, filter, overrideName),
+                                MediaType.APPLICATION_JSON_TYPE));
     }
 
     public UpdateExperimentRequestBuilder updateExperiment(String experimentName) {
         return new UpdateExperimentRequestBuilder(
-            resource(
-                ENDPOINT_EXPERIMENT,
-                ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName)
-            )
-        );
+                resource(
+                        ENDPOINT_EXPERIMENT,
+                        ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName)));
     }
 
     public UpdateAllocationsRequestBuilder updateAllocations(String experimentName) {
         return new UpdateAllocationsRequestBuilder(
-            resource(
-                ENDPOINT_ALLOCATIONS,
-                ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName)
-            )
-        );
+                resource(
+                        ENDPOINT_ALLOCATIONS,
+                        ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName)));
     }
 
     public TreatmentDto getActiveTreatment(String experimentName, IdentityDto identity) {
         return resource(
-            ENDPOINT_ACTIVE_TREATMENT,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).post(
-            Entity.entity(identity, MediaType.APPLICATION_JSON_TYPE),
-            TreatmentDto.class);
+                        ENDPOINT_ACTIVE_TREATMENT,
+                        ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .post(Entity.entity(identity, MediaType.APPLICATION_JSON_TYPE), TreatmentDto.class);
     }
 
     public Map<String, TreatmentDto> getActiveTreatments(IdentityDto identity) {
-        return
-            resource(ENDPOINT_ACTIVE_TREATMENTS)
+        return resource(ENDPOINT_ACTIVE_TREATMENTS)
                 .post(
-                    Entity.entity(identity, MediaType.APPLICATION_JSON_TYPE),
-                    map(String.class, TreatmentDto.class));
+                        Entity.entity(identity, MediaType.APPLICATION_JSON_TYPE),
+                        map(String.class, TreatmentDto.class));
     }
 
     public void deleteExperiment(String experimentName) {
-        resource(
-            ENDPOINT_EXPERIMENT,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).delete();
+        resource(ENDPOINT_EXPERIMENT, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .delete();
     }
 
     public void clearAllocations(String experimentName) {
-        resource(
-            ENDPOINT_ALLOCATIONS,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).delete();
+        resource(ENDPOINT_ALLOCATIONS, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .delete();
     }
 
     public void removeTreatment(String experimentName, String treatmentName) {
         resource(
-            ENDPOINT_TREATMENT,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName,
-                PARAM_TREATMENT_NAME, treatmentName
-            )
-        ).delete();
+                        ENDPOINT_TREATMENT,
+                        ImmutableMap.of(
+                                PARAM_EXPERIMENT_NAME, experimentName,
+                                PARAM_TREATMENT_NAME, treatmentName))
+                .delete();
     }
 
-    public UpdateTreatmentRequestBuilder updateTreatment(String experimentName, String treatmentName) {
+    public UpdateTreatmentRequestBuilder updateTreatment(
+            String experimentName, String treatmentName) {
         return new UpdateTreatmentRequestBuilder(
-            resource(
-                ENDPOINT_TREATMENT,
-                ImmutableMap.of(
-                    PARAM_EXPERIMENT_NAME, experimentName,
-                    PARAM_TREATMENT_NAME, treatmentName
-                )
-            )
-        );
+                resource(
+                        ENDPOINT_TREATMENT,
+                        ImmutableMap.of(
+                                PARAM_EXPERIMENT_NAME, experimentName,
+                                PARAM_TREATMENT_NAME, treatmentName)));
     }
 
     public void clearTreatments(String experimentName) {
-        resource(
-            ENDPOINT_TREATMENTS,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).delete();
+        resource(ENDPOINT_TREATMENTS, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .delete();
     }
 
     public void clearOverrides(String experimentName) {
-        resource(
-            ENDPOINT_OVERRIDES,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName
-            )
-        ).delete();
+        resource(ENDPOINT_OVERRIDES, ImmutableMap.of(PARAM_EXPERIMENT_NAME, experimentName))
+                .delete();
     }
 
     public void removeOverride(String experimentName, String overrideName) {
         resource(
-            ENDPOINT_OVERRIDE,
-            ImmutableMap.of(
-                PARAM_EXPERIMENT_NAME, experimentName,
-                PARAM_OVERRIDE_NAME, overrideName
-            )
-        ).delete();
+                        ENDPOINT_OVERRIDE,
+                        ImmutableMap.of(
+                                PARAM_EXPERIMENT_NAME, experimentName,
+                                PARAM_OVERRIDE_NAME, overrideName))
+                .delete();
     }
 
     public Map<String, Class<? extends IdentityDto>> getIdentityTypes() {
-        final Map<String, Class> map = resource(ENDPOINT_METADATA_IDENTITY_TYPES).get(map(String.class, Class.class));
+        final Map<String, Class> map =
+                resource(ENDPOINT_METADATA_IDENTITY_TYPES).get(map(String.class, Class.class));
 
         return Maps.transformValues(map, CLASS_TYPE_MAPPER);
     }
 
     public JsonSchema getIdentitySchema(String identityType) {
         return resource(
-            ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA,
-            ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
-        ).get(JsonSchema.class);
+                        ENDPOINT_METADATA_IDENTITY_TYPE_SCHEMA,
+                        ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType))
+                .get(JsonSchema.class);
     }
 
     public Set<String> getIdentityAttributes(String identityType) {
         return resource(
-            ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES,
-            ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType)
-        ).get(set(String.class));
+                        ENDPOINT_METADATA_IDENTITY_TYPE_ATTRIBUTES,
+                        ImmutableMap.of(PARAM_IDENTITY_TYPE_NAME, identityType))
+                .get(set(String.class));
     }
 
     private static class ClassTypeMapper implements Function<Class, Class<? extends IdentityDto>> {

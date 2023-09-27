@@ -5,6 +5,7 @@ import org.mongodb.morphia.annotations.Embedded;
 
 /**
  * An entity that mirrors TreatmentOverride
+ *
  * @see io.rtr.alchemy.models.TreatmentOverride
  */
 @Embedded
@@ -18,7 +19,7 @@ public class TreatmentOverrideEntity {
     }
 
     // Required by Morphia
-    private TreatmentOverrideEntity() { }
+    private TreatmentOverrideEntity() {}
 
     private TreatmentOverrideEntity(TreatmentOverride override) {
         this.name = override.getName();

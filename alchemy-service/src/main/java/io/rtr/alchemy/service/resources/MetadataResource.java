@@ -24,9 +24,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Resource for retrieving registered identity types and their schemas
- */
+/** Resource for retrieving registered identity types and their schemas */
 @Path("/metadata")
 @Produces(MediaType.APPLICATION_JSON)
 public class MetadataResource extends BaseResource {
@@ -52,14 +50,16 @@ public class MetadataResource extends BaseResource {
 
     @GET
     @Path("/identityTypes/{identityType}/schema")
-    public JsonSchema getSchema(@PathParam("identityType") String identityType) throws JsonMappingException {
+    public JsonSchema getSchema(@PathParam("identityType") String identityType)
+            throws JsonMappingException {
         final Class<?> dtoType = ensureExists(identityTypesByName.get(identityType));
         return schemaGenerator.generateSchema(dtoType);
     }
 
     @GET
     @Path("/identityTypes/{identityType}/attributes")
-    public Set<String> getAttributes(@PathParam("identityType") String identityType) throws JsonMappingException {
+    public Set<String> getAttributes(@PathParam("identityType") String identityType)
+            throws JsonMappingException {
         final IdentityMetadata metadata = ensureExists(this.metadata.get(identityType));
         return metadata.getAttributes();
     }

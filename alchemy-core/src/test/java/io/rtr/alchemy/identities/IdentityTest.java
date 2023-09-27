@@ -13,9 +13,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @Attributes(
-    value = {"foo", "bar"},
-    identities = { IdentityTest.Other.class }
-)
+        value = {"foo", "bar"},
+        identities = {IdentityTest.Other.class})
 public class IdentityTest extends Identity {
     @Test
     public void testAttributes() {
@@ -31,35 +30,33 @@ public class IdentityTest extends Identity {
     @Test
     public void testComputeHashcodeOrderMatters() {
         final IdentityTest identity = new IdentityTest();
-        final AttributesMap map = AttributesMap.newBuilder().put("foo", "foo").put("bar", "bar").build();
+        final AttributesMap map =
+                AttributesMap.newBuilder().put("foo", "foo").put("bar", "bar").build();
         final Set<String> fooBar = Sets.newLinkedHashSet(Lists.newArrayList("foo", "bar"));
         final Set<String> barFoo = Sets.newLinkedHashSet(Lists.newArrayList("bar", "foo"));
         final int seed = 0;
 
-        assertEquals(identity.computeHash(seed, fooBar, map), identity.computeHash(seed, fooBar, map));
-        assertEquals(identity.computeHash(seed, barFoo, map), identity.computeHash(seed, barFoo, map));
+        assertEquals(
+                identity.computeHash(seed, fooBar, map), identity.computeHash(seed, fooBar, map));
+        assertEquals(
+                identity.computeHash(seed, barFoo, map), identity.computeHash(seed, barFoo, map));
 
-        assertNotEquals(identity.computeHash(seed, fooBar, map), identity.computeHash(seed, barFoo, map));
-        assertNotEquals(identity.computeHash(seed, barFoo, map), identity.computeHash(seed, fooBar, map));
+        assertNotEquals(
+                identity.computeHash(seed, fooBar, map), identity.computeHash(seed, barFoo, map));
+        assertNotEquals(
+                identity.computeHash(seed, barFoo, map), identity.computeHash(seed, fooBar, map));
     }
-
 
     @Override
     public AttributesMap computeAttributes() {
-        return attributes()
-                .put("foo", true)
-                .put("bar", false)
-                .put(new Other())
-                .build();
+        return attributes().put("foo", true).put("bar", false).put(new Other()).build();
     }
 
     @Attributes({"baz"})
     public static class Other extends Identity {
         @Override
         public AttributesMap computeAttributes() {
-            return attributes()
-                    .put("baz", 1)
-                    .build();
+            return attributes().put("baz", 1).build();
         }
     }
 }

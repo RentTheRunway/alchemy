@@ -1,6 +1,5 @@
 package io.rtr.alchemy.service.filters;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -20,8 +19,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * A filter to support returning partial results by specifying a 'fields' query parameter with a comma-separated list of
- * field names, or dot-delimited field names (for nested fields)
+ * A filter to support returning partial results by specifying a 'fields' query parameter with a
+ * comma-separated list of field names, or dot-delimited field names (for nested fields)
  */
 public class SparseFieldSetFilter implements ContainerResponseFilter {
     private static final Splitter SUB_FIELD_SPLITTER = Splitter.on(".");
@@ -63,7 +62,6 @@ public class SparseFieldSetFilter implements ContainerResponseFilter {
             }
         }
     }
-
 
     private static Set<String> expandFields(List<String> fieldsParam) {
         final Set<String> fields = Sets.newHashSet();

@@ -3,8 +3,8 @@ package io.rtr.alchemy.caching;
 import io.rtr.alchemy.models.Experiment;
 
 /**
- * Implements a basic cache strategy that will always update the cache any time an experiment is loaded, saved, or
- * deleted
+ * Implements a basic cache strategy that will always update the cache any time an experiment is
+ * loaded, saved, or deleted
  */
 public class BasicCacheStrategy implements CacheStrategy {
     private static void updateOrDelete(Experiment experiment, CachingContext context) {
@@ -31,10 +31,8 @@ public class BasicCacheStrategy implements CacheStrategy {
     }
 
     @Override
-    public void onCacheRead(String experimentName, CachingContext context) {
-    }
+    public void onCacheRead(String experimentName, CachingContext context) {}
 
     @Override
-    public void onCacheRead(CachingContext context) {
-    }
+    public void onCacheRead(CachingContext context) {}
 }

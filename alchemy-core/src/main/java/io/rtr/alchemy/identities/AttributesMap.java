@@ -165,14 +165,14 @@ public class AttributesMap implements Map<String, Object> {
 
         public Builder put(String name, boolean value) {
             builder.put(name, value);
-            return  this;
+            return this;
         }
 
         public Builder put(Identity identity) {
             if (identity != null) {
                 builder.putAll(identity.computeAttributes().values);
             }
-            return  this;
+            return this;
         }
 
         public AttributesMap build() {

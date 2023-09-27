@@ -6,9 +6,7 @@ import io.rtr.alchemy.identities.Identity;
 
 import java.util.Set;
 
-/**
- * An example identity
- */
+/** An example identity */
 @Attributes({User.ATTR_USER, User.ATTR_ANONYMOUS, User.ATTR_IDENTIFIED, User.ATTR_USER_NAME})
 public class User extends Identity {
     public static final String ATTR_ANONYMOUS = "anonymous";
@@ -28,15 +26,12 @@ public class User extends Identity {
 
     @Override
     public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
-        return identity(seed)
-            .putString(name)
-            .hash();
+        return identity(seed).putString(name).hash();
     }
 
     @Override
     public AttributesMap computeAttributes() {
-        return
-            attributes()
+        return attributes()
                 .put(ATTR_USER, true)
                 .put(ATTR_USER_NAME, name)
                 .put(name == null ? ATTR_ANONYMOUS : ATTR_IDENTIFIED, true)

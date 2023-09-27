@@ -36,20 +36,21 @@ public class ExperimentTest {
 
     @Test
     public void testEqualsHashCode() {
-        EqualsVerifier
-            .forClass(Experiment.class)
-            .withPrefabValues(Experiments.class, mock(Experiments.class), mock(Experiments.class))
-            .withPrefabValues(FilterExpression.class, mock(FilterExpression.class), mock(FilterExpression.class))
-            .suppress(Warning.STRICT_INHERITANCE)
-            .verify();
+        EqualsVerifier.forClass(Experiment.class)
+                .withPrefabValues(
+                        Experiments.class, mock(Experiments.class), mock(Experiments.class))
+                .withPrefabValues(
+                        FilterExpression.class,
+                        mock(FilterExpression.class),
+                        mock(FilterExpression.class))
+                .suppress(Warning.STRICT_INHERITANCE)
+                .verify();
     }
 
     @Test
-    public void testAddTreatment()  throws ValidationException {
+    public void testAddTreatment() throws ValidationException {
         final Treatment treatment = new Treatment("bar");
-        final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar");
+        final Experiment experiment = new Experiment(null, "foo").addTreatment("bar");
 
         assertEquals(treatment, experiment.getTreatments().iterator().next());
     }
@@ -57,11 +58,12 @@ public class ExperimentTest {
     @Test
     public void testAddOverride() throws ValidationException {
         final Treatment treatment = new Treatment("bar");
-        final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
+        final TreatmentOverride override =
+                new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .addOverride("override", "bar", "true");
+                new Experiment(null, "foo")
+                        .addTreatment("bar")
+                        .addOverride("override", "bar", "true");
 
         assertEquals(treatment, experiment.getTreatments().get(0));
         assertEquals(override, experiment.getOverrides().get(0));
@@ -70,23 +72,24 @@ public class ExperimentTest {
     @Test
     public void testGetOverride() throws ValidationException {
         final Treatment treatment = new Treatment("bar");
-        final TreatmentOverride override = new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
+        final TreatmentOverride override =
+                new TreatmentOverride("override", FilterExpression.alwaysTrue(), treatment);
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .addOverride("override", "bar", "true");
+                new Experiment(null, "foo")
+                        .addTreatment("bar")
+                        .addOverride("override", "bar", "true");
 
         assertEquals(treatment, experiment.getTreatments().get(0));
         assertEquals(override, experiment.getOverride(override.getName()));
     }
 
     @Test
-    public void testClearTreatments()  throws ValidationException {
+    public void testClearTreatments() throws ValidationException {
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .allocate("bar", 10)
-                .addOverride("override", "bar", "true");
+                new Experiment(null, "foo")
+                        .addTreatment("bar")
+                        .allocate("bar", 10)
+                        .addOverride("override", "bar", "true");
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getAllocations().size());
@@ -100,11 +103,11 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testClearOverrides() throws ValidationException  {
+    public void testClearOverrides() throws ValidationException {
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .addOverride("override", "bar", "true");
+                new Experiment(null, "foo")
+                        .addTreatment("bar")
+                        .addOverride("override", "bar", "true");
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getOverrides().size());
@@ -116,11 +119,9 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testDeallocateAll()  throws ValidationException {
+    public void testDeallocateAll() throws ValidationException {
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("bar")
-                .allocate("bar", 10);
+                new Experiment(null, "foo").addTreatment("bar").allocate("bar", 10);
 
         assertEquals(1, experiment.getTreatments().size());
         assertEquals(1, experiment.getAllocations().size());
@@ -132,21 +133,23 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testRemoveTreatment() throws ValidationException  {
-        doReturn(0L).when(identity).computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
+    public void testRemoveTreatment() throws ValidationException {
+        doReturn(0L)
+                .when(identity)
+                .computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
 
         final Experiment experiment =
-            new Experiment(null, "foo")
-                .addTreatment("control")
-                .addTreatment("cake")
-                .addTreatment("pie")
-                .allocate("control", 10)
-                .allocate("cake", 10)
-                .allocate("pie", 10)
-                .allocate("control", 10)
-                .allocate("cake", 10)
-                .allocate("pie", 10)
-                .addOverride("control_override", "control", "true");
+                new Experiment(null, "foo")
+                        .addTreatment("control")
+                        .addTreatment("cake")
+                        .addTreatment("pie")
+                        .allocate("control", 10)
+                        .allocate("cake", 10)
+                        .allocate("pie", 10)
+                        .allocate("control", 10)
+                        .allocate("cake", 10)
+                        .allocate("pie", 10)
+                        .addOverride("control_override", "control", "true");
 
         List<Treatment> treatments = Lists.newArrayList(experiment.getTreatments());
         assertEquals("should contain expected number of treatments", 3, treatments.size());
@@ -174,7 +177,8 @@ public class ExperimentTest {
         assertEquals("should contain fewer treatments", 1, treatments.size());
 
         allocations = Lists.newArrayList(experiment.getAllocations());
-        // (it's 1 allocation rather than 2, because the remaining 'cake' allocations merge into one)
+        // (it's 1 allocation rather than 2, because the remaining 'cake' allocations merge into
+        // one)
         assertEquals("should contain fewer allocations", 1, allocations.size());
 
         overrides = Lists.newArrayList(experiment.getOverrides());
@@ -182,44 +186,40 @@ public class ExperimentTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUnmodifiableAllocations()  throws ValidationException {
-        final  Experiment experiment =
-            new Experiment(null, "experiment")
-                .addTreatment("foo")
-                .allocate("foo", 10);
+    public void testUnmodifiableAllocations() throws ValidationException {
+        final Experiment experiment =
+                new Experiment(null, "experiment").addTreatment("foo").allocate("foo", 10);
 
         experiment.getAllocations().add(mock(Allocation.class));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUnmodifiableTreatments()  throws ValidationException {
-        final  Experiment experiment =
-            new Experiment(null, "experiment")
-                .addTreatment("foo");
+    public void testUnmodifiableTreatments() throws ValidationException {
+        final Experiment experiment = new Experiment(null, "experiment").addTreatment("foo");
 
         experiment.getTreatments().add(mock(Treatment.class));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUnmodifiableOverrides()  throws ValidationException {
-        final  Experiment experiment =
-            new Experiment(null, "experiment")
-                .addTreatment("foo")
-                .addOverride("override", "foo", "true");
+    public void testUnmodifiableOverrides() throws ValidationException {
+        final Experiment experiment =
+                new Experiment(null, "experiment")
+                        .addTreatment("foo")
+                        .addOverride("override", "foo", "true");
 
         experiment.getOverrides().add(mock(TreatmentOverride.class));
     }
 
     @Test
-    public void testCopyOf()  throws ValidationException {
+    public void testCopyOf() throws ValidationException {
         assertNull(Experiment.copyOf(null));
 
         final Experiment original =
-            new Experiment(null, "experiment")
-                .activate()
-                .addTreatment("foo")
-                .addOverride("override", "foo", "true")
-                .allocate("foo", 10);
+                new Experiment(null, "experiment")
+                        .activate()
+                        .addTreatment("foo")
+                        .addOverride("override", "foo", "true")
+                        .allocate("foo", 10);
 
         final Experiment copy = Experiment.copyOf(original);
 
@@ -232,13 +232,13 @@ public class ExperimentTest {
     }
 
     @Test
-    public void testSave()  throws ValidationException {
+    public void testSave() throws ValidationException {
         final Experiment experiment = new Experiment(experiments, "foo").save();
         verify(experiments).save(eq(experiment));
     }
 
     @Test
-    public void testDelete()  throws ValidationException {
+    public void testDelete() throws ValidationException {
         final Experiment experiment = new Experiment(experiments, "foo");
         experiment.delete();
         verify(experiments).delete(eq(experiment.getName()));

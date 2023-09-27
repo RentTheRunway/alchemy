@@ -20,9 +20,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-/**
- * The main class for accessing experiments
- */
+/** The main class for accessing experiments */
 public class Experiments implements Closeable {
     private final ExperimentsStore store;
     private final ExperimentsCache cache;
@@ -33,19 +31,22 @@ public class Experiments implements Closeable {
         return new Builder(provider);
     }
 
-    private Experiments(ExperimentsStoreProvider provider,
-                        CacheStrategy strategy,
-                        ExecutorService executorService) {
+    private Experiments(
+            ExperimentsStoreProvider provider,
+            CacheStrategy strategy,
+            ExecutorService executorService) {
         store = provider.getStore();
         cache = provider.getCache();
         Preconditions.checkNotNull(store, "store cannot be null");
         Preconditions.checkNotNull(cache, "cache cannot be null");
         this.strategy = strategy != null ? strategy : new BasicCacheStrategy();
-        this.context = new CachingContext(cache, new Experiment.BuilderFactory(this), executorService);
+        this.context =
+                new CachingContext(cache, new Experiment.BuilderFactory(this), executorService);
         cache.invalidateAll(new Experiment.BuilderFactory(this));
     }
 
-    private Treatment getTreatmentWithOverrides(Experiment experiment, Identity identity, AttributesMap attributes) {
+    private Treatment getTreatmentWithOverrides(
+            Experiment experiment, Identity identity, AttributesMap attributes) {
         for (TreatmentOverride override : experiment.getOverrides()) {
             if (override.getFilter().evaluate(attributes)) {
                 return override.getTreatment();
@@ -56,15 +57,16 @@ public class Experiments implements Closeable {
     }
 
     /**
-     * Returns the current active treatment for an experiment name and identity, taking overrides into account
+     * Returns the current active treatment for an experiment name and identity, taking overrides
+     * into account
      */
     public Treatment getActiveTreatment(String experimentName, Identity identity) {
         strategy.onCacheRead(experimentName, context);
 
         final Experiment experiment = cache.getActiveExperiments().get(experimentName);
-        final AttributesMap attributes = identity
-                                            .computeAttributes()
-                                            .filter(Identity.getSupportedAttributes(identity.getClass()));
+        final AttributesMap attributes =
+                identity.computeAttributes()
+                        .filter(Identity.getSupportedAttributes(identity.getClass()));
 
         if (experiment == null || !experiment.getFilter().evaluate(attributes)) {
             return null;
@@ -73,23 +75,22 @@ public class Experiments implements Closeable {
         return getTreatmentWithOverrides(experiment, identity, attributes);
     }
 
-    /**
-     * Returns all active experiments
-     */
+    /** Returns all active experiments */
     public Iterable<Experiment> getActiveExperiments() {
         strategy.onCacheRead(context);
         return Iterables.unmodifiableIterable(cache.getActiveExperiments().values());
     }
 
     /**
-     * Returns all active treatments for all active experiments for an identity, taking overrides into account
+     * Returns all active treatments for all active experiments for an identity, taking overrides
+     * into account
      */
     public Map<Experiment, Treatment> getActiveTreatments(Identity identity) {
         strategy.onCacheRead(context);
         final Map<Experiment, Treatment> result = Maps.newHashMap();
-        final AttributesMap attributes = identity
-                                            .computeAttributes()
-                                            .filter(Identity.getSupportedAttributes(identity.getClass()));
+        final AttributesMap attributes =
+                identity.computeAttributes()
+                        .filter(Identity.getSupportedAttributes(identity.getClass()));
 
         for (final Experiment experiment : cache.getActiveExperiments().values()) {
             if (!experiment.getFilter().evaluate(attributes)) {
@@ -108,36 +109,24 @@ public class Experiments implements Closeable {
         return result;
     }
 
-    /**
-     * Finds an experiment given a set of criteria
-     */
+    /** Finds an experiment given a set of criteria */
     public Iterable<Experiment> find(Filter filter) {
         return Iterables.unmodifiableIterable(
-            new CacheStrategyIterable(
-                store.find(filter, new Experiment.BuilderFactory(this)),
-                context,
-                strategy
-            )
-        );
+                new CacheStrategyIterable(
+                        store.find(filter, new Experiment.BuilderFactory(this)),
+                        context,
+                        strategy));
     }
 
-    /**
-     * Finds all experiments
-     */
+    /** Finds all experiments */
     public Iterable<Experiment> find() {
-        return Iterables.unmodifiableIterable(
-            find(Filter.criteria().build())
-        );
+        return Iterables.unmodifiableIterable(find(Filter.criteria().build()));
     }
 
-    /**
-     * Gets a specific experiment by name
-     */
+    /** Gets a specific experiment by name */
     public Experiment get(String experimentName) {
-        final Experiment experiment = store.load(
-            experimentName,
-            new Experiment.Builder(this, experimentName)
-        );
+        final Experiment experiment =
+                store.load(experimentName, new Experiment.Builder(this, experimentName));
 
         if (experiment != null) {
             strategy.onLoad(experiment, context);
@@ -145,17 +134,13 @@ public class Experiments implements Closeable {
         return experiment;
     }
 
-    /**
-     * Deletes a specific experiment by name
-     */
+    /** Deletes a specific experiment by name */
     public void delete(String experimentName) {
         store.delete(experimentName);
         strategy.onDelete(experimentName, context);
     }
 
-    /**
-     * Persists a specific experiment by name
-     */
+    /** Persists a specific experiment by name */
     public void save(Experiment experiment) throws ValidationException {
         experiment.validateName();
         experiment.getTreatments().forEach(Treatment::validateName);
@@ -165,9 +150,7 @@ public class Experiments implements Closeable {
         strategy.onSave(experiment, context);
     }
 
-    /**
-     * Creates a new experiment by name, which is not persisted until save is called
-     */
+    /** Creates a new experiment by name, which is not persisted until save is called */
     public Experiment create(String name) throws ValidationException {
         return new Experiment(this, name);
     }

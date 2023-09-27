@@ -3,13 +3,7 @@ package io.rtr.alchemy.models;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-
-/**
- * Represents a possible user experience in an experiment
- */
-
-
-
+/** Represents a possible user experience in an experiment */
 public class Treatment implements Named {
     private final String name;
     private String description;
@@ -47,15 +41,12 @@ public class Treatment implements Named {
         }
 
         final Treatment other = (Treatment) obj;
-        return
-            Objects.equal(name, other.name);
+        return Objects.equal(name, other.name);
     }
 
     @Override
     public String toString() {
-        return
-            MoreObjects
-                .toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", name)
                 .add("description", description)
                 .toString();

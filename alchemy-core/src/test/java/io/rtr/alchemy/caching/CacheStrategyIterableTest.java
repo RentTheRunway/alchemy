@@ -25,7 +25,8 @@ public class CacheStrategyIterableTest {
 
         experiment = mock(Experiment.class);
         final List<Experiment> experiments = Lists.newArrayList(experiment);
-        final CacheStrategyIterable iterable = new CacheStrategyIterable(experiments, context, strategy);
+        final CacheStrategyIterable iterable =
+                new CacheStrategyIterable(experiments, context, strategy);
         iterator = iterable.iterator();
     }
 

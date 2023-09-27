@@ -13,7 +13,8 @@ public class GetExperimentsRequestBuilder {
     private Integer limit;
     private String sort;
 
-    public GetExperimentsRequestBuilder(Function<GetExperimentsRequest, List<ExperimentDto>> builder) {
+    public GetExperimentsRequestBuilder(
+            Function<GetExperimentsRequest, List<ExperimentDto>> builder) {
         this.builder = builder;
     }
 
@@ -38,13 +39,6 @@ public class GetExperimentsRequestBuilder {
     }
 
     public List<ExperimentDto> apply() {
-        return builder.apply(
-            new GetExperimentsRequest(
-                filter,
-                offset,
-                limit,
-                sort
-            )
-        );
+        return builder.apply(new GetExperimentsRequest(filter, offset, limit, sort));
     }
 }

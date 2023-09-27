@@ -49,8 +49,9 @@ public class UpdateExperimentRequestBuilder {
         return this;
     }
 
-    public UpdateExperimentRequestBuilder setHashAttributes(String ... hashAttributes) {
-        this.hashAttributes = Optional.ofNullable(Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes)));
+    public UpdateExperimentRequestBuilder setHashAttributes(String... hashAttributes) {
+        this.hashAttributes =
+                Optional.ofNullable(Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes)));
         return this;
     }
 
@@ -80,18 +81,17 @@ public class UpdateExperimentRequestBuilder {
     }
 
     public void apply() {
-        builder.post(Entity.entity(
-            new UpdateExperimentRequest(
-                seed,
-                description,
-                filter,
-                hashAttributes,
-                active,
-                treatments,
-                allocations,
-                overrides
-            ), MediaType.APPLICATION_JSON_TYPE)
-        );
+        builder.post(
+                Entity.entity(
+                        new UpdateExperimentRequest(
+                                seed,
+                                description,
+                                filter,
+                                hashAttributes,
+                                active,
+                                treatments,
+                                allocations,
+                                overrides),
+                        MediaType.APPLICATION_JSON_TYPE));
     }
-
 }

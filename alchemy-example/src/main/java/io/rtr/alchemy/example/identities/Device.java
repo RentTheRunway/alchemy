@@ -22,17 +22,11 @@ public class Device extends Identity {
 
     @Override
     public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
-        return
-            identity(seed)
-                .putString(id)
-                .hash();
+        return identity(seed).putString(id).hash();
     }
 
     @Override
     public AttributesMap computeAttributes() {
-        return attributes()
-            .put(ATTR_DEVICE, true)
-            .put(ATTR_DEVICE_ID, id)
-            .build();
+        return attributes().put(ATTR_DEVICE, true).put(ATTR_DEVICE_ID, id).build();
     }
 }

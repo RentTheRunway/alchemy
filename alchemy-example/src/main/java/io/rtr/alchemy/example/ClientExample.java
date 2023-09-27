@@ -27,7 +27,7 @@ import java.util.Map;
  * Example code that utilizes the alchemy-client library to talk to an instance of Alchemy service
  */
 public class ClientExample {
-    private static void println(String formatMessage, Object ... args) {
+    private static void println(String formatMessage, Object... args) {
         System.out.println(String.format(formatMessage, args));
     }
 
@@ -40,15 +40,10 @@ public class ClientExample {
         final ObjectMapper mapper = Jackson.newObjectMapper();
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         final ConfigurationFactory<AlchemyClientConfiguration> configurationFactory =
-            new DefaultConfigurationFactoryFactory<AlchemyClientConfiguration>().create(
-                AlchemyClientConfiguration.class,
-                validator,
-                mapper,
-                "");
+                new DefaultConfigurationFactoryFactory<AlchemyClientConfiguration>()
+                        .create(AlchemyClientConfiguration.class, validator, mapper, "");
 
-        return new AlchemyClient(
-            configurationFactory.build(new File(configurationFile))
-        );
+        return new AlchemyClient(configurationFactory.build(new File(configurationFile)));
     }
 
     private static void disableLogging() {
@@ -68,22 +63,20 @@ public class ClientExample {
             final AlchemyClient client = buildClient(args[0]);
 
             // Let's create our experiment
-            client
-                .createExperiment("my_experiment")
-                .setDescription("my new experiment")
-                .addTreatment("control", "the default")
-                .addTreatment("pie", "show them pie")
-                .setFilter("identified")
-                .allocate("control", 25)
-                .allocate("pie", 25)
-                .activate()
-                .apply();
+            client.createExperiment("my_experiment")
+                    .setDescription("my new experiment")
+                    .addTreatment("control", "the default")
+                    .addTreatment("pie", "show them pie")
+                    .setFilter("identified")
+                    .allocate("control", 25)
+                    .allocate("pie", 25)
+                    .activate()
+                    .apply();
 
             // Actually, the description should be more descriptive
-            client
-                .updateExperiment("my_experiment")
-                .setDescription("my experiment to see if people like pie")
-                .apply();
+            client.updateExperiment("my_experiment")
+                    .setDescription("my experiment to see if people like pie")
+                    .apply();
 
             // Let's get our experiment and print it out
             final ExperimentDto experiment = client.getExperiment("my_experiment");
@@ -101,14 +94,13 @@ public class ClientExample {
 
             // Let's also add for comparison, cake
             client.addTreatment("my_experiment", "cake", "show them cake");
-            client
-                .updateAllocations("my_experiment")
-                .allocate("cake", 25)
-                .apply();
+            client.updateAllocations("my_experiment").allocate("cake", 25).apply();
 
             // Let's print out our allocations
             for (final AllocationDto allocation : client.getAllocations("my_experiment")) {
-                println("treatment: %s, offset: %d, size: %d", allocation.getTreatment(), allocation.getOffset(), allocation.getSize());
+                println(
+                        "treatment: %s, offset: %d, size: %d",
+                        allocation.getTreatment(), allocation.getOffset(), allocation.getSize());
             }
             println();
 
@@ -125,21 +117,19 @@ public class ClientExample {
             client.clearTreatments("my_experiment");
             client.addTreatment("my_experiment", "beer", "beer me!");
             client.addTreatment("my_experiment", "wine", "wine please");
-            client
-                .updateAllocations("my_experiment")
-                .allocate("beer", 90) // slightly biased
-                .allocate("wine", 10)
-                .apply();
+            client.updateAllocations("my_experiment")
+                    .allocate("beer", 90) // slightly biased
+                    .allocate("wine", 10)
+                    .apply();
 
             // Ok, that was unfair, let's fix the allocations
             client.clearAllocations("my_experiment");
             client.addOverride("my_experiment", "gene_likes_beer", "beer", "user_name=gene");
             client.addOverride("my_experiment", "qa_wine", "wine", "user_name=qa");
-            client
-                .updateAllocations("my_experiment")
-                .allocate("beer", 51)
-                .allocate("wine", 49)
-                .apply();
+            client.updateAllocations("my_experiment")
+                    .allocate("beer", 51)
+                    .allocate("wine", 49)
+                    .apply();
 
             // Print out an override
             final TreatmentOverrideDto override = client.getOverride("my_experiment", "qa_wine");
@@ -147,17 +137,20 @@ public class ClientExample {
             println();
 
             // Let's query our active experiments
-            final TreatmentDto activeTreatment = client.getActiveTreatment("my_experiment", new UserDto("gene"));
-            println("name: %s, description: %s", activeTreatment.getName(), activeTreatment.getDescription());
+            final TreatmentDto activeTreatment =
+                    client.getActiveTreatment("my_experiment", new UserDto("gene"));
+            println(
+                    "name: %s, description: %s",
+                    activeTreatment.getName(), activeTreatment.getDescription());
             println();
 
-            for (final Map.Entry<String, TreatmentDto> entry : client.getActiveTreatments(new UserDto("qa")).entrySet()) {
+            for (final Map.Entry<String, TreatmentDto> entry :
+                    client.getActiveTreatments(new UserDto("qa")).entrySet()) {
                 println(
-                    "experiment: %s, treatment: %s, description: %s",
-                    entry.getKey(),
-                    entry.getValue().getName(),
-                    entry.getValue().getDescription()
-                );
+                        "experiment: %s, treatment: %s, description: %s",
+                        entry.getKey(),
+                        entry.getValue().getName(),
+                        entry.getValue().getDescription());
             }
             println();
 
@@ -175,7 +168,9 @@ public class ClientExample {
             client.deleteExperiment("my_experiment");
 
         } catch (final WebApplicationException uie) {
-            println("ERROR, HTTP %d: %s", uie.getResponse().getStatus(), uie.getResponse().getEntity());
+            println(
+                    "ERROR, HTTP %d: %s",
+                    uie.getResponse().getStatus(), uie.getResponse().getEntity());
         }
     }
 }

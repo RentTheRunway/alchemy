@@ -2,7 +2,6 @@ package io.rtr.alchemy.service.resources;
 
 import org.junit.Test;
 
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
@@ -19,7 +18,8 @@ public class BaseResourceTest {
     @Test
     public void testEnsureExists() {
         final Object value = new Object();
-        assertTrue("expected same object reference value", value == BaseResource.ensureExists(value));
+        assertTrue(
+                "expected same object reference value", value == BaseResource.ensureExists(value));
     }
 
     @Test(expected = WebApplicationException.class)

@@ -9,6 +9,11 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>alchemy-core</artifactId>
 
+  <properties>
+    <!-- this is the last version with org.antlr.v4.runtime.misc.Nullable -->
+    <antlr.version>4.5</antlr.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>joda-time</groupId>
@@ -41,7 +46,7 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>4.2.2</version>
+      <version>${antlr.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.validation</groupId>
@@ -51,11 +56,25 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.coveo</groupId>
+          <artifactId>fmt-maven-plugin</artifactId>
+          <version>${fmt-maven-plugin.version}</version>
+          <configuration combine.self="append">
+            <!-- doesn't play nice with the auto-generated files from antlr -->
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
-        <version>4.2.2</version>
+        <version>${antlr.version}</version>
         <configuration>
           <sourceDirectory>${basedir}/src/main/antlr4</sourceDirectory>
           <outputDirectory>src/main/java/io/rtr/alchemy/filtering</outputDirectory>

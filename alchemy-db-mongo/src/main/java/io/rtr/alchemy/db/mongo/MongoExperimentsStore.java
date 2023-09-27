@@ -13,9 +13,7 @@ import org.mongodb.morphia.query.Query;
 
 import java.util.Map.Entry;
 
-/**
- * A store backed by MongoDB which allows storing Experiments
- */
+/** A store backed by MongoDB which allows storing Experiments */
 public class MongoExperimentsStore implements ExperimentsStore {
     private final AdvancedDatastore ds;
     private final RevisionManager revisionManager;
@@ -35,10 +33,7 @@ public class MongoExperimentsStore implements ExperimentsStore {
     @Override
     public Experiment load(String experimentName, Experiment.Builder builder) {
         final ExperimentEntity entity = ds.get(ExperimentEntity.class, experimentName);
-        return
-            entity == null ?
-                null :
-                entity.toExperiment(builder);
+        return entity == null ? null : entity.toExperiment(builder);
     }
 
     @Override
@@ -53,9 +48,8 @@ public class MongoExperimentsStore implements ExperimentsStore {
 
         if (filter.getFilter() != null) {
             query.or(
-                query.criteria("name").containsIgnoreCase(filter.getFilter()),
-                query.criteria("description").containsIgnoreCase(filter.getFilter())
-            );
+                    query.criteria("name").containsIgnoreCase(filter.getFilter()),
+                    query.criteria("description").containsIgnoreCase(filter.getFilter()));
         }
 
         final Ordering ordering = filter.getOrdering();

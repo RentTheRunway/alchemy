@@ -7,9 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-/**
- * Specifies how multiple fields are ordered
- */
+/** Specifies how multiple fields are ordered */
 public class Ordering {
     private final Map<Field, Direction> fields;
 
@@ -39,11 +37,7 @@ public class Ordering {
             final Direction direction = index > -1 ? Direction.DESCENDING : Direction.ASCENDING;
             final Field field = Field.fromName(token.substring(index + 1));
 
-            Preconditions.checkArgument(
-                field != null,
-                "Unsupported ordering field: %s",
-                token
-            );
+            Preconditions.checkArgument(field != null, "Unsupported ordering field: %s", token);
 
             fields.put(field, direction);
         }

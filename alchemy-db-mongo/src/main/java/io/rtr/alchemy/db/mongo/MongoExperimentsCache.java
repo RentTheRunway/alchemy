@@ -10,9 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * A cache backed by MongoDB which allows for quick cached access to Experiments
- */
+/** A cache backed by MongoDB which allows for quick cached access to Experiments */
 public class MongoExperimentsCache implements ExperimentsCache {
     private final RevisionManager revisionManager;
     private final Datastore ds;
@@ -26,10 +24,7 @@ public class MongoExperimentsCache implements ExperimentsCache {
     @Override
     public void invalidateAll(Experiment.BuilderFactory factory) {
         final Iterator<ExperimentEntity> iterator =
-            ds
-                .find(ExperimentEntity.class)
-                .field("active").equal(true)
-                .iterator();
+                ds.find(ExperimentEntity.class).field("active").equal(true).iterator();
 
         final Map<String, Experiment> newMap = Maps.newConcurrentMap();
         Long maxRevision = null;
@@ -64,7 +59,6 @@ public class MongoExperimentsCache implements ExperimentsCache {
         } else {
             cachedExperiments.remove(experimentName);
         }
-
     }
 
     @Override

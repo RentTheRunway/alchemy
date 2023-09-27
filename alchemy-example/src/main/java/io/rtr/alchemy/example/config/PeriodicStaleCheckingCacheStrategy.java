@@ -8,9 +8,7 @@ import io.dropwizard.util.Duration;
 import javax.validation.constraints.NotNull;
 
 public class PeriodicStaleCheckingCacheStrategy extends CacheStrategyConfiguration {
-    @NotNull
-    @JsonProperty
-    private Duration duration;
+    @NotNull @JsonProperty private Duration duration;
 
     public Duration getDuration() {
         return duration;
@@ -18,6 +16,7 @@ public class PeriodicStaleCheckingCacheStrategy extends CacheStrategyConfigurati
 
     @Override
     public CacheStrategy createStrategy() {
-        return new io.rtr.alchemy.caching.PeriodicStaleCheckingCacheStrategy(org.joda.time.Duration.millis(duration.toMilliseconds()));
+        return new io.rtr.alchemy.caching.PeriodicStaleCheckingCacheStrategy(
+                org.joda.time.Duration.millis(duration.toMilliseconds()));
     }
 }

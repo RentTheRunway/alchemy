@@ -13,22 +13,47 @@ import java.util.BitSet;
 
 public class FilterErrorListener implements ANTLRErrorListener {
     @Override
-    public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object o, int i, int i2, @NotNull String s, @Nullable RecognitionException e) {
+    public void syntaxError(
+            @NotNull Recognizer<?, ?> recognizer,
+            @Nullable Object o,
+            int i,
+            int i2,
+            @NotNull String s,
+            @Nullable RecognitionException e) {
         throw new IllegalArgumentException(e);
     }
 
     @Override
-    public void reportAmbiguity(@NotNull Parser parser, @NotNull DFA dfa, int i, int i2, boolean b, @Nullable BitSet bitSet, @NotNull ATNConfigSet atnConfigs) {
+    public void reportAmbiguity(
+            @NotNull Parser parser,
+            @NotNull DFA dfa,
+            int i,
+            int i2,
+            boolean b,
+            @Nullable BitSet bitSet,
+            @NotNull ATNConfigSet atnConfigs) {
         throw new IllegalArgumentException("ambiguity");
     }
 
     @Override
-    public void reportAttemptingFullContext(@NotNull Parser parser, @NotNull DFA dfa, int i, int i2, @Nullable BitSet bitSet, @NotNull ATNConfigSet atnConfigs) {
+    public void reportAttemptingFullContext(
+            @NotNull Parser parser,
+            @NotNull DFA dfa,
+            int i,
+            int i2,
+            @Nullable BitSet bitSet,
+            @NotNull ATNConfigSet atnConfigs) {
         throw new IllegalArgumentException("ambiguity");
     }
 
     @Override
-    public void reportContextSensitivity(@NotNull Parser parser, @NotNull DFA dfa, int i, int i2, int i3, @NotNull ATNConfigSet atnConfigs) {
+    public void reportContextSensitivity(
+            @NotNull Parser parser,
+            @NotNull DFA dfa,
+            int i,
+            int i2,
+            int i3,
+            @NotNull ATNConfigSet atnConfigs) {
         throw new IllegalArgumentException("ambiguity");
     }
 }

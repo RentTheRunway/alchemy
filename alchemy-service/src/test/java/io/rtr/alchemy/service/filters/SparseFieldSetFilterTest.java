@@ -44,7 +44,7 @@ public class SparseFieldSetFilterTest {
         doReturn(MediaType.APPLICATION_JSON_TYPE).when(response).getMediaType();
     }
 
-    private void doFilter(String ... fields) {
+    private void doFilter(String... fields) {
         final MultivaluedMap<String, String> queryParams = new MultivaluedStringMap();
         queryParams.put("fields", Lists.newArrayList(fields));
         doReturn(queryParams).when(request).getHeaders();
@@ -63,10 +63,13 @@ public class SparseFieldSetFilterTest {
         entity.put("person", personNode);
 
         doReturn(entity).when(response).getEntity();
-        doAnswer(invocation -> {
-            responseEntity = (ObjectNode) invocation.getArguments()[0];
-            return null;
-        }).when(response).setEntity(any());
+        doAnswer(
+                        invocation -> {
+                            responseEntity = (ObjectNode) invocation.getArguments()[0];
+                            return null;
+                        })
+                .when(response)
+                .setEntity(any());
 
         filter.filter(request, response);
     }
@@ -124,5 +127,4 @@ public class SparseFieldSetFilterTest {
         assertEquals(personNode, arrayNode.get(0));
         assertTrue(personNode.has("name"));
     }
-
 }

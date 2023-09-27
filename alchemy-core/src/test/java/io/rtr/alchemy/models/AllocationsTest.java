@@ -14,16 +14,18 @@ import static org.junit.Assert.assertTrue;
 
 public class AllocationsTest {
     private static final Treatment control, withLogin, withoutLogin;
+
     static {
-        // based on https://stackoverflow.com/questions/8367950/cant-define-a-private-static-final-variable-because-it-throws-an-exception
+        // based on
+        // https://stackoverflow.com/questions/8367950/cant-define-a-private-static-final-variable-because-it-throws-an-exception
         Treatment tmp1 = null;
-        Treatment tmp2= null;
-        Treatment tmp3= null;
+        Treatment tmp2 = null;
+        Treatment tmp3 = null;
         try {
             tmp1 = new Treatment("control", "This is the control");
             tmp2 = new Treatment("with_login", "User logged in");
-            tmp3= new Treatment("without_login", "User didn't log in");
-        } catch(ValidationException e) {
+            tmp3 = new Treatment("without_login", "User didn't log in");
+        } catch (ValidationException e) {
             // do nothing
         }
         control = tmp1;
@@ -31,63 +33,81 @@ public class AllocationsTest {
         withoutLogin = tmp3;
     }
 
-
     @Test
     public void testConstructWithEmptyList() {
         final Allocations allocations = new Allocations(Lists.<Allocation>newArrayList());
-        assertEquals("unallocated size should be number of bins", Allocations.NUM_BINS, allocations.getUnallocatedSize());
+        assertEquals(
+                "unallocated size should be number of bins",
+                Allocations.NUM_BINS,
+                allocations.getUnallocatedSize());
         assertEquals("allocation size should be zero", 0, allocations.getSize());
         assertTrue("allocations should be empty", allocations.getAllocations().isEmpty());
 
-        for (int i=0; i < Allocations.NUM_BINS; i++) {
+        for (int i = 0; i < Allocations.NUM_BINS; i++) {
             assertNull("unallocated treatment should return as null", allocations.getTreatment(i));
         }
     }
 
     @Test
     public void testConstructWithUnorderedAllocations() {
-        final List<Allocation> allocationList = Lists.newArrayList(
-            new Allocation(control, 0, 20),
-            new Allocation(withoutLogin, 50, 40),
-            new Allocation(withLogin, 20, 30)
-        );
+        final List<Allocation> allocationList =
+                Lists.newArrayList(
+                        new Allocation(control, 0, 20),
+                        new Allocation(withoutLogin, 50, 40),
+                        new Allocation(withLogin, 20, 30));
 
         final Allocations allocations = new Allocations(allocationList);
 
-        assertEquals("unallocated size should match", Allocations.NUM_BINS - 90, allocations.getUnallocatedSize());
+        assertEquals(
+                "unallocated size should match",
+                Allocations.NUM_BINS - 90,
+                allocations.getUnallocatedSize());
         assertEquals("size should match", 90, allocations.getSize());
 
-        Collections.sort(allocationList, new Comparator<Allocation>() {
-            @Override
-            public int compare(Allocation lhs, Allocation rhs) {
-                return Integer.compare(lhs.getOffset(), rhs.getOffset());
-            }
-        });
-        assertEquals("allocations should match sorted original input", allocationList, allocations.getAllocations());
+        Collections.sort(
+                allocationList,
+                new Comparator<Allocation>() {
+                    @Override
+                    public int compare(Allocation lhs, Allocation rhs) {
+                        return Integer.compare(lhs.getOffset(), rhs.getOffset());
+                    }
+                });
+        assertEquals(
+                "allocations should match sorted original input",
+                allocationList,
+                allocations.getAllocations());
 
-        for (int i=0; i<20; i++) {
-            assertEquals("first set of 20 should be control", allocationList.get(0).getTreatment(), allocations.getTreatment(i));
+        for (int i = 0; i < 20; i++) {
+            assertEquals(
+                    "first set of 20 should be control",
+                    allocationList.get(0).getTreatment(),
+                    allocations.getTreatment(i));
         }
 
-        for (int i=20; i<50; i++) {
-            assertEquals("second set of 30 should be with_login", allocationList.get(1).getTreatment(), allocations.getTreatment(i));
+        for (int i = 20; i < 50; i++) {
+            assertEquals(
+                    "second set of 30 should be with_login",
+                    allocationList.get(1).getTreatment(),
+                    allocations.getTreatment(i));
         }
 
-        for (int i=50; i<90; i++) {
-            assertEquals("third set of 40 should be without_login", allocationList.get(2).getTreatment(), allocations.getTreatment(i));
+        for (int i = 50; i < 90; i++) {
+            assertEquals(
+                    "third set of 40 should be without_login",
+                    allocationList.get(2).getTreatment(),
+                    allocations.getTreatment(i));
         }
 
-        for (int i=90; i<Allocations.NUM_BINS - 90; i++) {
+        for (int i = 90; i < Allocations.NUM_BINS - 90; i++) {
             assertNull("the rest should be unallocated", allocations.getTreatment(i));
         }
     }
 
     @Test(expected = IllegalStateException.class)
     public void testConstructWithOverlappingAllocations() {
-        final List<Allocation> allocationList = Lists.newArrayList(
-            new Allocation(control, 0, 20),
-            new Allocation(withoutLogin, 10, 20)
-        );
+        final List<Allocation> allocationList =
+                Lists.newArrayList(
+                        new Allocation(control, 0, 20), new Allocation(withoutLogin, 10, 20));
 
         new Allocations(allocationList);
     }
@@ -109,14 +129,12 @@ public class AllocationsTest {
         allocations.allocate(withoutLogin, 30);
 
         assertEquals(
-            "should be three contiguous allocations of various sizes",
-            Lists.newArrayList(
-                new Allocation(control, 0, 10),
-                new Allocation(withLogin, 10, 20),
-                new Allocation(withoutLogin, 30, 30)
-            ),
-            allocations.getAllocations()
-        );
+                "should be three contiguous allocations of various sizes",
+                Lists.newArrayList(
+                        new Allocation(control, 0, 10),
+                        new Allocation(withLogin, 10, 20),
+                        new Allocation(withoutLogin, 30, 30)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -132,12 +150,9 @@ public class AllocationsTest {
         allocations.allocate(control, 5);
 
         assertEquals(
-            "both allocations should have been merged into one allocation",
-            Lists.newArrayList(
-                new Allocation(control, 0, 10)
-            ),
-            allocations.getAllocations()
-        );
+                "both allocations should have been merged into one allocation",
+                Lists.newArrayList(new Allocation(control, 0, 10)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -157,15 +172,13 @@ public class AllocationsTest {
         allocations.deallocate(withoutLogin, 15);
 
         assertEquals(
-            "allocations should be smaller and within the same offset range",
-            // deallocations are applied from left to right
-            Lists.newArrayList(
-                new Allocation(control, 5, 5),
-                new Allocation(withLogin, 20, 10),
-                new Allocation(withoutLogin, 45, 15)
-            ),
-            allocations.getAllocations()
-        );
+                "allocations should be smaller and within the same offset range",
+                // deallocations are applied from left to right
+                Lists.newArrayList(
+                        new Allocation(control, 5, 5),
+                        new Allocation(withLogin, 20, 10),
+                        new Allocation(withoutLogin, 45, 15)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -187,13 +200,10 @@ public class AllocationsTest {
         allocations.allocate(control, 5);
 
         assertEquals(
-            "allocation that filled the gap after deallocation should have been merged with adjacent allocation",
-            Lists.newArrayList(
-                new Allocation(control, 0, 15),
-                new Allocation(withLogin, 15, 5)
-            ),
-            allocations.getAllocations()
-        );
+                "allocation that filled the gap after deallocation should have been merged with adjacent allocation",
+                Lists.newArrayList(
+                        new Allocation(control, 0, 15), new Allocation(withLogin, 15, 5)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -213,15 +223,13 @@ public class AllocationsTest {
         allocations.allocate(control, 4);
 
         assertEquals(
-            "new allocation should have filled the gaps and merged with first allocation",
-            Lists.newArrayList(
-                new Allocation(control, 0, 4),
-                new Allocation(withLogin, 4, 2),
-                new Allocation(control, 6, 2),
-                new Allocation(withoutLogin, 8, 2)
-                ),
-            allocations.getAllocations()
-        );
+                "new allocation should have filled the gaps and merged with first allocation",
+                Lists.newArrayList(
+                        new Allocation(control, 0, 4),
+                        new Allocation(withLogin, 4, 2),
+                        new Allocation(control, 6, 2),
+                        new Allocation(withoutLogin, 8, 2)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -238,13 +246,9 @@ public class AllocationsTest {
         allocations.reallocate(withLogin, control, 3);
 
         assertEquals(
-            "reallocation should have partly replaced second allocation and merged with first allocation",
-            Lists.newArrayList(
-                new Allocation(control, 0, 8),
-                new Allocation(withLogin, 8, 2)
-            ),
-            allocations.getAllocations()
-        );
+                "reallocation should have partly replaced second allocation and merged with first allocation",
+                Lists.newArrayList(new Allocation(control, 0, 8), new Allocation(withLogin, 8, 2)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -264,14 +268,12 @@ public class AllocationsTest {
         allocations.reallocate(withLogin, control, 3);
 
         assertEquals(
-            "reallocation should have replaced all occurrences of second allocation, except one bin",
-            Lists.newArrayList(
-                new Allocation(control, 0, 7),
-                new Allocation(withLogin, 7, 1),
-                new Allocation(control, 8, 2)
-            ),
-            allocations.getAllocations()
-        );
+                "reallocation should have replaced all occurrences of second allocation, except one bin",
+                Lists.newArrayList(
+                        new Allocation(control, 0, 7),
+                        new Allocation(withLogin, 7, 1),
+                        new Allocation(control, 8, 2)),
+                allocations.getAllocations());
     }
 
     @Test
@@ -286,10 +288,9 @@ public class AllocationsTest {
             t2 = null;
         }
 
-        final  Allocations allocations = new Allocations(Lists.newArrayList(
-            new Allocation(t1, 0, 5),
-            new Allocation(t2, 5, 5)
-        ));
+        final Allocations allocations =
+                new Allocations(
+                        Lists.newArrayList(new Allocation(t1, 0, 5), new Allocation(t2, 5, 5)));
 
         assertEquals(2, allocations.getAllocations().size());
         assertEquals(10, allocations.getSize());

@@ -1,4 +1,4 @@
-// Generated from Filter.g4 by ANTLR 4.2.2
+// Generated from Filter.g4 by ANTLR 4.5
 package io.rtr.alchemy.filtering;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,16 +11,14 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class FilterParser extends Parser {
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
+
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__1=1, T__0=2, AND=3, OR=4, NOT=5, NUMBER=6, STRING=7, BOOLEAN=8, IDENTIFIER=9, 
+		T__0=1, T__1=2, AND=3, OR=4, NOT=5, NUMBER=6, STRING=7, BOOLEAN=8, IDENTIFIER=9, 
 		COMPARISON=10, WS=11;
-	public static final String[] tokenNames = {
-		"<INVALID>", "'('", "')'", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", 
-		"IDENTIFIER", "COMPARISON", "WS"
-	};
 	public static final int
 		RULE_exp = 0, RULE_term = 1, RULE_factor = 2, RULE_comparison = 3, RULE_constant = 4, 
 		RULE_value = 5;
@@ -28,11 +26,48 @@ public class FilterParser extends Parser {
 		"exp", "term", "factor", "comparison", "constant", "value"
 	};
 
-	@Override
-	public String getGrammarFileName() { return "Filter.g4"; }
+	private static final String[] _LITERAL_NAMES = {
+		null, "'('", "')'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, null, "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", "IDENTIFIER", 
+		"COMPARISON", "WS"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
 
 	@Override
-	public String[] getTokenNames() { return tokenNames; }
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
+	@Override
+	public String getGrammarFileName() { return "Filter.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -48,11 +83,11 @@ public class FilterParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class ExpContext extends ParserRuleContext {
-		public ExpContext exp() {
-			return getRuleContext(ExpContext.class,0);
-		}
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
+		}
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
 		}
 		public TerminalNode OR() { return getToken(FilterParser.OR, 0); }
 		public ExpContext(ParserRuleContext parent, int invokingState) {
@@ -85,13 +120,14 @@ public class FilterParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(13); term();
+			setState(13);
+			term();
 			}
 			_ctx.stop = _input.LT(-1);
 			setState(20);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
-			while ( _alt!=2 && _alt!=ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -101,8 +137,10 @@ public class FilterParser extends Parser {
 					pushNewRecursionContext(_localctx, _startState, RULE_exp);
 					setState(15);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(16); match(OR);
-					setState(17); term();
+					setState(16);
+					match(OR);
+					setState(17);
+					term();
 					}
 					} 
 				}
@@ -127,10 +165,10 @@ public class FilterParser extends Parser {
 		public FactorContext factor() {
 			return getRuleContext(FactorContext.class,0);
 		}
+		public TerminalNode AND() { return getToken(FilterParser.AND, 0); }
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
-		public TerminalNode AND() { return getToken(FilterParser.AND, 0); }
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -154,16 +192,19 @@ public class FilterParser extends Parser {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(23); factor();
+				setState(23);
+				factor();
 				}
 				break;
-
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(24); factor();
-				setState(25); match(AND);
-				setState(26); term();
+				setState(24);
+				factor();
+				setState(25);
+				match(AND);
+				setState(26);
+				term();
 				}
 				break;
 			}
@@ -183,15 +224,15 @@ public class FilterParser extends Parser {
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
-		public TerminalNode NOT() { return getToken(FilterParser.NOT, 0); }
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
 		}
-		public FactorContext factor() {
-			return getRuleContext(FactorContext.class,0);
-		}
 		public ComparisonContext comparison() {
 			return getRuleContext(ComparisonContext.class,0);
+		}
+		public TerminalNode NOT() { return getToken(FilterParser.NOT, 0); }
+		public FactorContext factor() {
+			return getRuleContext(FactorContext.class,0);
 		}
 		public FactorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -216,31 +257,35 @@ public class FilterParser extends Parser {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(30); match(1);
-				setState(31); exp(0);
-				setState(32); match(2);
+				setState(30);
+				match(T__0);
+				setState(31);
+				exp(0);
+				setState(32);
+				match(T__1);
 				}
 				break;
-
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(34); value();
+				setState(34);
+				value();
 				}
 				break;
-
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(35); comparison();
+				setState(35);
+				comparison();
 				}
 				break;
-
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(36); match(NOT);
-				setState(37); factor();
+				setState(36);
+				match(NOT);
+				setState(37);
+				factor();
 				}
 				break;
 			}
@@ -284,9 +329,12 @@ public class FilterParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(40); value();
-			setState(41); match(COMPARISON);
-			setState(42); value();
+			setState(40);
+			value();
+			setState(41);
+			match(COMPARISON);
+			setState(42);
+			value();
 			}
 		}
 		catch (RecognitionException re) {
@@ -301,9 +349,9 @@ public class FilterParser extends Parser {
 	}
 
 	public static class ConstantContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(FilterParser.STRING, 0); }
 		public TerminalNode BOOLEAN() { return getToken(FilterParser.BOOLEAN, 0); }
 		public TerminalNode NUMBER() { return getToken(FilterParser.NUMBER, 0); }
+		public TerminalNode STRING() { return getToken(FilterParser.STRING, 0); }
 		public ConstantContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -329,8 +377,9 @@ public class FilterParser extends Parser {
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << STRING) | (1L << BOOLEAN))) != 0)) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -374,13 +423,15 @@ public class FilterParser extends Parser {
 			case BOOLEAN:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(46); constant();
+				setState(46);
+				constant();
 				}
 				break;
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(47); match(IDENTIFIER);
+				setState(47);
+				match(IDENTIFIER);
 				}
 				break;
 			default:
@@ -400,13 +451,15 @@ public class FilterParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 0: return exp_sempred((ExpContext)_localctx, predIndex);
+		case 0:
+			return exp_sempred((ExpContext)_localctx, predIndex);
 		}
 		return true;
 	}
 	private boolean exp_sempred(ExpContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0: return precpred(_ctx, 1);
+		case 0:
+			return precpred(_ctx, 1);
 		}
 		return true;
 	}

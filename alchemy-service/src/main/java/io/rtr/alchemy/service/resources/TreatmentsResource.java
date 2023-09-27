@@ -20,9 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/**
- * Resource for interacting with treatments
- */
+/** Resource for interacting with treatments */
 @Path("/experiments/{experimentName}/treatments")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,54 +35,53 @@ public class TreatmentsResource extends BaseResource {
     }
 
     @GET
-    public Iterable<TreatmentDto> getTreatments(@PathParam("experimentName") String experimentName) {
+    public Iterable<TreatmentDto> getTreatments(
+            @PathParam("experimentName") String experimentName) {
         return mapper.toDto(
-            ensureExists(experiments.get(experimentName)).getTreatments(),
-            TreatmentDto.class
-        );
+                ensureExists(experiments.get(experimentName)).getTreatments(), TreatmentDto.class);
     }
 
     @GET
     @Path("/{treatmentName}")
-    public TreatmentDto getTreatment(@PathParam("experimentName") String experimentName,
-                                     @PathParam("treatmentName") String treatmentName) {
+    public TreatmentDto getTreatment(
+            @PathParam("experimentName") String experimentName,
+            @PathParam("treatmentName") String treatmentName) {
         return mapper.toDto(
-            ensureExists(
-                ensureExists(experiments.get(experimentName)).getTreatment(treatmentName)
-            ),
-            TreatmentDto.class
-        );
+                ensureExists(
+                        ensureExists(experiments.get(experimentName)).getTreatment(treatmentName)),
+                TreatmentDto.class);
     }
 
     @PUT
-    public Response addTreatment(@PathParam("experimentName") String experimentName,
-                                 @Valid TreatmentDto treatmentDto) {
+    public Response addTreatment(
+            @PathParam("experimentName") String experimentName, @Valid TreatmentDto treatmentDto) {
         ensureExists(experiments.get(experimentName))
-            .addTreatment(treatmentDto.getName(), treatmentDto.getDescription())
-            .save();
+                .addTreatment(treatmentDto.getName(), treatmentDto.getDescription())
+                .save();
 
         return created();
     }
 
     @DELETE
     @Path("/{treatmentName}")
-    public void removeTreatment(@PathParam("experimentName") String experimentName,
-                                @PathParam("treatmentName") String treatmentName) {
+    public void removeTreatment(
+            @PathParam("experimentName") String experimentName,
+            @PathParam("treatmentName") String treatmentName) {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
         ensureExists(experiment.getTreatment(treatmentName));
 
-        experiment
-            .removeTreatment(treatmentName)
-            .save();
+        experiment.removeTreatment(treatmentName).save();
     }
 
     @POST
     @Path("/{treatmentName}")
-    public void updateTreatment(@PathParam("experimentName") String experimentName,
-                                @PathParam("treatmentName") String treatmentName,
-                                @Valid UpdateTreatmentRequest request) {
+    public void updateTreatment(
+            @PathParam("experimentName") String experimentName,
+            @PathParam("treatmentName") String treatmentName,
+            @Valid UpdateTreatmentRequest request) {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
-        final Treatment treatment = ensureExists(ensureExists(experiment).getTreatment(treatmentName));
+        final Treatment treatment =
+                ensureExists(ensureExists(experiment).getTreatment(treatmentName));
 
         if (request.getDescription() != null) {
             treatment.setDescription(request.getDescription().orElse(null));
@@ -95,8 +92,6 @@ public class TreatmentsResource extends BaseResource {
 
     @DELETE
     public void clearTreatments(@PathParam("experimentName") String experimentName) {
-        ensureExists(experiments.get(experimentName))
-            .clearTreatments()
-            .save();
+        ensureExists(experiments.get(experimentName)).clearTreatments().save();
     }
 }

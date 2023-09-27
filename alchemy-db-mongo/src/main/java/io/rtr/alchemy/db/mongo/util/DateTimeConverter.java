@@ -5,9 +5,7 @@ import org.mongodb.morphia.converters.SimpleValueConverter;
 import org.mongodb.morphia.converters.TypeConverter;
 import org.mongodb.morphia.mapping.MappedField;
 
-/**
- * A morphia converter for Joda Time
- */
+/** A morphia converter for Joda Time */
 public class DateTimeConverter extends TypeConverter implements SimpleValueConverter {
     protected DateTimeConverter() {
         super(DateTime.class);

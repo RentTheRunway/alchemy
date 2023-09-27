@@ -3,9 +3,7 @@ package io.rtr.alchemy.db;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-/**
- * Filter criteria for a list query, allowing for pagination and filtering of items
- */
+/** Filter criteria for a list query, allowing for pagination and filtering of items */
 public class Filter {
     public static final Filter NONE = Filter.criteria().build();
     private final String filter;
@@ -84,18 +82,14 @@ public class Filter {
 
         final Filter other = (Filter) obj;
 
-        return
-            Objects.equal(filter, other.filter) &&
-            Objects.equal(offset, other.offset) &&
-            Objects.equal(limit, other.limit);
-
+        return Objects.equal(filter, other.filter)
+                && Objects.equal(offset, other.offset)
+                && Objects.equal(limit, other.limit);
     }
 
     @Override
     public String toString() {
-        return
-            MoreObjects
-                .toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("filter", filter)
                 .add("offset", offset)
                 .add("limit", limit)

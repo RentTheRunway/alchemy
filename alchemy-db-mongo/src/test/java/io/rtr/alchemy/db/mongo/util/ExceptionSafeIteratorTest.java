@@ -17,45 +17,47 @@ import static org.junit.Assert.assertTrue;
 public class ExceptionSafeIteratorTest {
     @Test
     public void testIteratorWithExceptions() {
-        final Iterator<Integer> throwIterator = new Iterator<Integer>() {
-            private final Integer[] numbers = { 0, 1, null, 2, null, null, 3, null, null };
-            private int n = 0;
+        final Iterator<Integer> throwIterator =
+                new Iterator<Integer>() {
+                    private final Integer[] numbers = {0, 1, null, 2, null, null, 3, null, null};
+                    private int n = 0;
 
-            @Override
-            public boolean hasNext() {
-                return n < numbers.length;
-            }
+                    @Override
+                    public boolean hasNext() {
+                        return n < numbers.length;
+                    }
 
-            @Override
-            public Integer next() {
-                if (numbers[n] == null) {
-                    n++;
-                    throw new UnsupportedOperationException();
-                }
+                    @Override
+                    public Integer next() {
+                        if (numbers[n] == null) {
+                            n++;
+                            throw new UnsupportedOperationException();
+                        }
 
-                return numbers[n++];
-            }
+                        return numbers[n++];
+                    }
 
-            @Override
-            public void remove() {
-            }
-        };
+                    @Override
+                    public void remove() {}
+                };
 
         final Iterator<Integer> evens = ExceptionSafeIterator.wrap(throwIterator);
 
-        assertArrayEquals(new Integer[]{0, 1, 2, 3}, Iterators.toArray(evens, Integer.class));
+        assertArrayEquals(new Integer[] {0, 1, 2, 3}, Iterators.toArray(evens, Integer.class));
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testIteratorExhausted() {
-        final Iterator<Integer> emptyIterator = ExceptionSafeIterator.wrap(Collections.<Integer>emptyIterator());
+        final Iterator<Integer> emptyIterator =
+                ExceptionSafeIterator.wrap(Collections.<Integer>emptyIterator());
         assertFalse(emptyIterator.hasNext());
         emptyIterator.next();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testIteratorRemoveWithoutNext() {
-        final Iterator<Integer> iterator = ExceptionSafeIterator.wrap(Lists.newArrayList(1, 2, 3).iterator());
+        final Iterator<Integer> iterator =
+                ExceptionSafeIterator.wrap(Lists.newArrayList(1, 2, 3).iterator());
         assertTrue(iterator.hasNext());
         iterator.next();
         assertTrue(iterator.hasNext());

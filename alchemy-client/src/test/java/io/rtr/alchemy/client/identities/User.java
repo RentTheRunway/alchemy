@@ -20,17 +20,13 @@ public class User extends Identity {
 
     @Override
     public long computeHash(int seed, Set<String> hashAttributes, AttributesMap attributes) {
-        return
-            identity(seed)
-                .putString(name)
-                .hash();
+        return identity(seed).putString(name).hash();
     }
 
     @Override
     public AttributesMap computeAttributes() {
-        return
-            name == null ?
-            attributes().put("anonymous", true).build() :
-            attributes().put("identified", true).build();
+        return name == null
+                ? attributes().put("anonymous", true).build()
+                : attributes().put("identified", true).build();
     }
 }

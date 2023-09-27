@@ -40,8 +40,9 @@ public class JsonSerializationDeserializationTest {
     }
 
     /**
-     * This method will test whether the give json deserializes into the given object and whether the given
-     * object serializes into the given json
+     * This method will test whether the give json deserializes into the given object and whether
+     * the given object serializes into the given json
+     *
      * @param value The object to test
      * @param resourceFile The file that contains the json to compare with
      */
@@ -50,74 +51,69 @@ public class JsonSerializationDeserializationTest {
         final JsonNode objectTree = mapper.valueToTree(value);
 
         try {
-            assertEquals(mapper.readTree(jsonTree.toString()),  mapper.readTree(objectTree.toString()));
+            assertEquals(
+                    mapper.readTree(jsonTree.toString()), mapper.readTree(objectTree.toString()));
         } catch (IOException e) {
             fail(e.getMessage());
         }
     }
 
     private void assertJson(Object value) {
-        final Class<?> clazz = value.getClass().isAnonymousClass() ? value.getClass().getSuperclass() : value.getClass();
+        final Class<?> clazz =
+                value.getClass().isAnonymousClass()
+                        ? value.getClass().getSuperclass()
+                        : value.getClass();
         assertJson(value, clazz.getSimpleName() + ".json");
     }
 
     private JsonNode readTreeFromResource(String resourceFile) {
-        final InputStream stream = JsonSerializationDeserializationTest.class.getClassLoader().getResourceAsStream(resourceFile);
+        final InputStream stream =
+                JsonSerializationDeserializationTest.class
+                        .getClassLoader()
+                        .getResourceAsStream(resourceFile);
         assertNotNull(String.format("could not load resource file %s", resourceFile), stream);
 
         try {
             return mapper.readTree(stream);
         } catch (final IOException e) {
             throw new AssertionError(
-                String.format(
-                    "could not parse json from resource file %s: %s",
-                    resourceFile,
-                    e.getMessage()
-                )
-            );
+                    String.format(
+                            "could not parse json from resource file %s: %s",
+                            resourceFile, e.getMessage()));
         } finally {
-            try { stream.close(); } catch (final IOException ignored) { }
+            try {
+                stream.close();
+            } catch (final IOException ignored) {
+            }
         }
     }
 
     @Test
     public void testAllocationDto() {
-        assertJson(new AllocationDto(
-            "control",
-            20,
-            10
-        ));
+        assertJson(new AllocationDto("control", 20, 10));
     }
 
     @Test
     public void testExperimentDto() {
-        assertJson(new ExperimentDto(
-            "my_experiment",
-            0,
-            "my new experiment",
-            "identified",
-            Sets.<String>newLinkedHashSet(),
-            true,
-            new DateTime(0),
-            new DateTime(1),
-            new DateTime(2),
-            new DateTime(3),
-            Lists.newArrayList(
-                new TreatmentDto("control", "the base case"),
-                new TreatmentDto("x", "some other condition")
-            ),
-            Lists.newArrayList(
-                new AllocationDto("control", 0, 5),
-                new AllocationDto("x", 5, 10)
-            ),
-            Lists.newArrayList(
-                new TreatmentOverrideDto(
-                    "qa_override",
-                    "true",
-                    "control"
-                )
-            )
-        ));
+        assertJson(
+                new ExperimentDto(
+                        "my_experiment",
+                        0,
+                        "my new experiment",
+                        "identified",
+                        Sets.<String>newLinkedHashSet(),
+                        true,
+                        new DateTime(0),
+                        new DateTime(1),
+                        new DateTime(2),
+                        new DateTime(3),
+                        Lists.newArrayList(
+                                new TreatmentDto("control", "the base case"),
+                                new TreatmentDto("x", "some other condition")),
+                        Lists.newArrayList(
+                                new AllocationDto("control", 0, 5), new AllocationDto("x", 5, 10)),
+                        Lists.newArrayList(
+                                new TreatmentOverrideDto("qa_override", "true", "control"))));
     }
 
     @Test
@@ -127,13 +123,7 @@ public class JsonSerializationDeserializationTest {
 
     @Test
     public void testTreatmentOverrideDto() {
-        assertJson(
-            new TreatmentOverrideDto(
-                "qa_override",
-                "true",
-                "control"
-            )
-        );
+        assertJson(new TreatmentOverrideDto("qa_override", "true", "control"));
     }
 
     @JsonTypeName("mock")
@@ -169,67 +159,47 @@ public class JsonSerializationDeserializationTest {
     @Test
     public void testCreateExperimentRequest() {
         assertJson(
-            new CreateExperimentRequest(
-                "my_experiment",
-                0,
-                "my new experiment",
-                "identified",
-                Sets.<String>newLinkedHashSet(),
-                true,
-                Lists.newArrayList(
-                    new TreatmentDto("control", "the base case"),
-                    new TreatmentDto("x", "some other condition")
-                ),
-                Lists.newArrayList(
-                        new AllocateRequest("control", 5),
-                        new AllocateRequest("x", 10)
-                ),
-                Lists.newArrayList(
-                    new TreatmentOverrideRequest("control", "foo", "qa_override")
-                )
-            )
-        );
+                new CreateExperimentRequest(
+                        "my_experiment",
+                        0,
+                        "my new experiment",
+                        "identified",
+                        Sets.<String>newLinkedHashSet(),
+                        true,
+                        Lists.newArrayList(
+                                new TreatmentDto("control", "the base case"),
+                                new TreatmentDto("x", "some other condition")),
+                        Lists.newArrayList(
+                                new AllocateRequest("control", 5), new AllocateRequest("x", 10)),
+                        Lists.newArrayList(
+                                new TreatmentOverrideRequest("control", "foo", "qa_override"))));
     }
 
     @Test
     public void testTreatmentOverrideRequest() {
-        assertJson(
-            new TreatmentOverrideRequest(
-                "control",
-                "foo",
-                "qa_override"
-            )
-        );
+        assertJson(new TreatmentOverrideRequest("control", "foo", "qa_override"));
     }
 
     @Test
     public void testUpdateExperimentRequest() {
         assertJson(
-            new UpdateExperimentRequest(
-                    Optional.empty(),
-                    Optional.of("my new experiment"),
-                    Optional.of("identified"),
-                    Optional.<Set<String>>of(Sets.<String>newLinkedHashSet()),
-                    Optional.of(true),
-                    Optional.<List<TreatmentDto>>of(
-                        Lists.newArrayList(
-                            new TreatmentDto("control", "the base case"),
-                            new TreatmentDto("x", "some other condition")
-                        )
-                    ),
-                    Optional.<List<AllocateRequest>>of(
-                        Lists.newArrayList(
-                            new AllocateRequest("control", 5),
-                            new AllocateRequest("x", 10)
-                        )
-                    ),
-                    Optional.<List<TreatmentOverrideRequest>>of(
-                        Lists.newArrayList(
-                            new TreatmentOverrideRequest("control", "foo", "qa_override")
-                        )
-                    )
-            )
-        );
+                new UpdateExperimentRequest(
+                        Optional.empty(),
+                        Optional.of("my new experiment"),
+                        Optional.of("identified"),
+                        Optional.<Set<String>>of(Sets.<String>newLinkedHashSet()),
+                        Optional.of(true),
+                        Optional.<List<TreatmentDto>>of(
+                                Lists.newArrayList(
+                                        new TreatmentDto("control", "the base case"),
+                                        new TreatmentDto("x", "some other condition"))),
+                        Optional.<List<AllocateRequest>>of(
+                                Lists.newArrayList(
+                                        new AllocateRequest("control", 5),
+                                        new AllocateRequest("x", 10))),
+                        Optional.<List<TreatmentOverrideRequest>>of(
+                                Lists.newArrayList(
+                                        new TreatmentOverrideRequest(
+                                                "control", "foo", "qa_override")))));
     }
-
 }

@@ -14,12 +14,12 @@ public class AttributesMapTest {
 
     @Before
     public void setUp() {
-        map = AttributesMap
-            .newBuilder()
-            .put("true", true)
-            .put("one", 1)
-            .put("string", "string")
-            .build();
+        map =
+                AttributesMap.newBuilder()
+                        .put("true", true)
+                        .put("one", 1)
+                        .put("string", "string")
+                        .build();
     }
 
     @Test
@@ -57,39 +57,49 @@ public class AttributesMapTest {
     private void assertImmutable(String method, Runnable testMethod) {
         try {
             testMethod.run();
-            fail(String.format("method %s should not be allowed on immutable AttributesMap", method));
+            fail(
+                    String.format(
+                            "method %s should not be allowed on immutable AttributesMap", method));
         } catch (UnsupportedOperationException ignored) {
         }
     }
 
     @Test
     public void testImmutable() {
-        assertImmutable("put", new Runnable() {
-            @Override
-            public void run() {
-                map.put("foo", "bar");
-            }
-        });
+        assertImmutable(
+                "put",
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        map.put("foo", "bar");
+                    }
+                });
 
-        assertImmutable("putAll", new Runnable() {
-            @Override
-            public void run() {
-                map.putAll(map);
-            }
-        });
+        assertImmutable(
+                "putAll",
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        map.putAll(map);
+                    }
+                });
 
-        assertImmutable("remove", new Runnable() {
-            @Override
-            public void run() {
-                map.remove("true");
-            }
-        });
+        assertImmutable(
+                "remove",
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        map.remove("true");
+                    }
+                });
 
-        assertImmutable("clear", new Runnable() {
-            @Override
-            public void run() {
-                map.clear();
-            }
-        });
+        assertImmutable(
+                "clear",
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        map.clear();
+                    }
+                });
     }
 }
