@@ -8,33 +8,28 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Represents a request for creating an experiment
- */
+/** Represents a request for creating an experiment */
 public class CreateExperimentRequest {
-    @NotNull
-    private final String name;
+    @NotNull private final String name;
     private final Integer seed;
     private final String description;
     private final String filter;
     private final Set<String> hashAttributes;
     private final Boolean active;
-    @Valid
-    private final List<TreatmentDto> treatments;
-    @Valid
-    private final List<AllocateRequest> allocations;
-    @Valid
-    private final List<TreatmentOverrideRequest> overrides;
+    @Valid private final List<TreatmentDto> treatments;
+    @Valid private final List<AllocateRequest> allocations;
+    @Valid private final List<TreatmentOverrideRequest> overrides;
 
-    public CreateExperimentRequest(@JsonProperty("name") String name,
-                                   @JsonProperty("seed") Integer seed,
-                                   @JsonProperty("description") String description,
-                                   @JsonProperty("filter") String filter,
-                                   @JsonProperty("hashAttributes") Set<String> hashAttributes,
-                                   @JsonProperty("active") Boolean active,
-                                   @JsonProperty("treatments") List<TreatmentDto> treatments,
-                                   @JsonProperty("allocations") List<AllocateRequest> allocations,
-                                   @JsonProperty("overrides") List<TreatmentOverrideRequest> overrides) {
+    public CreateExperimentRequest(
+            @JsonProperty("name") String name,
+            @JsonProperty("seed") Integer seed,
+            @JsonProperty("description") String description,
+            @JsonProperty("filter") String filter,
+            @JsonProperty("hashAttributes") Set<String> hashAttributes,
+            @JsonProperty("active") Boolean active,
+            @JsonProperty("treatments") List<TreatmentDto> treatments,
+            @JsonProperty("allocations") List<AllocateRequest> allocations,
+            @JsonProperty("overrides") List<TreatmentOverrideRequest> overrides) {
         this.name = name;
         this.seed = seed;
         this.description = description;
@@ -56,8 +51,8 @@ public class CreateExperimentRequest {
 
     public String getDescription() {
         return description;
-
     }
+
     public String getFilter() {
         return filter;
     }

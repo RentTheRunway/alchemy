@@ -3,9 +3,7 @@ package io.rtr.alchemy.models;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-/**
- * Represents a contiguous allocation block of a single treatment in an experiment
- */
+/** Represents a contiguous allocation block of a single treatment in an experiment */
 public class Allocation {
     private final Treatment treatment;
     private final int offset;
@@ -37,10 +35,9 @@ public class Allocation {
 
         final Allocation other = (Allocation) obj;
 
-        return
-            Objects.equal(treatment, other.treatment) &&
-            Objects.equal(offset, other.offset) &&
-            Objects.equal(size, other.size);
+        return Objects.equal(treatment, other.treatment)
+                && Objects.equal(offset, other.offset)
+                && Objects.equal(size, other.size);
     }
 
     @Override
@@ -50,9 +47,7 @@ public class Allocation {
 
     @Override
     public String toString() {
-        return
-            MoreObjects
-                .toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("treatment", treatment)
                 .add("offset", offset)
                 .add("size", size)

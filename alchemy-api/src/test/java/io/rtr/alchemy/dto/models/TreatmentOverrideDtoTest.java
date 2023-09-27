@@ -7,9 +7,8 @@ import org.junit.Test;
 public class TreatmentOverrideDtoTest {
     @Test
     public void testEqualsHashCode() {
-        EqualsVerifier
-            .forClass(TreatmentOverrideDto.class)
-            .suppress(Warning.STRICT_INHERITANCE)
-            .verify();
+        EqualsVerifier.forClass(TreatmentOverrideDto.class)
+                .suppress(Warning.STRICT_INHERITANCE)
+                .verify();
     }
 }

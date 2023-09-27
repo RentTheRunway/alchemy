@@ -5,16 +5,16 @@ import io.rtr.alchemy.models.Experiment;
 import java.util.Iterator;
 
 /**
- * Implements a wrapper around iterable of Experiment in order to trigger the cache strategy as results are retrieved
+ * Implements a wrapper around iterable of Experiment in order to trigger the cache strategy as
+ * results are retrieved
  */
 public class CacheStrategyIterable implements Iterable<Experiment> {
     private final Iterable<Experiment> iterable;
     private final CachingContext context;
     private final CacheStrategy strategy;
 
-    public CacheStrategyIterable(Iterable<Experiment> iterable,
-                                 CachingContext context,
-                                 CacheStrategy strategy) {
+    public CacheStrategyIterable(
+            Iterable<Experiment> iterable, CachingContext context, CacheStrategy strategy) {
         this.iterable = iterable;
         this.context = context;
         this.strategy = strategy;

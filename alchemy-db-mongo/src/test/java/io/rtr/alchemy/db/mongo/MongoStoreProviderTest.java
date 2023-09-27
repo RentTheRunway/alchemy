@@ -14,10 +14,7 @@ public class MongoStoreProviderTest extends ExperimentsStoreProviderTest {
 
     @Override
     protected ExperimentsStoreProvider createProvider() throws Exception {
-        return MongoStoreProvider
-            .newBuilder()
-            .setDatabase(DATABASE_NAME)
-            .build();
+        return MongoStoreProvider.newBuilder().setDatabase(DATABASE_NAME).build();
     }
 
     @Override

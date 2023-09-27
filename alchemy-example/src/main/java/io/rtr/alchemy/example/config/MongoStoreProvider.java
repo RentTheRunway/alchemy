@@ -12,25 +12,22 @@ import javax.validation.constraints.NotNull;
 import java.net.UnknownHostException;
 import java.util.List;
 
-/**
- * Configuration object for creating a MongoDB provider with given parameters
- */
+/** Configuration object for creating a MongoDB provider with given parameters */
 public class MongoStoreProvider extends StoreProviderConfiguration {
-    @NotNull
-    private final List<HostAndPort> hosts;
+    @NotNull private final List<HostAndPort> hosts;
 
-    @NotNull
-    private final String db;
+    @NotNull private final String db;
 
     private final String username;
 
     private final String password;
 
     @JsonCreator
-    public MongoStoreProvider(@JsonProperty("hosts") List<HostAndPort> hosts,
-                              @JsonProperty("db") String db,
-                              @JsonProperty("username") String username,
-                              @JsonProperty("password") String password) {
+    public MongoStoreProvider(
+            @JsonProperty("hosts") List<HostAndPort> hosts,
+            @JsonProperty("db") String db,
+            @JsonProperty("username") String username,
+            @JsonProperty("password") String password) {
         this.hosts = hosts;
         this.db = db;
         this.username = username;
@@ -55,7 +52,8 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
 
     @Override
     public ExperimentsStoreProvider createProvider() throws UnknownHostException {
-        final io.rtr.alchemy.db.mongo.MongoStoreProvider.Builder builder = io.rtr.alchemy.db.mongo.MongoStoreProvider.newBuilder();
+        final io.rtr.alchemy.db.mongo.MongoStoreProvider.Builder builder =
+                io.rtr.alchemy.db.mongo.MongoStoreProvider.newBuilder();
         for (final HostAndPort host : hosts) {
             if (!host.hasPort()) {
                 builder.addHost(new ServerAddress(host.getHost()));
@@ -65,7 +63,8 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         }
 
         if (username != null) {
-            builder.addCredential(MongoCredential.createPlainCredential(username, db, password.toCharArray()));
+            builder.addCredential(
+                    MongoCredential.createPlainCredential(username, db, password.toCharArray()));
         }
 
         builder.setDatabase(db);

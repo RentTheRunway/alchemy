@@ -41,25 +41,18 @@ public class BasicCacheStrategyTest {
         activeExperiment = mock(Experiment.class);
         doReturn("foo").when(activeExperiment).getName();
         doReturn(true).when(activeExperiment).isActive();
-        doReturn(activeExperiment)
-            .when(store)
-            .load(eq("foo"), any(Experiment.Builder.class));
+        doReturn(activeExperiment).when(store).load(eq("foo"), any(Experiment.Builder.class));
 
         inactiveExperiment = mock(Experiment.class);
         doReturn("bar").when(inactiveExperiment).getName();
         doReturn(false).when(inactiveExperiment).isActive();
-        doReturn(inactiveExperiment)
-            .when(store)
-            .load(eq("bar"), any(Experiment.Builder.class));
+        doReturn(inactiveExperiment).when(store).load(eq("bar"), any(Experiment.Builder.class));
 
         doReturn(Lists.newArrayList(activeExperiment, inactiveExperiment))
-            .when(store).find(any(Filter.class), any(Experiment.BuilderFactory.class));
+                .when(store)
+                .find(any(Filter.class), any(Experiment.BuilderFactory.class));
 
-        experiments =
-            Experiments
-                .using(provider)
-                .using(strategy)
-                .build();
+        experiments = Experiments.using(provider).using(strategy).build();
     }
 
     @Test
@@ -84,9 +77,14 @@ public class BasicCacheStrategyTest {
         final Iterable<Experiment> result = experiments.find();
         final Iterator<Experiment> iterator = result.iterator();
 
-        final Set<String> experimentNames = Sets.newHashSet(activeExperiment.getName(), inactiveExperiment.getName());
-        assertTrue("expected valid experiment name", experimentNames.remove(iterator.next().getName()));
-        assertTrue("expected valid experiment name", experimentNames.remove(iterator.next().getName()));
+        final Set<String> experimentNames =
+                Sets.newHashSet(activeExperiment.getName(), inactiveExperiment.getName());
+        assertTrue(
+                "expected valid experiment name",
+                experimentNames.remove(iterator.next().getName()));
+        assertTrue(
+                "expected valid experiment name",
+                experimentNames.remove(iterator.next().getName()));
         verify(cache).update(eq(activeExperiment));
         verify(cache).delete(eq(inactiveExperiment.getName()));
     }

@@ -5,9 +5,7 @@ import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
 import io.rtr.alchemy.db.mongo.models.MetadataEntity;
 import org.mongodb.morphia.AdvancedDatastore;
 
-/**
- * Manages what revision experiments are at in order to check when experiments are stale
- */
+/** Manages what revision experiments are at in order to check when experiments are stale */
 public class RevisionManager {
     private static final String NAME = "revision";
     private final AdvancedDatastore ds;
@@ -47,12 +45,11 @@ public class RevisionManager {
     }
 
     public long nextRevision() {
-        return
-            (Long) ds
-                .findAndModify(
-                    ds.createQuery(MetadataEntity.class).field("name").equal(NAME),
-                    ds.createUpdateOperations(MetadataEntity.class).inc("value")
-                ).value;
+        return (Long)
+                ds.findAndModify(
+                                ds.createQuery(MetadataEntity.class).field("name").equal(NAME),
+                                ds.createUpdateOperations(MetadataEntity.class).inc("value"))
+                        .value;
     }
 
     public void setLatestRevision(Long revision) {

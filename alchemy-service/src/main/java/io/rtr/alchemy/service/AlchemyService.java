@@ -22,10 +22,9 @@ import io.dropwizard.Configuration;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-/**
- * The entry point for the service
- */
-public abstract class AlchemyService<T extends Configuration & AlchemyServiceConfiguration> extends Application<T> {
+/** The entry point for the service */
+public abstract class AlchemyService<T extends Configuration & AlchemyServiceConfiguration>
+        extends Application<T> {
     private static final Class<?>[] RESOURCES = {
         ExperimentsResource.class,
         AllocationsResource.class,
@@ -55,12 +54,16 @@ public abstract class AlchemyService<T extends Configuration & AlchemyServiceCon
         registerIdentitySubTypes(configuration, environment);
     }
 
-    protected void runInjected(final Injector injector, final T configuration, final Environment environment) throws Exception {
+    protected void runInjected(
+            final Injector injector, final T configuration, final Environment environment)
+            throws Exception {
         for (final Class<?> resource : RESOURCES) {
             environment.jersey().register(injector.getInstance(resource));
         }
 
-        environment.healthChecks().register("database", injector.getInstance(ExperimentsDatabaseProviderCheck.class));
+        environment
+                .healthChecks()
+                .register("database", injector.getInstance(ExperimentsDatabaseProviderCheck.class));
     }
 
     private void registerIdentitySubTypes(T configuration, Environment environment) {

@@ -21,6 +21,8 @@ public class UpdateTreatmentRequestBuilder {
     }
 
     public void apply() {
-        builder.post(Entity.entity(new UpdateTreatmentRequest(description), MediaType.APPLICATION_JSON_TYPE));
+        builder.post(
+                Entity.entity(
+                        new UpdateTreatmentRequest(description), MediaType.APPLICATION_JSON_TYPE));
     }
 }

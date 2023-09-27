@@ -6,17 +6,14 @@ import com.google.common.base.Objects;
 
 import javax.validation.constraints.NotNull;
 
-/**
- * Represents a treatment
- */
+/** Represents a treatment */
 public class TreatmentDto {
-    @NotNull
-    private final String name;
+    @NotNull private final String name;
     private final String description;
 
     @JsonCreator
-    public TreatmentDto(@JsonProperty("name") String name,
-                        @JsonProperty("description") String description) {
+    public TreatmentDto(
+            @JsonProperty("name") String name, @JsonProperty("description") String description) {
         this.name = name;
         this.description = description;
     }
@@ -42,7 +39,6 @@ public class TreatmentDto {
 
         final TreatmentDto other = (TreatmentDto) obj;
 
-        return
-            Objects.equal(name, other.name);
+        return Objects.equal(name, other.name);
     }
 }

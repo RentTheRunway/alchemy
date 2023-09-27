@@ -12,9 +12,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.Stack;
 
-/**
- * Allows evaluation of a filter expression which tests whether given attributes are present
- */
+/** Allows evaluation of a filter expression which tests whether given attributes are present */
 public class FilterExpression {
     private static final FilterExpression ALWAYS_TRUE = new FilterExpression();
     private static final FilterErrorListener ERROR_LISTENER = new FilterErrorListener();
@@ -58,6 +56,7 @@ public class FilterExpression {
 
     /**
      * Evaluates the filter
+     *
      * @param attributes Attributes to evaluate against
      */
     public boolean evaluate(AttributesMap attributes) {
@@ -100,11 +99,11 @@ public class FilterExpression {
     }
 
     /**
-     * A parser listener that evaluates the boolean logic expression by traversing the tree
-     * Each time an operation is encountered (e.g. exp, factor or term), we push onto the stack
-     * OP to serve as a place holder to separate contiguous values that should be applied to an
-     * operation. Comparisons are evaluated when exiting a comparison, the boolean value of which
-     * is then pushed onto the stack as well
+     * A parser listener that evaluates the boolean logic expression by traversing the tree Each
+     * time an operation is encountered (e.g. exp, factor or term), we push onto the stack OP to
+     * serve as a place holder to separate contiguous values that should be applied to an operation.
+     * Comparisons are evaluated when exiting a comparison, the boolean value of which is then
+     * pushed onto the stack as well
      */
     private static class FilterExpressionEvaluator implements FilterListener {
         private static final Boolean OP = null;
@@ -215,43 +214,31 @@ public class FilterExpression {
         }
 
         @Override
-        public void enterValue(@NotNull FilterParser.ValueContext ctx) {
-        }
+        public void enterValue(@NotNull FilterParser.ValueContext ctx) {}
 
         @Override
-        public void exitValue(@NotNull FilterParser.ValueContext ctx) {
-        }
+        public void exitValue(@NotNull FilterParser.ValueContext ctx) {}
 
         @Override
-        public void visitTerminal(@NotNull TerminalNode terminalNode) {
-
-        }
+        public void visitTerminal(@NotNull TerminalNode terminalNode) {}
 
         @Override
-        public void visitErrorNode(@NotNull ErrorNode errorNode) {
-
-        }
+        public void visitErrorNode(@NotNull ErrorNode errorNode) {}
 
         @Override
-        public void enterEveryRule(@NotNull ParserRuleContext parserRuleContext) {
-
-        }
+        public void enterEveryRule(@NotNull ParserRuleContext parserRuleContext) {}
 
         @Override
-        public void exitEveryRule(@NotNull ParserRuleContext parserRuleContext) {
-        }
+        public void exitEveryRule(@NotNull ParserRuleContext parserRuleContext) {}
 
         @Override
-        public void enterConstant(@NotNull FilterParser.ConstantContext ctx) {
-        }
+        public void enterConstant(@NotNull FilterParser.ConstantContext ctx) {}
 
         @Override
-        public void exitConstant(@NotNull FilterParser.ConstantContext ctx) {
-        }
+        public void exitConstant(@NotNull FilterParser.ConstantContext ctx) {}
 
         @Override
-        public void enterComparison(@NotNull FilterParser.ComparisonContext ctx) {
-        }
+        public void enterComparison(@NotNull FilterParser.ComparisonContext ctx) {}
 
         private Class<?> getType(FilterParser.ValueContext context) {
             if (context.IDENTIFIER() != null) {
@@ -291,9 +278,7 @@ public class FilterExpression {
                 final FilterParser.ConstantContext constant = context.constant();
                 if (constant.STRING() != null) {
                     final String value = constant.STRING().getText();
-                    return value.length() == 2 ?
-                           "" :
-                           value.substring(1, value.length() - 1);
+                    return value.length() == 2 ? "" : value.substring(1, value.length() - 1);
                 } else if (constant.NUMBER() != null) {
                     return Long.parseLong(constant.NUMBER().getText());
                 } else if (constant.BOOLEAN() != null) {

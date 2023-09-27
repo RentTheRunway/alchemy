@@ -32,24 +32,29 @@ public class AllocationsResource extends BaseResource {
     }
 
     @GET
-    public Iterable<AllocationDto> getAllocations(@PathParam("experimentName") String experimentName) {
+    public Iterable<AllocationDto> getAllocations(
+            @PathParam("experimentName") String experimentName) {
         return mapper.toDto(
-            ensureExists(experiments.get(experimentName)).getAllocations(),
-            AllocationDto.class
-        );
+                ensureExists(experiments.get(experimentName)).getAllocations(),
+                AllocationDto.class);
     }
 
     @POST
-    public void updateAllocations(@PathParam("experimentName") String experimentName,
-                                  @Valid List<AllocationRequest> requests) {
+    public void updateAllocations(
+            @PathParam("experimentName") String experimentName,
+            @Valid List<AllocationRequest> requests) {
         final Experiment experiment = ensureExists(experiments.get(experimentName));
 
         for (AllocationRequest request : requests) {
             if (request instanceof AllocationRequest.Deallocate) {
                 experiment.deallocate(request.getTreatment(), request.getSize());
             } else if (request instanceof AllocationRequest.Reallocate) {
-                final AllocationRequest.Reallocate reallocation = (AllocationRequest.Reallocate) request;
-                experiment.reallocate(reallocation.getTreatment(), reallocation.getTarget(), reallocation.getSize());
+                final AllocationRequest.Reallocate reallocation =
+                        (AllocationRequest.Reallocate) request;
+                experiment.reallocate(
+                        reallocation.getTreatment(),
+                        reallocation.getTarget(),
+                        reallocation.getSize());
             } else {
                 experiment.allocate(request.getTreatment(), request.getSize());
             }
@@ -60,8 +65,6 @@ public class AllocationsResource extends BaseResource {
 
     @DELETE
     public void clearAllocations(@PathParam("experimentName") String experimentName) {
-        ensureExists(experiments.get(experimentName))
-            .deallocateAll()
-            .save();
+        ensureExists(experiments.get(experimentName)).deallocateAll().save();
     }
 }

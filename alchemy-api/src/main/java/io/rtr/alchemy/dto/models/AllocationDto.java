@@ -4,18 +4,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 
-/**
- * Represents an allocation
- */
+/** Represents an allocation */
 public class AllocationDto {
     private final String treatment;
     private final int offset;
     private final int size;
 
     @JsonCreator
-    public AllocationDto(@JsonProperty("treatment") String treatment,
-                         @JsonProperty("offset") int offset,
-                         @JsonProperty("size") int size) {
+    public AllocationDto(
+            @JsonProperty("treatment") String treatment,
+            @JsonProperty("offset") int offset,
+            @JsonProperty("size") int size) {
         this.treatment = treatment;
         this.offset = offset;
         this.size = size;
@@ -46,9 +45,8 @@ public class AllocationDto {
 
         final AllocationDto other = (AllocationDto) obj;
 
-        return
-            Objects.equal(treatment, other.treatment) &&
-            Objects.equal(offset, other.offset) &&
-            Objects.equal(size, other.size);
+        return Objects.equal(treatment, other.treatment)
+                && Objects.equal(offset, other.offset)
+                && Objects.equal(size, other.size);
     }
 }

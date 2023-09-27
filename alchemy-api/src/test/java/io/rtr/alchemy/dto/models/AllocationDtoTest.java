@@ -7,10 +7,6 @@ import org.junit.Test;
 public class AllocationDtoTest {
     @Test
     public void testEqualsHashCode() {
-        EqualsVerifier
-            .forClass(AllocationDto.class)
-            .suppress(Warning.STRICT_INHERITANCE)
-            .verify();
+        EqualsVerifier.forClass(AllocationDto.class).suppress(Warning.STRICT_INHERITANCE).verify();
     }
-
 }

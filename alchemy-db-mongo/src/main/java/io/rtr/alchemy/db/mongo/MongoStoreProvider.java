@@ -14,9 +14,7 @@ import org.mongodb.morphia.Morphia;
 
 import java.util.List;
 
-/**
- * A provider for MongoDB which implements the store and cache for using MongoDB as a backend
- */
+/** A provider for MongoDB which implements the store and cache for using MongoDB as a backend */
 public class MongoStoreProvider implements ExperimentsStoreProvider {
     private final MongoClient client;
     private final ExperimentsStore store;
@@ -26,16 +24,16 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
         return new Builder();
     }
 
-    private MongoStoreProvider(List<ServerAddress> hosts,
-                               List<MongoCredential> credentials,
-                               MongoClientOptions options,
-                               String database) {
+    private MongoStoreProvider(
+            List<ServerAddress> hosts,
+            List<MongoCredential> credentials,
+            MongoClientOptions options,
+            String database) {
         this(
-            options == null ?
-            new MongoClient(hosts, credentials) :
-            new MongoClient(hosts, credentials, options),
-            database
-        );
+                options == null
+                        ? new MongoClient(hosts, credentials)
+                        : new MongoClient(hosts, credentials, options),
+                database);
     }
 
     public MongoStoreProvider(MongoClient client, String database) {
@@ -99,15 +97,12 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
 
         public MongoStoreProvider build() {
             if (hosts.isEmpty()) {
-                hosts.add(new ServerAddress(ServerAddress.defaultHost(), ServerAddress.defaultPort()));
+                hosts.add(
+                        new ServerAddress(
+                                ServerAddress.defaultHost(), ServerAddress.defaultPort()));
             }
 
-            return new MongoStoreProvider(
-                hosts,
-                credentials,
-                options,
-                database
-            );
+            return new MongoStoreProvider(hosts, credentials, options, database);
         }
     }
 }

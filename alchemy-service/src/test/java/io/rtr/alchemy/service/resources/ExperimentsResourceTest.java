@@ -11,9 +11,7 @@ import io.rtr.alchemy.filtering.FilterExpression;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response.Status;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,24 +23,24 @@ public class ExperimentsResourceTest extends ResourceTest {
 
     @Test
     public void testGetExperiments() {
-        final Iterable<ExperimentDto> expected = MAPPER.toDto(EXPERIMENTS.find(), ExperimentDto.class);
+        final Iterable<ExperimentDto> expected =
+                MAPPER.toDto(EXPERIMENTS.find(), ExperimentDto.class);
         final Iterable<ExperimentDto> actual =
-            get(EXPERIMENTS_ENDPOINT)
-                .assertStatus(Status.OK)
-                .result(iterable(ExperimentDto.class));
+                get(EXPERIMENTS_ENDPOINT)
+                        .assertStatus(Status.OK)
+                        .result(iterable(ExperimentDto.class));
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetExperiment() {
-        get(EXPERIMENT_ENDPOINT, EXPERIMENT_BAD)
-            .assertStatus(Status.NOT_FOUND);
+        get(EXPERIMENT_ENDPOINT, EXPERIMENT_BAD).assertStatus(Status.NOT_FOUND);
 
         final ExperimentDto expected = MAPPER.toDto(experiment(EXPERIMENT_1), ExperimentDto.class);
         final ExperimentDto actual =
-            get(EXPERIMENT_ENDPOINT, EXPERIMENT_1)
-                .assertStatus(Status.OK)
-                .result(ExperimentDto.class);
+                get(EXPERIMENT_ENDPOINT, EXPERIMENT_1)
+                        .assertStatus(Status.OK)
+                        .result(ExperimentDto.class);
 
         assertEquals(expected, actual);
     }
@@ -50,30 +48,25 @@ public class ExperimentsResourceTest extends ResourceTest {
     @Test
     public void testAddExperiment() {
         final CreateExperimentRequest request =
-            new CreateExperimentRequest(
-                "new_experiment",
-                0,
-                "it's new",
-                null,
-                null,
-                false,
-                Lists.newArrayList(
-                    new TreatmentDto("control", "the default"),
-                    new TreatmentDto("first_case", "the first case"),
-                    new TreatmentDto("second_case", "the second case")
-                ),
-                Lists.newArrayList(
-                    new AllocateRequest("control", 10),
-                    new AllocateRequest("first_case", 20),
-                    new AllocateRequest("second_case", 30)
-                ),
-                Lists.<TreatmentOverrideRequest>newArrayList()
-            );
+                new CreateExperimentRequest(
+                        "new_experiment",
+                        0,
+                        "it's new",
+                        null,
+                        null,
+                        false,
+                        Lists.newArrayList(
+                                new TreatmentDto("control", "the default"),
+                                new TreatmentDto("first_case", "the first case"),
+                                new TreatmentDto("second_case", "the second case")),
+                        Lists.newArrayList(
+                                new AllocateRequest("control", 10),
+                                new AllocateRequest("first_case", 20),
+                                new AllocateRequest("second_case", 30)),
+                        Lists.<TreatmentOverrideRequest>newArrayList());
 
         assertNull(experiment("new_experiment"));
-        put(EXPERIMENTS_ENDPOINT)
-            .entity(request)
-            .assertStatus(Status.CREATED);
+        put(EXPERIMENTS_ENDPOINT).entity(request).assertStatus(Status.CREATED);
         assertNotNull(experiment("new_experiment"));
     }
 
@@ -89,54 +82,41 @@ public class ExperimentsResourceTest extends ResourceTest {
                         false,
                         Lists.newArrayList(
                                 new TreatmentDto("control", "the default"),
-                                new TreatmentDto("first_case", "the first case")
-                        ),
+                                new TreatmentDto("first_case", "the first case")),
                         Lists.newArrayList(
                                 new AllocateRequest("control", 50),
-                                new AllocateRequest("first_case", 50)
-                        ),
-                        Lists.<TreatmentOverrideRequest>newArrayList()
-                );
+                                new AllocateRequest("first_case", 50)),
+                        Lists.<TreatmentOverrideRequest>newArrayList());
 
-        put(EXPERIMENTS_ENDPOINT)
-                .entity(request)
-                .assertStatus(Status.CREATED);
+        put(EXPERIMENTS_ENDPOINT).entity(request).assertStatus(Status.CREATED);
         assertNotNull(experiment("duplicate_experiment_name"));
-        put(EXPERIMENTS_ENDPOINT)
-                .entity(request)
-                .assertStatus(Status.INTERNAL_SERVER_ERROR);
+        put(EXPERIMENTS_ENDPOINT).entity(request).assertStatus(Status.INTERNAL_SERVER_ERROR);
     }
 
     @Test
     public void testUpdateExperiment() {
         final UpdateExperimentRequest request =
-            new UpdateExperimentRequest(
-                Optional.empty(),
-                Optional.of("new description"),
-                Optional.of("device"),
-                Optional.empty(),
-                Optional.of(false),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
-            );
+                new UpdateExperimentRequest(
+                        Optional.empty(),
+                        Optional.of("new description"),
+                        Optional.of("device"),
+                        Optional.empty(),
+                        Optional.of(false),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty());
 
-        final ExperimentDto expected = MAPPER.toDto(
-                experiment(EXPERIMENT_1)
-                    .setDescription(request.getDescription().get())
-                    .setFilter(FilterExpression.of(request.getFilter().get()))
-                    .deactivate(),
-                ExperimentDto.class
-        );
+        final ExperimentDto expected =
+                MAPPER.toDto(
+                        experiment(EXPERIMENT_1)
+                                .setDescription(request.getDescription().get())
+                                .setFilter(FilterExpression.of(request.getFilter().get()))
+                                .deactivate(),
+                        ExperimentDto.class);
 
-        post(EXPERIMENT_ENDPOINT, EXPERIMENT_BAD)
-            .entity(request)
-            .assertStatus(Status.NOT_FOUND);
+        post(EXPERIMENT_ENDPOINT, EXPERIMENT_BAD).entity(request).assertStatus(Status.NOT_FOUND);
 
-
-        post(EXPERIMENT_ENDPOINT, EXPERIMENT_1)
-            .entity(request)
-            .assertStatus(Status.NO_CONTENT);
+        post(EXPERIMENT_ENDPOINT, EXPERIMENT_1).entity(request).assertStatus(Status.NO_CONTENT);
 
         final ExperimentDto actual = MAPPER.toDto(experiment(EXPERIMENT_1), ExperimentDto.class);
         assertEquals(expected, actual);
@@ -144,12 +124,10 @@ public class ExperimentsResourceTest extends ResourceTest {
 
     @Test
     public void testRemoveExperiment() {
-        delete(EXPERIMENT_ENDPOINT, EXPERIMENT_BAD)
-            .assertStatus(Status.NOT_FOUND);
+        delete(EXPERIMENT_ENDPOINT, EXPERIMENT_BAD).assertStatus(Status.NOT_FOUND);
 
         assertNotNull(EXPERIMENTS.get(EXPERIMENT_1));
-        delete(EXPERIMENT_ENDPOINT, EXPERIMENT_1)
-            .assertStatus(Status.NO_CONTENT);
+        delete(EXPERIMENT_ENDPOINT, EXPERIMENT_1).assertStatus(Status.NO_CONTENT);
         assertNull(EXPERIMENTS.get(EXPERIMENT_1));
     }
 }

@@ -4,9 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.rtr.alchemy.filtering.FilterExpression;
 
-/**
- * Represents a treatment override assigned to a specific hash value
- */
+/** Represents a treatment override assigned to a specific hash value */
 public class TreatmentOverride implements Named {
     private final String name;
     private final FilterExpression filter;
@@ -43,16 +41,12 @@ public class TreatmentOverride implements Named {
 
         final TreatmentOverride other = (TreatmentOverride) obj;
 
-        return
-            Objects.equal(name, other.name) &&
-            Objects.equal(treatment, other.treatment);
+        return Objects.equal(name, other.name) && Objects.equal(treatment, other.treatment);
     }
 
     @Override
     public String toString() {
-        return
-            MoreObjects
-                .toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", name)
                 .add("filter", filter)
                 .add("treatment", treatment)

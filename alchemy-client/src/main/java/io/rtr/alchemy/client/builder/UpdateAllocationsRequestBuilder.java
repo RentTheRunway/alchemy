@@ -17,7 +17,7 @@ public class UpdateAllocationsRequestBuilder {
     }
 
     public UpdateAllocationsRequestBuilder allocate(String treatmentName, int size) {
-        allocations.add(new AllocationRequest.Allocate(treatmentName,size));
+        allocations.add(new AllocationRequest.Allocate(treatmentName, size));
 
         return this;
     }
@@ -27,7 +27,8 @@ public class UpdateAllocationsRequestBuilder {
         return this;
     }
 
-    public UpdateAllocationsRequestBuilder reallocate(final String treatmentName, final String target, final int size) {
+    public UpdateAllocationsRequestBuilder reallocate(
+            final String treatmentName, final String target, final int size) {
         allocations.add(new AllocationRequest.Reallocate(treatmentName, size, target));
         return this;
     }

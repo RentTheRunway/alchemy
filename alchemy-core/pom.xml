@@ -10,7 +10,8 @@
   <artifactId>alchemy-core</artifactId>
 
   <properties>
-    <antlr.version>4.13.1</antlr.version>
+    <!-- this is the last version with org.antlr.v4.runtime.misc.Nullable -->
+    <antlr.version>4.5</antlr.version>
   </properties>
 
   <dependencies>
@@ -55,6 +56,20 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.coveo</groupId>
+          <artifactId>fmt-maven-plugin</artifactId>
+          <version>${fmt-maven-plugin.version}</version>
+          <configuration combine.self="append">
+            <!-- doesn't play nice with the auto-generated files from antlr -->
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.antlr</groupId>

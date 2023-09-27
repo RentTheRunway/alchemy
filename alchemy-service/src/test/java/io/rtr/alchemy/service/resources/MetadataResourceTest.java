@@ -14,8 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 public class MetadataResourceTest extends ResourceTest {
     private static final String METADATA_IDENTITY_TYPES_ENDPOINT = "/metadata/identityTypes";
-    private static final String METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT = "/metadata/identityTypes/{identityType}/schema";
-    private static final String METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT = "/metadata/identityTypes/{identityType}/attributes";
+    private static final String METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT =
+            "/metadata/identityTypes/{identityType}/schema";
+    private static final String METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT =
+            "/metadata/identityTypes/{identityType}/attributes";
 
     @Test
     public void testGetIdentityTypes() {
@@ -24,45 +26,36 @@ public class MetadataResourceTest extends ResourceTest {
         expected.put("device", DeviceDto.class);
 
         final Map<String, Class> actual =
-            get(METADATA_IDENTITY_TYPES_ENDPOINT)
-                .assertStatus(Status.OK)
-                .result(map(String.class, Class.class));
+                get(METADATA_IDENTITY_TYPES_ENDPOINT)
+                        .assertStatus(Status.OK)
+                        .result(map(String.class, Class.class));
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetIdentitySchema() {
-        get(METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT, "foobar")
-            .assertStatus(Status.NOT_FOUND);
+        get(METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT, "foobar").assertStatus(Status.NOT_FOUND);
 
         final JsonSchema schema =
-            get(METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT, "user")
-                .assertStatus(Status.OK)
-                .result(JsonSchema.class);
+                get(METADATA_IDENTITY_TYPE_SCHEMA_ENDPOINT, "user")
+                        .assertStatus(Status.OK)
+                        .result(JsonSchema.class);
 
         assertNotNull(schema);
-        assertTrue(
-            schema
-                .asObjectSchema()
-                .getProperties()
-                .get("name")
-                .isStringSchema()
-        );
+        assertTrue(schema.asObjectSchema().getProperties().get("name").isStringSchema());
     }
 
     @Test
     public void testGetIdentityAttributes() {
-        get(METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT, "foobar")
-            .assertStatus(Status.NOT_FOUND);
+        get(METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT, "foobar").assertStatus(Status.NOT_FOUND);
 
         final Iterable<String> attributes =
-            get(METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT, "user")
-                .assertStatus(Status.OK)
-                .result(set(String.class));
+                get(METADATA_IDENTITY_TYPE_ATTRIBUTES_ENDPOINT, "user")
+                        .assertStatus(Status.OK)
+                        .result(set(String.class));
 
         assertNotNull(attributes);
         assertEquals(Sets.newHashSet("anonymous", "identified"), attributes);
-
     }
 }

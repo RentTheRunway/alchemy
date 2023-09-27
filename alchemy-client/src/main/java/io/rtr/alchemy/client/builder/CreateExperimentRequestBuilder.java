@@ -84,23 +84,25 @@ public class CreateExperimentRequestBuilder {
         return this;
     }
 
-    public CreateExperimentRequestBuilder addOverride(String name, String treatmentName, String filter) {
+    public CreateExperimentRequestBuilder addOverride(
+            String name, String treatmentName, String filter) {
         overrides.add(new TreatmentOverrideRequest(treatmentName, filter, name));
         return this;
     }
 
     public void apply() {
-        builder.put(Entity.entity(
-            new CreateExperimentRequest(
-                name,
-                seed,
-                description,
-                filter,
-                hashAttributes,
-                isActive,
-                treatments,
-                allocations,
-                overrides),
-            APPLICATION_JSON));
+        builder.put(
+                Entity.entity(
+                        new CreateExperimentRequest(
+                                name,
+                                seed,
+                                description,
+                                filter,
+                                hashAttributes,
+                                isActive,
+                                treatments,
+                                allocations,
+                                overrides),
+                        APPLICATION_JSON));
     }
 }

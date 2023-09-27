@@ -17,11 +17,19 @@ public class FilterExpressionTest {
     }
 
     private void assertEval(String expression, boolean expected) {
-        assertEquals(String.format("expected '%s' to be %s", expression, expected), expected, eval(expression));
+        assertEquals(
+                String.format("expected '%s' to be %s", expression, expected),
+                expected,
+                eval(expression));
     }
 
-    private void assertComparison(String comparison, String leftValue, String rightValue,
-                                  boolean expectedLeftRight, boolean expectedRightLeft, boolean expectedSame) {
+    private void assertComparison(
+            String comparison,
+            String leftValue,
+            String rightValue,
+            boolean expectedLeftRight,
+            boolean expectedRightLeft,
+            boolean expectedSame) {
         assertEval(String.format("%s%s%s", leftValue, comparison, rightValue), expectedLeftRight);
         assertEval(String.format("%s%s%s", rightValue, comparison, leftValue), expectedRightLeft);
         assertEval(String.format("%s%s%s", leftValue, comparison, leftValue), expectedSame);
@@ -30,17 +38,17 @@ public class FilterExpressionTest {
 
     @Before
     public void setUp() {
-        attributes = AttributesMap
-            .newBuilder()
-            .put("foo", true)
-            .put("not_foo", false)
-            .put("one", 1)
-            .put("zero", 0)
-            .put("meaning_of_life", 42)
-            .put("apple", "apple")
-            .put("baz", "baz")
-            .put("empty", "")
-            .build();
+        attributes =
+                AttributesMap.newBuilder()
+                        .put("foo", true)
+                        .put("not_foo", false)
+                        .put("one", 1)
+                        .put("zero", 0)
+                        .put("meaning_of_life", 42)
+                        .put("apple", "apple")
+                        .put("baz", "baz")
+                        .put("empty", "")
+                        .build();
     }
 
     @Test
@@ -79,9 +87,13 @@ public class FilterExpressionTest {
         assertEval("does_not_exist", false);
     }
 
-    private void testComparisons(String booleanLhs, String booleanRhs,
-                                 String numberLhs, String numberRhs,
-                                 String stringLhs, String stringRhs) {
+    private void testComparisons(
+            String booleanLhs,
+            String booleanRhs,
+            String numberLhs,
+            String numberRhs,
+            String stringLhs,
+            String stringRhs) {
         // >
         assertComparison(">", booleanLhs, booleanRhs, true, false, false);
         assertComparison(">", numberLhs, numberRhs, true, false, false);
@@ -123,8 +135,7 @@ public class FilterExpressionTest {
         testComparisons(
                 "true", "false",
                 "1", "0",
-                "\"bear\"", "\"apple\""
-        );
+                "\"bear\"", "\"apple\"");
     }
 
     @Test
@@ -132,8 +143,7 @@ public class FilterExpressionTest {
         testComparisons(
                 "true", "not_foo",
                 "1", "zero",
-                "baz", "\"apple\""
-        );
+                "baz", "\"apple\"");
     }
 
     @Test
@@ -141,8 +151,7 @@ public class FilterExpressionTest {
         testComparisons(
                 "foo", "not_foo",
                 "one", "zero",
-                "baz", "apple"
-        );
+                "baz", "apple");
     }
 
     @Test

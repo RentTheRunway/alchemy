@@ -1,4 +1,4 @@
-// Generated from Filter.g4 by ANTLR 4.2.2
+// Generated from Filter.g4 by ANTLR 4.5
 package io.rtr.alchemy.filtering;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -11,25 +11,62 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class FilterLexer extends Lexer {
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
+
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__1=1, T__0=2, AND=3, OR=4, NOT=5, NUMBER=6, STRING=7, BOOLEAN=8, IDENTIFIER=9, 
+		T__0=1, T__1=2, AND=3, OR=4, NOT=5, NUMBER=6, STRING=7, BOOLEAN=8, IDENTIFIER=9, 
 		COMPARISON=10, WS=11;
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
 	};
 
-	public static final String[] tokenNames = {
-		"<INVALID>",
-		"'('", "')'", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", "IDENTIFIER", 
-		"COMPARISON", "WS"
-	};
 	public static final String[] ruleNames = {
-		"T__1", "T__0", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", "IDENTIFIER", 
+		"T__0", "T__1", "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", "IDENTIFIER", 
 		"COMPARISON", "WS"
 	};
+
+	private static final String[] _LITERAL_NAMES = {
+		null, "'('", "')'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, null, "AND", "OR", "NOT", "NUMBER", "STRING", "BOOLEAN", "IDENTIFIER", 
+		"COMPARISON", "WS"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
 
 
 	public FilterLexer(CharStream input) {
@@ -39,9 +76,6 @@ public class FilterLexer extends Lexer {
 
 	@Override
 	public String getGrammarFileName() { return "Filter.g4"; }
-
-	@Override
-	public String[] getTokenNames() { return tokenNames; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

@@ -49,25 +49,18 @@ public class CacheStrategyTest {
         experiment1 = mock(Experiment.class);
         doReturn("foo").when(experiment1).getName();
         doReturn(FilterExpression.alwaysTrue()).when(experiment1).getFilter();
-        doReturn(experiment1)
-            .when(store)
-            .load(eq("foo"), any(Experiment.Builder.class));
+        doReturn(experiment1).when(store).load(eq("foo"), any(Experiment.Builder.class));
 
         experiment2 = mock(Experiment.class);
         doReturn("bar").when(experiment2).getName();
         doReturn(FilterExpression.alwaysTrue()).when(experiment2).getFilter();
-        doReturn(experiment2)
-            .when(store)
-            .load(eq("bar"), any(Experiment.Builder.class));
+        doReturn(experiment2).when(store).load(eq("bar"), any(Experiment.Builder.class));
 
         doReturn(Lists.newArrayList(experiment1, experiment2))
-            .when(store).find(any(Filter.class), any(Experiment.BuilderFactory.class));
+                .when(store)
+                .find(any(Filter.class), any(Experiment.BuilderFactory.class));
 
-        experiments =
-            Experiments
-                .using(provider)
-                .using(strategy)
-                .build();
+        experiments = Experiments.using(provider).using(strategy).build();
     }
 
     @Test
@@ -81,13 +74,18 @@ public class CacheStrategyTest {
         reset(strategy);
         final Iterable<Experiment> result = experiments.find();
         final Iterator<Experiment> iterator = result.iterator();
-        final Set<String> experimentNames = Sets.newHashSet(experiment1.getName(), experiment2.getName());
+        final Set<String> experimentNames =
+                Sets.newHashSet(experiment1.getName(), experiment2.getName());
 
         // no interactions until we actually iterate over results
         verifyZeroInteractions(strategy);
 
-        assertTrue("expected valid experiment name", experimentNames.remove(iterator.next().getName()));
-        assertTrue("expected valid experiment name", experimentNames.remove(iterator.next().getName()));
+        assertTrue(
+                "expected valid experiment name",
+                experimentNames.remove(iterator.next().getName()));
+        assertTrue(
+                "expected valid experiment name",
+                experimentNames.remove(iterator.next().getName()));
         verify(strategy, times(2)).onLoad(any(Experiment.class), any(CachingContext.class));
 
         assertFalse("should have no more results", iterator.hasNext());

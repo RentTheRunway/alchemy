@@ -9,9 +9,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * The main class for registering mappers and doing mapping
- */
+/** The main class for registering mappers and doing mapping */
 public class Mappers {
     private final Map<Class<?>, Map<Class<?>, Mapper>> mappers = Maps.newConcurrentMap();
 
@@ -52,20 +50,12 @@ public class Mappers {
         }
 
         Preconditions.checkNotNull(
-            bySourceType,
-            "No mapper defined from type %s to type %s",
-            sourceType,
-            destType
-        );
+                bySourceType, "No mapper defined from type %s to type %s", sourceType, destType);
 
         final Mapper mapper = bySourceType.get(destType);
 
         Preconditions.checkArgument(
-            mapper != null,
-            "No mapper defined from type %s to type %s",
-            sourceType,
-            destType
-        );
+                mapper != null, "No mapper defined from type %s to type %s", sourceType, destType);
 
         return mapper;
     }

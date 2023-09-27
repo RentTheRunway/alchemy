@@ -7,9 +7,6 @@ import org.junit.Test;
 public class FilterTest {
     @Test
     public void testEqualsHashCode() {
-        EqualsVerifier
-            .forClass(Filter.class)
-            .suppress(Warning.STRICT_INHERITANCE)
-            .verify();
+        EqualsVerifier.forClass(Filter.class).suppress(Warning.STRICT_INHERITANCE).verify();
     }
 }

@@ -32,19 +32,25 @@ public class RevisionManagerTest {
     public void setUp() {
         revision = Long.MIN_VALUE;
         ds = mock(AdvancedDatastore.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return MetadataEntity.of("revision", revision);
-            }
-        }).when(ds).get(eq(MetadataEntity.class), anyString());
+        doAnswer(
+                        new Answer() {
+                            @Override
+                            public Object answer(InvocationOnMock invocation) throws Throwable {
+                                return MetadataEntity.of("revision", revision);
+                            }
+                        })
+                .when(ds)
+                .get(eq(MetadataEntity.class), anyString());
 
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return MetadataEntity.of("revision", ++revision);
-            }
-        }).when(ds).findAndModify(any(Query.class), any(UpdateOperations.class));
+        doAnswer(
+                        new Answer() {
+                            @Override
+                            public Object answer(InvocationOnMock invocation) throws Throwable {
+                                return MetadataEntity.of("revision", ++revision);
+                            }
+                        })
+                .when(ds)
+                .findAndModify(any(Query.class), any(UpdateOperations.class));
 
         final Query query = mock(Query.class);
         final FieldEnd fieldEnd = mock(FieldEnd.class);
@@ -58,14 +64,18 @@ public class RevisionManagerTest {
     }
 
     private void makeInsertSetRevision() {
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                final MetadataEntity entity = (MetadataEntity) invocation.getArguments()[0];
-                revision = (Long) entity.value;
-                return null;
-            }
-        }).when(ds).insert(any(Object.class));
+        doAnswer(
+                        new Answer() {
+                            @Override
+                            public Object answer(InvocationOnMock invocation) throws Throwable {
+                                final MetadataEntity entity =
+                                        (MetadataEntity) invocation.getArguments()[0];
+                                revision = (Long) entity.value;
+                                return null;
+                            }
+                        })
+                .when(ds)
+                .insert(any(Object.class));
     }
 
     @Test
@@ -106,14 +116,17 @@ public class RevisionManagerTest {
     @Test
     public void testSetLatestRevision() {
         // our experiment will always be at revision Long.MIN_VALUE + 1
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                final ExperimentEntity entity = mock(ExperimentEntity.class);
-                entity.revision = Long.MIN_VALUE + 1;
-                return entity;
-            }
-        }).when(ds).get(eq(ExperimentEntity.class), anyString());
+        doAnswer(
+                        new Answer() {
+                            @Override
+                            public Object answer(InvocationOnMock invocation) throws Throwable {
+                                final ExperimentEntity entity = mock(ExperimentEntity.class);
+                                entity.revision = Long.MIN_VALUE + 1;
+                                return entity;
+                            }
+                        })
+                .when(ds)
+                .get(eq(ExperimentEntity.class), anyString());
 
         final RevisionManager revisionManager = new RevisionManager(ds);
 
@@ -122,11 +135,12 @@ public class RevisionManagerTest {
         assertFalse(revisionManager.checkIfAnyStale());
         assertTrue(revisionManager.checkIfStale("foo"));
 
-        revision = Long.MIN_VALUE + 1;  // our databases' revision
+        revision = Long.MIN_VALUE + 1; // our databases' revision
         revisionManager.setLatestRevision(Long.MIN_VALUE); // revision manager's internal revision
         assertTrue(revisionManager.checkIfAnyStale());
 
-        revisionManager.setLatestRevision(Long.MIN_VALUE + 1); // revision manager's internal revision
+        revisionManager.setLatestRevision(
+                Long.MIN_VALUE + 1); // revision manager's internal revision
         assertFalse(revisionManager.checkIfStale("foo"));
     }
 }

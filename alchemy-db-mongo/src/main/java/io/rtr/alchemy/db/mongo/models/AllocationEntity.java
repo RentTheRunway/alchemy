@@ -5,6 +5,7 @@ import org.mongodb.morphia.annotations.Embedded;
 
 /**
  * An entity that mirrors Allocation
+ *
  * @see io.rtr.alchemy.models.Allocation
  */
 @Embedded
@@ -18,7 +19,7 @@ public class AllocationEntity {
     }
 
     // Required by Morphia
-    private AllocationEntity() { }
+    private AllocationEntity() {}
 
     private AllocationEntity(Allocation allocation) {
         this.treatment = allocation.getTreatment().getName();

@@ -17,9 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * Implements a store that stores experiments in memory
- */
+/** Implements a store that stores experiments in memory */
 public class MemoryExperimentsStore implements ExperimentsStore {
     private final Map<String, Experiment> db;
 
@@ -42,7 +40,7 @@ public class MemoryExperimentsStore implements ExperimentsStore {
         db.remove(experimentName);
     }
 
-    private static boolean filterMatches(String filter, Object ... values) {
+    private static boolean filterMatches(String filter, Object... values) {
         if (filter == null || filter.isEmpty()) {
             return true;
         }
@@ -109,12 +107,9 @@ public class MemoryExperimentsStore implements ExperimentsStore {
 
                     default:
                         throw new IllegalArgumentException(
-                            String.format(
-                                "Unsupported ordering field: %s (%s)",
-                                field,
-                                field.getName()
-                            )
-                        );
+                                String.format(
+                                        "Unsupported ordering field: %s (%s)",
+                                        field, field.getName()));
                 }
             }
 
@@ -128,9 +123,7 @@ public class MemoryExperimentsStore implements ExperimentsStore {
 
         for (final Experiment experiment : db.values()) {
             if (filterMatches(
-                filter.getFilter(),
-                experiment.getName(),
-                experiment.getDescription())) {
+                    filter.getFilter(), experiment.getName(), experiment.getDescription())) {
                 result.add(Experiment.copyOf(experiment));
             }
         }

@@ -9,12 +9,11 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * Implements a cache that caches experiments in memory
- */
+/** Implements a cache that caches experiments in memory */
 public class MemoryExperimentsCache implements ExperimentsCache {
     private static final ActiveFilter ACTIVE_FILTER = new ActiveFilter();
-    private static final ExperimentCopyTransformer EXPERIMENT_COPY_TRANSFORMER = new ExperimentCopyTransformer();
+    private static final ExperimentCopyTransformer EXPERIMENT_COPY_TRANSFORMER =
+            new ExperimentCopyTransformer();
     private final Map<String, Experiment> db;
 
     public MemoryExperimentsCache(Map<String, Experiment> db) {
@@ -28,20 +27,16 @@ public class MemoryExperimentsCache implements ExperimentsCache {
     }
 
     @Override
-    public void invalidateAll(Experiment.BuilderFactory factory) {
-    }
+    public void invalidateAll(Experiment.BuilderFactory factory) {}
 
     @Override
-    public void invalidate(String experimentName, Experiment.Builder builder) {
-    }
+    public void invalidate(String experimentName, Experiment.Builder builder) {}
 
     @Override
-    public void update(Experiment experiment) {
-    }
+    public void update(Experiment experiment) {}
 
     @Override
-    public void delete(String experimentName) {
-    }
+    public void delete(String experimentName) {}
 
     @Override
     public boolean checkIfAnyStale() {
@@ -60,7 +55,8 @@ public class MemoryExperimentsCache implements ExperimentsCache {
         }
     }
 
-    private static class ExperimentCopyTransformer implements Maps.EntryTransformer<String, Experiment, Experiment> {
+    private static class ExperimentCopyTransformer
+            implements Maps.EntryTransformer<String, Experiment, Experiment> {
         @Override
         public Experiment transformEntry(@Nullable String key, @Nullable Experiment value) {
             return value == null ? null : Experiment.copyOf(value);

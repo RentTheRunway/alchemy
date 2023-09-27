@@ -11,12 +11,8 @@ public interface Named {
     default void validateName() {
         if (getName() == null || !NAME_PATTERN.matcher(getName()).matches()) {
             throw new ValidationException(
-                String.format(
-                    "Invalid name %s, must match %s",
-                    getName(),
-                    NAME_PATTERN.pattern()
-                )
-            );
+                    String.format(
+                            "Invalid name %s, must match %s", getName(), NAME_PATTERN.pattern()));
         }
     }
 }

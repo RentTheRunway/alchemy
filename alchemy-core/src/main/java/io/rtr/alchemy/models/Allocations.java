@@ -12,17 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * Represents allocations of treatments for an experiment
- */
+/** Represents allocations of treatments for an experiment */
 public class Allocations {
     public static final int NUM_BINS = 100;
-    private static final Comparator<Allocation> COMPARATOR = new Comparator<Allocation>() {
-        @Override
-        public int compare(Allocation lhs, Allocation rhs) {
-            return Integer.compare(lhs.getOffset(), rhs.getOffset());
-        }
-    };
+    private static final Comparator<Allocation> COMPARATOR =
+            new Comparator<Allocation>() {
+                @Override
+                public int compare(Allocation lhs, Allocation rhs) {
+                    return Integer.compare(lhs.getOffset(), rhs.getOffset());
+                }
+            };
 
     private Byte[] allocationMap;
     private List<Allocation> allocations;
@@ -55,11 +54,10 @@ public class Allocations {
                 treatments.put(allocation.getTreatment(), treatment);
             }
 
-            for (int i=allocation.getOffset(); i<allocation.getOffset() + allocation.getSize(); i++, size++) {
-                Preconditions.checkState(
-                    allocationMap[i] == null,
-                    "overlapping allocations"
-                );
+            for (int i = allocation.getOffset();
+                    i < allocation.getOffset() + allocation.getSize();
+                    i++, size++) {
+                Preconditions.checkState(allocationMap[i] == null, "overlapping allocations");
                 allocationMap[i] = treatment.byteValue();
             }
         }
@@ -73,6 +71,7 @@ public class Allocations {
 
     /**
      * Get treatment assigned to a specific bin
+     *
      * @param bin The bin
      */
     public Treatment getTreatment(int bin) {
@@ -97,7 +96,7 @@ public class Allocations {
         int offset = allocations.get(0).getOffset();
         Treatment treatment = allocations.get(0).getTreatment();
 
-        for (int i=1; i<allocations.size(); i++) {
+        for (int i = 1; i < allocations.size(); i++) {
             final Allocation allocation = allocations.get(i);
             if (!allocation.getTreatment().equals(treatment)) {
                 // different treatment
@@ -117,17 +116,17 @@ public class Allocations {
 
     /**
      * Allocates bins to a treatment
+     *
      * @param treatment The treatment
      * @param size The number of bins
      */
     public void allocate(Treatment treatment, int size) {
         Preconditions.checkArgument(
-            getUnallocatedSize() >= size,
-            "not enough free bins to allocate treatment %s with size %s given %s unallocated bin(s)",
-            treatment.getName(),
-            size,
-            getUnallocatedSize()
-        );
+                getUnallocatedSize() >= size,
+                "not enough free bins to allocate treatment %s with size %s given %s unallocated bin(s)",
+                treatment.getName(),
+                size,
+                getUnallocatedSize());
 
         // turn contiguous unallocated blocks into allocated blocks
         final List<Allocation> pieces = Lists.newArrayList();
@@ -159,6 +158,7 @@ public class Allocations {
 
     /**
      * De-allocates bins from a treatment
+     *
      * @param treatment The treatment
      * @param size The number of bins
      */
@@ -175,8 +175,13 @@ public class Allocations {
             }
 
             if (sizeLeft < 0) {
-                // a piece could not be evenly split by the amount we wanted to deallocate, need to add back in
-                allocations.add(new Allocation(treatment, next.getOffset() + next.getSize() + sizeLeft, -sizeLeft));
+                // a piece could not be evenly split by the amount we wanted to deallocate, need to
+                // add back in
+                allocations.add(
+                        new Allocation(
+                                treatment,
+                                next.getOffset() + next.getSize() + sizeLeft,
+                                -sizeLeft));
                 break;
             }
         }
@@ -188,6 +193,7 @@ public class Allocations {
 
     /**
      * Reallocates bins from one treatment to another
+     *
      * @param source The source treatment
      * @param destination The destination treatment
      * @param size The number of bins
@@ -210,9 +216,13 @@ public class Allocations {
             iter.remove();
 
             if (sizeLeft < 0) {
-                // a piece could not be evenly split by the amount we wanted to deallocate, need to add back in
-                pieces.add(new Allocation(destination, next.getOffset(), next.getSize() + sizeLeft));
-                pieces.add(new Allocation(source, next.getOffset() + next.getSize() + sizeLeft, -sizeLeft));
+                // a piece could not be evenly split by the amount we wanted to deallocate, need to
+                // add back in
+                pieces.add(
+                        new Allocation(destination, next.getOffset(), next.getSize() + sizeLeft));
+                pieces.add(
+                        new Allocation(
+                                source, next.getOffset() + next.getSize() + sizeLeft, -sizeLeft));
             } else {
                 pieces.add(new Allocation(destination, next.getOffset(), next.getSize()));
             }

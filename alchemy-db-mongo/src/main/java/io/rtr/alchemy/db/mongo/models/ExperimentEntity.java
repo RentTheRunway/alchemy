@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * An entity that mirrors Experiment
+ *
  * @see io.rtr.alchemy.models.Experiment
  */
 @Entity(value = "Experiments", noClassnameStored = true)
@@ -28,11 +29,11 @@ import java.util.List;
 public class ExperimentEntity {
     private static final TreatmentMapper TREATMENT_MAPPER = new TreatmentMapper();
     private static final AllocationMapper ALLOCATION_MAPPER = new AllocationMapper();
-    private static final TreatmentOverrideMapper TREATMENT_OVERRIDE_MAPPER = new TreatmentOverrideMapper();
+    private static final TreatmentOverrideMapper TREATMENT_OVERRIDE_MAPPER =
+            new TreatmentOverrideMapper();
 
     public static final String FIELD_NAME = "name";
-    @Id
-    public String name;
+    @Id public String name;
 
     public int seed;
 
@@ -43,8 +44,7 @@ public class ExperimentEntity {
     public List<String> hashAttributes;
 
     public static final String FIELD_ACTIVE = "active";
-    @Indexed
-    public boolean active;
+    @Indexed public boolean active;
 
     public long revision;
 
@@ -60,14 +60,11 @@ public class ExperimentEntity {
     public static final String FIELD_DEACTIVATED = "deactivated";
     public DateTime deactivated;
 
-    @Embedded
-    public List<TreatmentEntity> treatments;
+    @Embedded public List<TreatmentEntity> treatments;
 
-    @Embedded
-    public List<AllocationEntity> allocations;
+    @Embedded public List<AllocationEntity> allocations;
 
-    @Embedded
-    public List<TreatmentOverrideEntity> overrides;
+    @Embedded public List<TreatmentOverrideEntity> overrides;
 
     public static ExperimentEntity from(Experiment experiment) {
         return new ExperimentEntity(experiment);
@@ -78,7 +75,7 @@ public class ExperimentEntity {
             case NAME:
                 return ExperimentEntity.FIELD_NAME;
             case DESCRIPTION:
-                return  ExperimentEntity.FIELD_DESCRIPTION;
+                return ExperimentEntity.FIELD_DESCRIPTION;
             case ACTIVE:
                 return ExperimentEntity.FIELD_ACTIVE;
             case CREATED:
@@ -91,26 +88,21 @@ public class ExperimentEntity {
                 return ExperimentEntity.FIELD_DEACTIVATED;
             default:
                 throw new IllegalArgumentException(
-                    String.format(
-                        "Unsupported ordering field: %s (%s)",
-                        field,
-                        field.getName()
-                    )
-                );
+                        String.format(
+                                "Unsupported ordering field: %s (%s)", field, field.getName()));
         }
     }
 
     public Experiment toExperiment(Experiment.Builder builder) {
-        builder
-            .seed(seed)
-            .description(description)
-            .filter(filter)
-            .hashAttributes(Sets.newLinkedHashSet(hashAttributes))
-            .created(created)
-            .modified(modified)
-            .activated(activated)
-            .deactivated(deactivated)
-            .active(active);
+        builder.seed(seed)
+                .description(description)
+                .filter(filter)
+                .hashAttributes(Sets.newLinkedHashSet(hashAttributes))
+                .created(created)
+                .modified(modified)
+                .activated(activated)
+                .deactivated(deactivated)
+                .active(active);
 
         if (treatments != null) {
             for (final TreatmentEntity treatment : treatments) {
@@ -134,7 +126,7 @@ public class ExperimentEntity {
     }
 
     // Required by Morphia
-    private ExperimentEntity() { }
+    private ExperimentEntity() {}
 
     private ExperimentEntity(Experiment experiment) {
         name = experiment.getName();
@@ -147,9 +139,11 @@ public class ExperimentEntity {
         deactivated = experiment.getDeactivated();
         filter = experiment.getFilter().toString();
         hashAttributes = Lists.newArrayList(experiment.getHashAttributes());
-        treatments = Lists.newArrayList(Collections2.transform(experiment.getTreatments(), TREATMENT_MAPPER));
+        treatments =
+                Lists.newArrayList(
+                        Collections2.transform(experiment.getTreatments(), TREATMENT_MAPPER));
         allocations = Lists.transform(experiment.getAllocations(), ALLOCATION_MAPPER);
-        overrides = Lists.transform(experiment.getOverrides(),TREATMENT_OVERRIDE_MAPPER);
+        overrides = Lists.transform(experiment.getOverrides(), TREATMENT_OVERRIDE_MAPPER);
     }
 
     private static class TreatmentMapper implements Function<Treatment, TreatmentEntity> {
@@ -168,7 +162,8 @@ public class ExperimentEntity {
         }
     }
 
-    private static class TreatmentOverrideMapper implements Function<TreatmentOverride, TreatmentOverrideEntity> {
+    private static class TreatmentOverrideMapper
+            implements Function<TreatmentOverride, TreatmentOverrideEntity> {
         @Nullable
         @Override
         public TreatmentOverrideEntity apply(@Nullable TreatmentOverride input) {

@@ -73,8 +73,7 @@ public abstract class ResourceTest {
     protected static final String ATTR_DEVICE = "device";
     protected final List<Response> openResponses = Lists.newArrayList();
 
-    @ClassRule
-    public static final ResourceTestRule RESOURCES;
+    @ClassRule public static final ResourceTestRule RESOURCES;
 
     static {
         PROVIDER = new MemoryStoreProvider();
@@ -88,20 +87,22 @@ public abstract class ResourceTest {
         final Environment environment = mock(Environment.class);
         doReturn(mapper).when(environment).getObjectMapper();
         final IdentitiesMetadata metadata = new IdentitiesMetadata();
-        metadata.put("user", new IdentityMetadata("user", User.class, UserDto.class, UserMapper.class));
-        metadata.put("device", new IdentityMetadata("device", Device.class, DeviceDto.class, DeviceMapper.class));
+        metadata.put(
+                "user", new IdentityMetadata("user", User.class, UserDto.class, UserMapper.class));
+        metadata.put(
+                "device",
+                new IdentityMetadata("device", Device.class, DeviceDto.class, DeviceMapper.class));
 
         RESOURCES =
-            ResourceTestRule
-                .builder()
-                .setMapper(mapper)
-                .addResource(new TreatmentsResource(EXPERIMENTS, MAPPER))
-                .addResource(new AllocationsResource(EXPERIMENTS, MAPPER))
-                .addResource(new TreatmentOverridesResource(EXPERIMENTS, MAPPER))
-                .addResource(new ExperimentsResource(EXPERIMENTS, MAPPER))
-                .addResource(new ActiveTreatmentsResource(EXPERIMENTS, MAPPER))
-                .addResource(new MetadataResource(environment, metadata, MAPPER))
-                .build();
+                ResourceTestRule.builder()
+                        .setMapper(mapper)
+                        .addResource(new TreatmentsResource(EXPERIMENTS, MAPPER))
+                        .addResource(new AllocationsResource(EXPERIMENTS, MAPPER))
+                        .addResource(new TreatmentOverridesResource(EXPERIMENTS, MAPPER))
+                        .addResource(new ExperimentsResource(EXPERIMENTS, MAPPER))
+                        .addResource(new ActiveTreatmentsResource(EXPERIMENTS, MAPPER))
+                        .addResource(new MetadataResource(environment, metadata, MAPPER))
+                        .build();
     }
 
     @Before
@@ -109,42 +110,38 @@ public abstract class ResourceTest {
         PROVIDER.resetDatabase();
 
         EXPERIMENTS
-            .create(EXPERIMENT_1)
-            .setDescription("do people want pie or cake?")
-            .activate()
-            .setFilter(FilterExpression.of(ATTR_IDENTIFIED))
-            .addTreatment(EXP_1_TREATMENT_1)
-            .addTreatment(EXP_1_TREATMENT_2)
-            .addTreatment(EXP_1_TREATMENT_3)
-            .allocate(EXP_1_TREATMENT_1, 50)
-            .allocate(EXP_1_TREATMENT_2, 25)
-            .allocate(EXP_1_TREATMENT_3, 25)
-            .addOverride(EXP_1_OVERRIDE, EXP_1_TREATMENT_2, EXP_1_OVERRIDE_USER)
-            .save();
+                .create(EXPERIMENT_1)
+                .setDescription("do people want pie or cake?")
+                .activate()
+                .setFilter(FilterExpression.of(ATTR_IDENTIFIED))
+                .addTreatment(EXP_1_TREATMENT_1)
+                .addTreatment(EXP_1_TREATMENT_2)
+                .addTreatment(EXP_1_TREATMENT_3)
+                .allocate(EXP_1_TREATMENT_1, 50)
+                .allocate(EXP_1_TREATMENT_2, 25)
+                .allocate(EXP_1_TREATMENT_3, 25)
+                .addOverride(EXP_1_OVERRIDE, EXP_1_TREATMENT_2, EXP_1_OVERRIDE_USER)
+                .save();
 
         EXPERIMENTS
-            .create(EXPERIMENT_2)
-            .activate()
-            .setFilter(FilterExpression.of(ATTR_DEVICE))
-            .addTreatment(EXP_2_TREATMENT_1)
-            .addTreatment(EXP_2_TREATMENT_2)
-            .addTreatment(EXP_2_TREATMENT_3)
-            .allocate(EXP_2_TREATMENT_1, 50)
-            .allocate(EXP_2_TREATMENT_2, 25)
-            .allocate(EXP_2_TREATMENT_3, 25)
-            .save();
+                .create(EXPERIMENT_2)
+                .activate()
+                .setFilter(FilterExpression.of(ATTR_DEVICE))
+                .addTreatment(EXP_2_TREATMENT_1)
+                .addTreatment(EXP_2_TREATMENT_2)
+                .addTreatment(EXP_2_TREATMENT_3)
+                .allocate(EXP_2_TREATMENT_1, 50)
+                .allocate(EXP_2_TREATMENT_2, 25)
+                .allocate(EXP_2_TREATMENT_3, 25)
+                .save();
 
         EXPERIMENTS
-            .create(EXPERIMENT_3)
-            .addTreatment(EXP_3_TREATMENT_1)
-            .allocate(EXP_3_TREATMENT_1, 100)
-            .save();
+                .create(EXPERIMENT_3)
+                .addTreatment(EXP_3_TREATMENT_1)
+                .allocate(EXP_3_TREATMENT_1, 100)
+                .save();
 
-        EXPERIMENTS
-            .create(EXPERIMENT_4)
-            .addTreatment(EXP_4_TREATMENT_1)
-            .activate()
-            .save();
+        EXPERIMENTS.create(EXPERIMENT_4).addTreatment(EXP_4_TREATMENT_1).activate().save();
     }
 
     @After
@@ -183,10 +180,10 @@ public abstract class ResourceTest {
         }
 
         return RESOURCES
-            .client()
-            .target(substUrl)
-            .request()
-            .accept(MediaType.APPLICATION_JSON_TYPE);
+                .client()
+                .target(substUrl)
+                .request()
+                .accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
     protected static Experiment experiment(String name) {
@@ -212,10 +209,9 @@ public abstract class ResourceTest {
 
         @Override
         public AttributesMap computeAttributes() {
-            return
-                    name == null ?
-                    attributes().put("anonymous", true).build() :
-                    attributes().put("identified", true).build();
+            return name == null
+                    ? attributes().put("anonymous", true).build()
+                    : attributes().put("identified", true).build();
         }
     }
 
@@ -305,7 +301,7 @@ public abstract class ResourceTest {
         return new ResourceAssertionBuilder(SyncInvoker::put, resource(url, pathParams));
     }
 
-    protected ResourceAssertionBuilder post(String url, String ... pathParams) {
+    protected ResourceAssertionBuilder post(String url, String... pathParams) {
         return new ResourceAssertionBuilder(SyncInvoker::post, resource(url, pathParams));
     }
 
@@ -317,14 +313,16 @@ public abstract class ResourceTest {
         private final BiFunction<Invocation.Builder, Entity, Response> action;
         private final Invocation.Builder resource;
 
-        public ResourceAssertionBuilder(BiFunction<Invocation.Builder, Entity, Response> action,
-                                        Invocation.Builder resource) {
+        public ResourceAssertionBuilder(
+                BiFunction<Invocation.Builder, Entity, Response> action,
+                Invocation.Builder resource) {
             this.action = action;
             this.resource = resource;
         }
 
         public ResourceAssertion entity(Object entity) {
-            final Response response = action.apply(resource, Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
+            final Response response =
+                    action.apply(resource, Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
             openResponses.add(response);
             return new ResourceAssertion(response);
         }
@@ -338,7 +336,8 @@ public abstract class ResourceTest {
         }
 
         public ResourceAssertion assertStatus(Response.Status expectedStatus) {
-            assertEquals("status did not match", expectedStatus.getStatusCode(), response.getStatus());
+            assertEquals(
+                    "status did not match", expectedStatus.getStatusCode(), response.getStatus());
             return this;
         }
 

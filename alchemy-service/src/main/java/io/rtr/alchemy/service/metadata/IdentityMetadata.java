@@ -6,9 +6,7 @@ import io.rtr.alchemy.mapping.Mapper;
 
 import java.util.Set;
 
-/**
- * Metadata for an identity type
- */
+/** Metadata for an identity type */
 public class IdentityMetadata {
     private final String typeName;
     private final Class<? extends Identity> identityType;
@@ -16,10 +14,11 @@ public class IdentityMetadata {
     private final Class<? extends Mapper> mapperType;
     private final Set<String> attributes;
 
-    public IdentityMetadata(String typeName,
-                            Class<? extends Identity> identityType,
-                            Class<? extends IdentityDto> dtoType,
-                            Class<? extends Mapper> mapperType) {
+    public IdentityMetadata(
+            String typeName,
+            Class<? extends Identity> identityType,
+            Class<? extends IdentityDto> dtoType,
+            Class<? extends Mapper> mapperType) {
         this.typeName = typeName;
         this.identityType = identityType;
         this.dtoType = dtoType;

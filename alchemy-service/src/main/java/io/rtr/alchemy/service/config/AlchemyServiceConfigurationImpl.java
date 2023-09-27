@@ -10,7 +10,8 @@ import io.dropwizard.Configuration;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
-public class AlchemyServiceConfigurationImpl extends Configuration implements AlchemyServiceConfiguration {
+public class AlchemyServiceConfigurationImpl extends Configuration
+        implements AlchemyServiceConfiguration {
     @JsonProperty
     @JsonDeserialize(keyUsing = ClassKeyDeserializer.class)
     private final Map<Class<? extends Identity>, IdentityMapping> identities = Maps.newHashMap();
@@ -20,17 +21,14 @@ public class AlchemyServiceConfigurationImpl extends Configuration implements Al
         return identities;
     }
 
-    @JsonProperty
-    @NotNull
-    private final StoreProviderConfiguration provider = null;
+    @JsonProperty @NotNull private final StoreProviderConfiguration provider = null;
 
     @Override
     public StoreProviderConfiguration getProvider() {
         return provider;
     }
 
-    @JsonProperty
-    private final CacheStrategyConfiguration cacheStrategy = null;
+    @JsonProperty private final CacheStrategyConfiguration cacheStrategy = null;
 
     @Override
     public CacheStrategyConfiguration getCacheStrategy() {

@@ -5,6 +5,7 @@ import org.mongodb.morphia.annotations.Embedded;
 
 /**
  * An entity that mirrors Treatment
+ *
  * @see io.rtr.alchemy.models.Treatment
  */
 @Embedded
@@ -17,7 +18,7 @@ public class TreatmentEntity {
     }
 
     // Required by Morphia
-    private TreatmentEntity() { }
+    private TreatmentEntity() {}
 
     private TreatmentEntity(Treatment treatment) {
         name = treatment.getName();

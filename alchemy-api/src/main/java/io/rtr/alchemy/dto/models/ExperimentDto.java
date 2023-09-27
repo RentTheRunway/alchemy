@@ -8,9 +8,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Represents an experiment
- */
+/** Represents an experiment */
 public class ExperimentDto {
     private final String name;
     private final int seed;
@@ -27,19 +25,20 @@ public class ExperimentDto {
     private final List<TreatmentOverrideDto> overrides;
 
     @JsonCreator
-    public ExperimentDto(@JsonProperty("name") String name,
-                         @JsonProperty("seed") int seed,
-                         @JsonProperty("description") String description,
-                         @JsonProperty("filter") String filter,
-                         @JsonProperty("hashAttributes") Set<String> hashAttributes,
-                         @JsonProperty("active") boolean active,
-                         @JsonProperty("created") DateTime created,
-                         @JsonProperty("modified") DateTime modified,
-                         @JsonProperty("activated") DateTime activated,
-                         @JsonProperty("deactivated") DateTime deactivated,
-                         @JsonProperty("treatments") List<TreatmentDto> treatments,
-                         @JsonProperty("allocations") List<AllocationDto> allocations,
-                         @JsonProperty("overrides") List<TreatmentOverrideDto> overrides) {
+    public ExperimentDto(
+            @JsonProperty("name") String name,
+            @JsonProperty("seed") int seed,
+            @JsonProperty("description") String description,
+            @JsonProperty("filter") String filter,
+            @JsonProperty("hashAttributes") Set<String> hashAttributes,
+            @JsonProperty("active") boolean active,
+            @JsonProperty("created") DateTime created,
+            @JsonProperty("modified") DateTime modified,
+            @JsonProperty("activated") DateTime activated,
+            @JsonProperty("deactivated") DateTime deactivated,
+            @JsonProperty("treatments") List<TreatmentDto> treatments,
+            @JsonProperty("allocations") List<AllocationDto> allocations,
+            @JsonProperty("overrides") List<TreatmentOverrideDto> overrides) {
         this.name = name;
         this.seed = seed;
         this.description = description;
