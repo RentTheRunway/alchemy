@@ -7,9 +7,6 @@ on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
-  check-branch:
-    runs-on: ubuntu-latest
-
   release:
     runs-on: ubuntu-latest
 
