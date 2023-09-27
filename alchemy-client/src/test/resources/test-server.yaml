@@ -1,3 +1,5 @@
+---
+
 identities:
   io.rtr.alchemy.client.identities.User:
     dto: io.rtr.alchemy.client.dto.UserDto

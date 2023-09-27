@@ -1,19 +1,27 @@
+---
+# yamllint disable rule:line-length
+
 name: Release
 
-on:
-  pull_request:
-    types: [closed]
-    branches:
-      - master
+on:  # yamllint disable-line rule:truthy
+  workflow_dispatch:
 
 jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+
   release:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+      - name: Fail if not on valid branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error title=Invalid Branch::This workflow can only be run on specific branches"
+          exit 1
+
+      - name: Check out repo
+        uses: actions/checkout@v4
 
       - name: Install Java and Maven
         uses: actions/setup-java@v3
@@ -69,13 +77,14 @@ jobs:
           echo 'github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=' >> ~/.ssh/known_hosts
           echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=' >> ~/.ssh/known_hosts
 
-
       - name: Prepare release
+        id: prepare-release
         run: mvn -B release:prepare
 
       - name: Perform release
+        id: perform-release
         run: mvn -B release:perform
 
-      - name: A step failed
-        if: ${{ failure() }}
+      - name: Rollback on release failure
+        if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
         run: mvn release:rollback
