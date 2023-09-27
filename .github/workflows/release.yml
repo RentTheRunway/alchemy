@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Fail if not on valid branch
-        if: github.ref != 'refs/heads/main'
+        if: github.ref != 'refs/heads/master'
         run: |
           echo "::error title=Invalid Branch::This workflow can only be run on specific branches"
           exit 1
