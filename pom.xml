@@ -643,8 +643,6 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <stagingProfileId>5db1fdef03b4db</stagingProfileId>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                            <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
                             <detectBuildFailures>true</detectBuildFailures>
                             <keepStagingRepositoryOnFailure>false</keepStagingRepositoryOnFailure>
                             <keepStagingRepositoryOnFailure>false</keepStagingRepositoryOnFailure>
