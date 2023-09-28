@@ -83,17 +83,17 @@ jobs:
       - name: Prepare release
         id: prepare-release
         continue-on-error: true
-        run: mvn -B release:prepare -DscmCommentPrefix="[skip ci] "
+        run: mvn -B release:prepare
 
       - name: Perform release
         id: perform-release
         continue-on-error: true
         if: ${{ steps.prepare-release.outcome == 'success' }}
-        run: mvn -B release:perform -Darguments='-DskipTests -DskipITs' -DscmCommentPrefix="[skip ci] "
+        run: mvn -B release:perform -Darguments='-DskipTests -DskipITs'
 
       - name: Rollback on release failure
         if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
-        run: mvn release:rollback -DscmCommentPrefix="[skip ci] "
+        run: mvn release:rollback
 
       # Separate from rollback step so it doesn't look like the rollback itself failed
       - name: Fail build on release failure

@@ -322,6 +322,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${maven-deploy-plugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -406,7 +409,9 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <mavenExecutorId>forked-path</mavenExecutorId>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
-                        <preparationGoals>clean test</preparationGoals>
+                        <preparationGoals>clean verify</preparationGoals>
+                        <releaseProfiles>release</releaseProfiles>
+                        <scmCommentPrefix>[skip ci] </scmCommentPrefix>
                     </configuration>
                 </plugin>
 
@@ -603,13 +608,8 @@
 
     <profiles>
         <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
+            <id>release</id>
+
             <build>
                 <plugins>
                     <plugin>
