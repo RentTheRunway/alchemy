@@ -1,3 +1,5 @@
+---
+
 server:
   applicationConnectors:
     - type: http
@@ -13,7 +15,7 @@ identities:
 
 provider:
   type: io.rtr.alchemy.example.config.MongoStoreProvider
-  hosts: [ "localhost" ]
+  hosts: ["localhost"]
   db: experiments
 
 cacheStrategy:

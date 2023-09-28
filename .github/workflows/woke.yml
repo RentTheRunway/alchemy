@@ -1,12 +1,15 @@
+---
+
 name: woke
-on: [ pull_request ]
+on:  # yamllint disable-line rule:truthy
+  - pull_request
 
 jobs:
   woke:
     name: woke
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # For more details, see https://github.com/marketplace/actions/run-woke
       - uses: get-woke/woke-action@v0

@@ -14,8 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Check out repo
         uses: actions/checkout@v3
+
+      - name: YAML linting
+        uses: karancode/yamllint-github-action@v2.1.1
+        with:
+          yamllint_strict: true
 
       - name: Set up JDK 8
         uses: actions/setup-java@v3
@@ -27,9 +32,9 @@ jobs:
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.5
         with:
-          maven-version: 3.9.2
+          maven-version: 3.9.4
 
-      - name: Setup Nexus authentication and GPG passphrase
+      - name: Set up Nexus authentication and GPG passphrase
         uses: whelk-io/maven-settings-xml-action@v21
         with:
           servers: |
@@ -46,5 +51,5 @@ jobs:
               }
             ]
 
-      - name: Build And Verify
-        run: mvn -B verify
+      - name: Build, test, and install
+        run: mvn -B install
