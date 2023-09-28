@@ -12,7 +12,6 @@ concurrency:
   group: alchemy-release
   cancel-in-progress: true
 
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -31,7 +30,7 @@ jobs:
       - name: Test Sonatype access
         run: |
           curl --version
-          curl --fail-with-error -u "${{ env.NEXUS_USER }}:${{ env.NEXUS_PASS }}" \
+          curl --fail-with-body -u "${{ env.NEXUS_USER }}:${{ env.NEXUS_PASS }}" \
             -XPUT -H 'Content-Type: application/json' -d '{}' \
             https://oss.sonatype.org/service/local/staging/deploy/maven2/com/io/rtr/alchemy-nexus-test/0.0.1/alchemy-nexus-test-0.0.1.json
 
