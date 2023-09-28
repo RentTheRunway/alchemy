@@ -646,7 +646,6 @@
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                             <detectBuildFailures>true</detectBuildFailures>
                             <keepStagingRepositoryOnFailure>false</keepStagingRepositoryOnFailure>
-                            <keepStagingRepositoryOnFailure>false</keepStagingRepositoryOnFailure>
                             <keepStagingRepositoryOnCloseRuleFailure>false</keepStagingRepositoryOnCloseRuleFailure>
                         </configuration>
                     </plugin>

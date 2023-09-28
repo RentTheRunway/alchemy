@@ -4,9 +4,7 @@
 name: Release
 
 on:  # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - 'test-release'
+  workflow_dispatch:
 
 concurrency:
   group: alchemy-release
@@ -22,7 +20,7 @@ jobs:
 
     steps:
       - name: Fail if not on valid branch
-        if: github.ref != 'refs/heads/test-release'
+        if: github.ref != 'refs/heads/master'
         run: |
           echo "::error title=Invalid Branch::This workflow can only be run on specific branches"
           exit 1
