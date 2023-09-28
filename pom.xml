@@ -5,13 +5,13 @@
     <groupId>io.rtr.alchemy</groupId>
     <artifactId>alchemy-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.8.2.RC2-SNAPSHOT</version>
-    <url>www.rtr.io</url>
+    <version>2.0.8.2.RC3-SNAPSHOT</version>
+    <url>https://github.com/RentTheRunway/alchemy</url>
+    <name>Alchemy Project</name>
 
     <modules>
         <module>alchemy-core</module>
         <module>alchemy-service</module>
-
         <module>alchemy-api</module>
         <module>alchemy-client</module>
         <module>alchemy-mapping</module>
@@ -20,7 +20,6 @@
         <module>alchemy-example</module>
         <module>alchemy-testing</module>
     </modules>
-    <name>Alchemy Project</name>
 
     <description>
         Alchemy is a library and a REST service for managing and tracking experiments and A/B testing
@@ -103,7 +102,7 @@
 
         <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
 
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 
         <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
 
