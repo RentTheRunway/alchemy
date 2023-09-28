@@ -57,6 +57,7 @@ jobs:
           echo "$GPG_KEY" | base64 -d > private.key
           gpg --import --batch --yes ./private.key
           rm ./private.key
+          gpg -k
 
       - name: Setup Nexus authentication and GPG passphrase
         uses: whelk-io/maven-settings-xml-action@v21
@@ -101,7 +102,7 @@ jobs:
         id: perform-release
         continue-on-error: true
         if: ${{ steps.prepare-release.outcome == 'success' }}
-        run: mvn -B release:perform -DskipTests -DskipITs -DscmCommentPrefix="[skip ci] "
+        run: mvn -B release:perform -Darguments='-DskipTests -DskipITs' -DscmCommentPrefix="[skip ci] "
 
       - name: Rollback on release failure
         if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
