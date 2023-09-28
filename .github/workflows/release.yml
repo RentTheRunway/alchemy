@@ -12,9 +12,14 @@ concurrency:
   group: alchemy-release
   cancel-in-progress: true
 
+
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    env:
+      NEXUS_USER: ${{ secrets.OSS_NEXUS_USERNAME }}
+      NEXUS_PASS: ${{ secrets.OSS_NEXUS_PASSWORD }}
 
     steps:
       - name: Fail if not on valid branch
@@ -22,6 +27,13 @@ jobs:
         run: |
           echo "::error title=Invalid Branch::This workflow can only be run on specific branches"
           exit 1
+
+      - name: Test Sonatype access
+        run: |
+          curl --version
+          curl --fail-with-error -u "${{ env.NEXUS_USER }}:${{ env.NEXUS_PASS }}" \
+            -XPUT -H 'Content-Type: application/json' -d '{}' \
+            https://oss.sonatype.org/service/local/staging/deploy/maven2/com/io/rtr/alchemy-nexus-test/0.0.1/alchemy-nexus-test-0.0.1.json
 
       - name: Check out repo
         uses: actions/checkout@v4
@@ -58,13 +70,13 @@ jobs:
           servers: '[
           {
             "id": "sonatype-nexus-staging",
-            "username": "${{ secrets.OSS_NEXUS_USERNAME }}",
-            "password": "${{ secrets.OSS_NEXUS_PASSWORD }}"
+            "username": "${{ env.NEXUS_USER }}",
+            "password": "${{ env.NEXUS_PASS }}"
           },
           {
             "id": "sonatype-nexus-snapshots",
-            "username": "${{ secrets.OSS_NEXUS_USERNAME }}",
-            "password": "${{ secrets.OSS_NEXUS_PASSWORD }}"
+            "username": "${{ env.NEXUS_USER }}",
+            "password": "${{ env.NEXUS_PASS }}"
           }]'
 
       - name: Setup Github SSH key
@@ -95,8 +107,9 @@ jobs:
         if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
         run: mvn release:rollback -DscmCommentPrefix="[skip ci] "
 
-      - name: Fail build on step failure
-        if: ${{ failure() }}
+      # Separate from rollback step so it doesn't look like the rollback itself failed
+      - name: Fail build on release failure
+        if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
         run: |
           echo "Prepare release: ${{ steps.prepare-release.outcome }}"
           echo "Perform release: ${{ steps.perform-release.outcome }}"
