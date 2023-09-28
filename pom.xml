@@ -575,31 +575,26 @@
 
     <scm>
         <connection>scm:git:git@github.com:RentTheRunway/alchemy.git</connection>
-        <url>https://github.com/RentTheRunway/alchemy</url>
         <developerConnection>scm:git:git@github.com:RentTheRunway/alchemy.git</developerConnection>
+        <url>https://github.com/RentTheRunway/alchemy</url>
         <tag>HEAD</tag>
     </scm>
 
     <repositories>
         <repository>
             <id>ossrh</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
             <id>ossrh</id>
             <name>Nexus Release Repository</name>
@@ -646,7 +641,7 @@
                         <version>${nexus-staging-maven-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>sonatype-nexus-staging</serverId>
+                            <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <stagingProfileId>5db1fdef03b4db</stagingProfileId>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>

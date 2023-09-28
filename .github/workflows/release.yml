@@ -62,12 +62,7 @@ jobs:
           }]'
           servers: '[
           {
-            "id": "sonatype-nexus-staging",
-            "username": "${{ env.NEXUS_USER }}",
-            "password": "${{ env.NEXUS_PASS }}"
-          },
-          {
-            "id": "sonatype-nexus-snapshots",
+            "id": "ossrh",
             "username": "${{ env.NEXUS_USER }}",
             "password": "${{ env.NEXUS_PASS }}"
           }]'
