@@ -89,8 +89,15 @@ jobs:
         id: perform-release
         continue-on-error: true
         if: ${{ steps.prepare-release.outcome == 'success' }}
-        run: mvn -B release:perform -DscmCommentPrefix="[skip ci] "
+        run: mvn -B release:perform -DskipTests -DskipITs -DscmCommentPrefix="[skip ci] "
 
       - name: Rollback on release failure
         if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
         run: mvn release:rollback -DscmCommentPrefix="[skip ci] "
+
+      - name: Fail build on step failure
+        if: ${{ failure() }}
+        run: |
+          echo "Prepare release: ${{ steps.prepare-release.outcome }}"
+          echo "Perform release: ${{ steps.perform-release.outcome }}"
+          exit 1
