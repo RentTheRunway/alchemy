@@ -8,6 +8,10 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - 'test-release'
 
+concurrency:
+  group: alchemy-release
+  cancel-in-progress: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -79,14 +83,14 @@ jobs:
       - name: Prepare release
         id: prepare-release
         continue-on-error: true
-        run: mvn -B release:prepare
+        run: mvn -B release:prepare -DscmCommentPrefix="[skip ci] "
 
       - name: Perform release
         id: perform-release
         continue-on-error: true
         if: ${{ steps.prepare-release.outcome == 'success' }}
-        run: mvn -B release:perform
+        run: mvn -B release:perform -DscmCommentPrefix="[skip ci] "
 
       - name: Rollback on release failure
         if: ${{ steps.prepare-release.outcome != 'success' || steps.perform-release.outcome != 'success' }}
-        run: mvn release:rollback
+        run: mvn release:rollback -DscmCommentPrefix="[skip ci] "
