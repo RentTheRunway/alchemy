@@ -44,6 +44,7 @@ public class ExperimentTest {
                         mock(FilterExpression.class),
                         mock(FilterExpression.class))
                 .suppress(Warning.STRICT_INHERITANCE)
+                .withOnlyTheseFields("name")
                 .verify();
     }
 

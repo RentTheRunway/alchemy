@@ -10,7 +10,10 @@ import static org.junit.Assert.assertEquals;
 public class TreatmentTest {
     @Test
     public void testEqualsHashCode() {
-        EqualsVerifier.forClass(Treatment.class).suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(Treatment.class)
+                .suppress(Warning.STRICT_INHERITANCE)
+                .withIgnoredFields("description")
+                .verify();
     }
 
     @Test

@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <artifactId>alchemy-parent</artifactId>
     <groupId>io.rtr.alchemy</groupId>
     <version>2.0.10-SNAPSHOT</version>
   </parent>
+
   <name>Alchemy Mapper Library</name>
   <description>Library for implementing mapping of DTO to BO to DB</description>
-  <modelVersion>4.0.0</modelVersion>
-
   <artifactId>alchemy-mapping</artifactId>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- third-party dependencies -->
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <!-- direct third-party dependencies -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
-  </dependencies>
 
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

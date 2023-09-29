@@ -17,8 +17,8 @@ public class TreatmentOverrideTest {
                 .suppress(Warning.STRICT_INHERITANCE)
                 .withPrefabValues(
                         FilterExpression.class,
-                        mock(FilterExpression.class),
-                        mock(FilterExpression.class))
+                        FilterExpression.alwaysTrue(),
+                        FilterExpression.of("false"))
                 .verify();
     }
 

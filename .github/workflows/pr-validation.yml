@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: YAML linting
         uses: karancode/yamllint-github-action@v2.1.1
@@ -51,5 +51,12 @@ jobs:
               }
             ]
 
+      - name: Resolve dependencies
+        run: mvn -B dependency:go-offline dependency:resolve-plugins
+
       - name: Build, test, and install
-        run: mvn -B install
+        run: mvn -o -B install
+
+      # dependency:analyze-only is run as part of the previous step, but this sometimes catches more
+      - name: Run dependency and bug analysis
+        run: mvn -o -B dependency:analyze

@@ -30,7 +30,7 @@ public class TreatmentOverride implements Named {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, treatment);
+        return Objects.hashCode(name, filter, treatment);
     }
 
     @Override
@@ -41,7 +41,9 @@ public class TreatmentOverride implements Named {
 
         final TreatmentOverride other = (TreatmentOverride) obj;
 
-        return Objects.equal(name, other.name) && Objects.equal(treatment, other.treatment);
+        return Objects.equal(name, other.name)
+                && Objects.equal(filter, other.filter)
+                && Objects.equal(treatment, other.treatment);
     }
 
     @Override

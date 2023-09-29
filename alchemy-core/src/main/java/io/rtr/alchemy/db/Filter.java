@@ -71,7 +71,7 @@ public class Filter {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(filter, offset, limit);
+        return Objects.hashCode(filter, offset, limit, ordering);
     }
 
     @Override
@@ -84,7 +84,8 @@ public class Filter {
 
         return Objects.equal(filter, other.filter)
                 && Objects.equal(offset, other.offset)
-                && Objects.equal(limit, other.limit);
+                && Objects.equal(limit, other.limit)
+                && Objects.equal(ordering, other.ordering);
     }
 
     @Override
@@ -93,6 +94,7 @@ public class Filter {
                 .add("filter", filter)
                 .add("offset", offset)
                 .add("limit", limit)
+                .add("ordering", ordering)
                 .toString();
     }
 }

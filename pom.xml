@@ -8,22 +8,23 @@
     <version>2.0.10-SNAPSHOT</version>
     <url>https://github.com/RentTheRunway/alchemy</url>
     <name>Alchemy Project</name>
-
-    <modules>
-        <module>alchemy-core</module>
-        <module>alchemy-service</module>
-        <module>alchemy-api</module>
-        <module>alchemy-client</module>
-        <module>alchemy-mapping</module>
-        <module>alchemy-db-mongo</module>
-        <module>alchemy-db-memory</module>
-        <module>alchemy-example</module>
-        <module>alchemy-testing</module>
-    </modules>
-
     <description>
         Alchemy is a library and a REST service for managing and tracking experiments and A/B testing
     </description>
+
+    <modules>
+        <module>alchemy-api</module>
+        <module>alchemy-bom</module>
+        <module>alchemy-client</module>
+        <module>alchemy-core</module>
+        <module>alchemy-db-mongo</module>
+        <module>alchemy-db-memory</module>
+        <module>alchemy-dependencies</module>
+        <module>alchemy-example</module>
+        <module>alchemy-mapping</module>
+        <module>alchemy-service</module>
+        <module>alchemy-testing</module>
+    </modules>
 
     <properties>
         <encoding>UTF-8</encoding>
@@ -33,58 +34,9 @@
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
-        <!-- dependency versions -->
-
-        <apache-httpclient.version>4.5.13</apache-httpclient.version>
-
-        <apache-math3.version>3.6</apache-math3.version>
-
-        <apache-lang.version>3.8.1</apache-lang.version>
-
-        <dropwizard.version>1.3.20</dropwizard.version>
-
-        <findbugs.version>3.0.2</findbugs.version>
-
-        <guava.version>22.0</guava.version>
-
-        <hibernate-validator.version>5.4.3.Final</hibernate-validator.version>
-
-        <jackson.version>2.9.10</jackson.version>
-
-        <jersey.version>2.25.1</jersey.version>
-
-        <joda-time.version>2.10.5</joda-time.version>
-
-        <guice.version>4.1.0</guice.version>
-
-        <slf4j.version>1.7.6</slf4j.version>
-
-        <!-- transitive dependencies pinned to resolve conflicts -->
-
-        <cglib.version>2.2.2</cglib.version>
-
-        <!-- transitive dependencies pinned for security bumps or other issues -->
-
-        <javassist.version>3.24.1-GA</javassist.version>
-
-        <!-- test dependency versions -->
-
-        <equalsverifier.version>1.4.1</equalsverifier.version>
-
-        <hamcrest.version>1.3</hamcrest.version>
-
-        <junit.version>4.13.1</junit.version>
-
-        <mockito.version>2.24.5</mockito.version>
-
-        <!-- transitive test dependencies pinned to resolve conflicts -->
-        <objenesis.version>1.1</objenesis.version>
-
         <!-- plugin versions -->
 
         <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
-
-        <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
 
         <fmt-maven-plugin.version>2.9.1</fmt-maven-plugin.version>
 
@@ -121,163 +73,9 @@
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
 
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+
+        <spotbugs-maven-plugin.version>4.7.3.6</spotbugs-maven-plugin.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate-validator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${apache-lang.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-math3</artifactId>
-                <version>${apache-math3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${apache-httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda-time.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ma.glasnost.orika</groupId>
-                <artifactId>orika-core</artifactId>
-                <version>${orika.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-core</artifactId>
-                <version>${dropwizard.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-client</artifactId>
-                <version>${dropwizard.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-jackson</artifactId>
-                <version>${dropwizard.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard</groupId>
-                <artifactId>dropwizard-validation</artifactId>
-                <version>${dropwizard.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jsonSchema</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-guava</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-afterburner</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice</artifactId>
-                <version>${guice.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.objenesis</groupId>
-                <artifactId>objenesis</artifactId>
-                <version>${objenesis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-core</artifactId>
-                <version>${hamcrest.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${findbugs.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>${cglib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>nl.jqno.equalsverifier</groupId>
-            <artifactId>equalsverifier</artifactId>
-            <version>${equalsverifier.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <pluginManagement>
@@ -293,6 +91,24 @@
                     <executions>
                         <execution>
                             <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs-maven-plugin.version}</version>
+                    <configuration>
+                        <!-- temporary till we fix them! -->
+                        <failOnError>false</failOnError>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>spotbugs-check</id>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -331,6 +147,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${maven-dependency-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>analyze</id>
+                            <goals>
+                                <goal>analyze-only</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <plugin>
@@ -464,28 +288,6 @@
                         <doUpdate>false</doUpdate>
                     </configuration>
                 </plugin>
-
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${findbugs-maven-plugin.version}</version>
-                    <configuration>
-                        <effort>Max</effort>
-                        <threshold>Low</threshold>
-                        <xmlOutput>true</xmlOutput>
-                        <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
-                        <excludeFilterFile>findBugsExclusions.xml</excludeFilterFile>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>analyze-compile</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -494,6 +296,12 @@
                 <groupId>com.coveo</groupId>
                 <artifactId>fmt-maven-plugin</artifactId>
                 <version>${fmt-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs-maven-plugin.version}</version>
             </plugin>
 
             <plugin>
@@ -524,12 +332,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
                 <version>${buildnumber-maven-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>${findbugs-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

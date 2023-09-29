@@ -12,7 +12,7 @@ public class ClassKeyDeserializer extends KeyDeserializer {
             throws IOException {
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        } catch (final Exception e) {
             throw new IOException(String.format("could not find class %s", className));
         }
     }
