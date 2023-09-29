@@ -1,0 +1,27 @@
+---
+
+version: 2
+
+registries:
+  maven-artifactory:
+    type: maven-repository
+    url: https://artifactory.rtr.cloud/artifactory/maven-releases/
+    username: ${{ secrets.ARTIFACTORY_DEPLOY_USER }}
+    password: ${{ secrets.ARTIFACTORY_DEPLOY_PASSWORD }}
+
+updates:
+  - package-ecosystem: "maven"
+    registries:
+      - maven-artifactory
+    target-branch: "master"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 30
+
+  - package-ecosystem: "github-actions"
+    target-branch: "master"
+    directory: ".github/workflows"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
