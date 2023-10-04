@@ -58,7 +58,7 @@
 
     <morphia.version>1.3.2</morphia.version>
 
-    <mongodb-driver.version>3.4.0</mongodb-driver.version>
+    <mongodb-driver.version>3.12.14</mongodb-driver.version>
 
     <slf4j.version>1.7.36</slf4j.version>
 
