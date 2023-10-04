@@ -38,7 +38,7 @@
 
         <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
 
-        <fmt-maven-plugin.version>2.9.1</fmt-maven-plugin.version>
+        <fmt-maven-plugin.version>2.13</fmt-maven-plugin.version>
 
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
 
