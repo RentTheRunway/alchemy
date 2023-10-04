@@ -8,6 +8,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Maps;
+
+import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.jackson.Jackson;
+import io.dropwizard.setup.Environment;
 import io.rtr.alchemy.client.builder.CreateExperimentRequestBuilder;
 import io.rtr.alchemy.client.builder.GetExperimentsRequestBuilder;
 import io.rtr.alchemy.client.builder.UpdateAllocationsRequestBuilder;
@@ -20,10 +24,15 @@ import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import io.rtr.alchemy.dto.requests.GetExperimentsRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
-import io.dropwizard.client.JerseyClientBuilder;
-import io.dropwizard.jackson.Jackson;
-import io.dropwizard.setup.Environment;
+
 import org.glassfish.hk2.utilities.reflection.ParameterizedTypeImpl;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.client.Client;
@@ -32,12 +41,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /** A Dropwizard client for talking to an instance Alchemy service */
 public class AlchemyClient {

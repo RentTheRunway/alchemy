@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>alchemy-parent</artifactId>
+    <groupId>io.rtr.alchemy</groupId>
+    <version>2.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>alchemy-bom</artifactId>
+  <packaging>pom</packaging>
+  <name>Alchemy BOM</name>
+  <description>Bill of Materials for Alchemy Libraries</description>
+
+  <!-- Note that alchemy-example is excluded, since it is not meant to be used -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-db-memory</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-db-mongo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-dependencies</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-mapping</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-testing</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

@@ -1,7 +1,17 @@
 package io.rtr.alchemy.testing.db;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.db.Ordering;
@@ -12,19 +22,13 @@ import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.models.Allocations;
 import io.rtr.alchemy.models.Experiment;
 import io.rtr.alchemy.models.Experiments;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.validation.ValidationException;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import javax.validation.ValidationException;
 
 /**
  * The purpose of this class is to provide a base class for testing whether an implementation of a
@@ -33,7 +37,7 @@ import static org.mockito.Mockito.mock;
 public abstract class ExperimentsStoreProviderTest {
     private Experiments experiments;
 
-    protected abstract ExperimentsStoreProvider createProvider() throws Exception;
+    protected abstract ExperimentsStoreProvider createProvider();
 
     protected abstract void resetStore();
 
@@ -57,7 +61,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         resetStore();
         final ExperimentsStoreProvider provider = createProvider();
         assertNotNull("provider cannot be null", provider);
@@ -296,29 +300,33 @@ public abstract class ExperimentsStoreProviderTest {
 
         final Experiment obj2 = experiments.get("foo");
 
-        assertFalse(
+        assertNotSame(
                 "saved experiment object reference should not be same object reference from get()",
-                obj1 == obj2);
+                obj1,
+                obj2);
 
         final Experiment obj3 = experiments.find().iterator().next();
 
-        assertFalse(
+        assertNotSame(
                 "saved experiment object reference should not be same object reference from find()",
-                obj1 == obj3);
+                obj1,
+                obj3);
 
         final Experiment obj4 = experiments.getActiveExperiments().iterator().next();
 
-        assertFalse(
+        assertNotSame(
                 "saved experiment object reference should not be same object reference from getActiveExperiments()",
-                obj1 == obj4);
+                obj1,
+                obj4);
 
         final Identity identity = mock(Identity.class);
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
         final Experiment obj5 =
                 experiments.getActiveTreatments(identity).keySet().iterator().next();
 
-        assertFalse(
+        assertNotSame(
                 "saved experiment object reference should not be same object reference from getActiveTreatments()",
-                obj1 == obj5);
+                obj1,
+                obj5);
     }
 }

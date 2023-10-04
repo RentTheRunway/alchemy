@@ -2,6 +2,7 @@ package io.rtr.alchemy.service.health;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.google.inject.Inject;
+
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.models.Experiments;
 

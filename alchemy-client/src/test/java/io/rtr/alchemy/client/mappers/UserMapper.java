@@ -4,6 +4,8 @@ import io.rtr.alchemy.client.dto.UserDto;
 import io.rtr.alchemy.client.identities.User;
 import io.rtr.alchemy.mapping.Mapper;
 
+// referenced in test-server.yaml
+@SuppressWarnings("unused")
 public class UserMapper implements Mapper<UserDto, User> {
     @Override
     public UserDto toDto(User source) {

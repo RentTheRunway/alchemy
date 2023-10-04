@@ -1,6 +1,7 @@
 package io.rtr.alchemy.service.metrics;
 
-import com.codahale.metrics.JmxReporter;
+import com.codahale.metrics.jmx.JmxReporter;
+
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 

@@ -1,45 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>alchemy-parent</artifactId>
     <groupId>io.rtr.alchemy</groupId>
-    <version>2.0.10-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+
   <name>Alchemy Example Program</name>
   <artifactId>alchemy-example</artifactId>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- third-party dependencies -->
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- direct internal dependencies -->
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-db-memory</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-db-mongo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-mapping</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rtr.alchemy</groupId>
+        <artifactId>alchemy-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <!-- direct internal dependencies -->
     <dependency>
       <groupId>io.rtr.alchemy</groupId>
-      <artifactId>alchemy-core</artifactId>
-      <version>${project.version}</version>
+      <artifactId>alchemy-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-client</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.rtr.alchemy</groupId>
-      <artifactId>alchemy-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.rtr.alchemy</groupId>
-      <artifactId>alchemy-service</artifactId>
-      <version>${project.version}</version>
+      <artifactId>alchemy-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.rtr.alchemy</groupId>
       <artifactId>alchemy-db-memory</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.rtr.alchemy</groupId>
-      <artifactId>alchemy-testing</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
+      <artifactId>alchemy-db-mongo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.rtr.alchemy</groupId>
+      <artifactId>alchemy-mapping</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.rtr.alchemy</groupId>
+      <artifactId>alchemy-service</artifactId>
+    </dependency>
+
+    <!-- direct third-party dependencies -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-configuration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 
@@ -47,71 +146,24 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven-shade-plugin.version}</version>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
         <configuration>
-          <createDependencyReducedPom>false</createDependencyReducedPom>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
+          <ignoredUnusedDeclaredDependencies>
+            <!-- false negatives; not sure why -->
+            <dep>ch.qos.logback:logback-classic</dep>
+            <dep>com.fasterxml.jackson.core:jackson-databind</dep>
+            <dep>com.google.guava:guava</dep>
+            <dep>io.dropwizard:dropwizard-configuration</dep>
+            <dep>joda-time:joda-time</dep>
+            <dep>org.slf4j:slf4j-api</dep>
+            <!-- also false negative; sometimes the plugin has trouble detecting annotations -->
+            <dep>com.fasterxml.jackson.core:jackson-annotations</dep>
+            <dep>io.dropwizard:dropwizard-validation</dep>
+            <dep>javax.validation:validation-api</dep>
+            <dep>javax.ws.rs:javax.ws.rs-api</dep>
+          </ignoredUnusedDeclaredDependencies>
         </configuration>
-        <executions>
-          <execution>
-            <id>service-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <outputFile>target/ServiceExample.jar</outputFile>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>io.rtr.alchemy.example.ServiceExample</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-          <execution>
-            <id>client-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <outputFile>target/ClientExample.jar</outputFile>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>io.rtr.alchemy.example.ClientExample</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-          <execution>
-            <id>library-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <outputFile>target/LibraryExample.jar</outputFile>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>io.rtr.alchemy.example.LibraryExample</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
