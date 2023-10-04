@@ -60,7 +60,7 @@
 
     <mongodb-driver.version>3.4.0</mongodb-driver.version>
 
-    <slf4j.version>1.7.36</slf4j.version>
+    <slf4j.version>2.0.9</slf4j.version>
 
     <!-- transitive test dependencies pinned to resolve conflicts -->
 
