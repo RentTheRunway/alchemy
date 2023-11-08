@@ -6,10 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.mongodb.morphia.AdvancedDatastore;
-import org.mongodb.morphia.query.FieldEnd;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
+import dev.morphia.AdvancedDatastore;
+import dev.morphia.query.FieldEnd;
+import dev.morphia.query.Query;
+import dev.morphia.query.UpdateOperations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

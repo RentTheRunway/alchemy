@@ -1,11 +1,11 @@
 package io.rtr.alchemy.testing.db;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -23,8 +23,9 @@ import io.rtr.alchemy.models.Allocations;
 import io.rtr.alchemy.models.Experiment;
 import io.rtr.alchemy.models.Experiments;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
@@ -60,71 +61,75 @@ public abstract class ExperimentsStoreProviderTest {
         }
     }
 
-    @Before
-    public void setUp() {
-        resetStore();
+    @BeforeEach
+    void setUpBase() {
         final ExperimentsStoreProvider provider = createProvider();
-        assertNotNull("provider cannot be null", provider);
+        assertNotNull(provider, "provider cannot be null");
         experiments = Experiments.using(provider).build();
     }
 
+    @AfterEach
+    void tearDownBase() {
+        this.resetStore();
+    }
+
     @Test
-    public void testInitialState() {
-        assertFalse("there should be no experiments yet", experiments.find().iterator().hasNext());
+    void testInitialState() {
+        assertFalse(experiments.find().iterator().hasNext(), "there should be no experiments yet");
         assertFalse(
-                "there should be no experiments yet",
-                experiments.find(Filter.criteria().build()).iterator().hasNext());
+                experiments.find(Filter.criteria().build()).iterator().hasNext(),
+                "there should be no experiments yet");
     }
 
     @Test
-    public void testGetReturnsNull() {
-        assertNull("should return null when experiment not found", experiments.get("foo"));
+    void testGetReturnsNull() {
+        assertNull(experiments.get("foo"), "should return null when experiment not found");
     }
 
     @Test
-    public void testCreateExperiment() throws ValidationException {
-        assertNull("should return null when experiment not found", experiments.get("foo"));
+    void testCreateExperiment() throws ValidationException {
+        assertNull(experiments.get("foo"), "should return null when experiment not found");
 
         experiments.create("foo").save();
 
-        assertNotNull("did not find experiment", experiments.get("foo"));
+        assertNotNull(experiments.get("foo"), "did not find experiment");
     }
 
     @Test
-    public void testDeleteExperiment() throws ValidationException {
+    void testDeleteExperiment() throws ValidationException {
         experiments.create("foo").save();
 
-        assertNotNull("did not find experiment", experiments.get("foo"));
+        assertNotNull(experiments.get("foo"), "did not find experiment");
 
         experiments.delete("foo");
 
-        assertNull("should return null when experiment not found", experiments.get("foo"));
+        assertNull(experiments.get("foo"), "should return null when experiment not found");
     }
 
     @Test
-    public void testFindExperimentFilterString() throws ValidationException {
+    void testFindExperimentFilterString() throws ValidationException {
         experiments.create("the_foo_experiment").setDescription("the bar description").save();
 
         assertFalse(
-                "should not have found experiment",
-                experiments.find(Filter.criteria().filter("control").build()).iterator().hasNext());
+                experiments.find(Filter.criteria().filter("control").build()).iterator().hasNext(),
+                "should not have found experiment");
 
         assertTrue(
-                "should be able to filter by name substring",
-                experiments.find(Filter.criteria().filter("foo").build()).iterator().hasNext());
+                experiments.find(Filter.criteria().filter("foo").build()).iterator().hasNext(),
+                "should be able to filter by name substring");
 
         assertTrue(
-                "should be able to filter by description substring",
-                experiments.find(Filter.criteria().filter("bar").build()).iterator().hasNext());
+                experiments.find(Filter.criteria().filter("bar").build()).iterator().hasNext(),
+                "should be able to filter by description substring");
     }
 
     @Test
-    public void testFindExperimentFilterRange() throws ValidationException {
+    void testFindExperimentFilterRange() throws ValidationException {
         experiments.create("exp1").save();
         experiments.create("exp2").save();
         experiments.create("exp3").save();
 
-        assertTrue("should have experiments", experiments.find().iterator().hasNext());
+        assertTrue(experiments.find().iterator().hasNext(), "should have experiments");
 
         assertEquals(3, Iterables.size(experiments.find(Filter.criteria().build())));
 
@@ -137,12 +142,12 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testFindExperimentFilterOrdering() throws ValidationException {
+    void testFindExperimentFilterOrdering() throws ValidationException {
         final Experiment fooExp = experiments.create("foo").setDescription("a").save();
         final Experiment zooExp = experiments.create("zoo").setDescription("b").save();
         final Experiment barExp = experiments.create("bar").setDescription("c").save();
 
-        assertTrue("should have experiments", experiments.find().iterator().hasNext());
+        assertTrue(experiments.find().iterator().hasNext(), "should have experiments");
 
         assertEquals(3, Iterables.size(experiments.find(Filter.criteria().build())));
 
@@ -196,7 +201,7 @@ public abstract class ExperimentsStoreProviderTest {
     }
 
     @Test
-    public void testGetActiveTreatment() throws ValidationException {
+    void testGetActiveTreatment() throws ValidationException {
         experiments
                 .create("foo")
                 .addTreatment("control")
@@ -205,34 +210,34 @@ public abstract class ExperimentsStoreProviderTest {
                 .save();
 
         assertNull(
-                "no active treatment should be returned for deactivated experiment",
-                experiments.getActiveTreatment("foo", new TestIdentity("foo")));
+                experiments.getActiveTreatment("foo", new TestIdentity("foo")),
+                "no active treatment should be returned for deactivated experiment");
 
         experiments.get("foo").activate().save();
 
         final Identity identity = new TestIdentity("test");
 
         assertEquals(
-                "expected control treatment",
                 "control",
-                experiments.getActiveTreatment("foo", identity).getName());
+                experiments.getActiveTreatment("foo", identity).getName(),
+                "expected control treatment");
 
         experiments.get("foo").setFilter(FilterExpression.of("test")).save();
 
         assertEquals(
-                "expected control treatment",
                 "control",
-                experiments.getActiveTreatment("foo", identity).getName());
+                experiments.getActiveTreatment("foo", identity).getName(),
+                "expected control treatment");
 
         experiments.get("foo").setFilter(FilterExpression.of("bar")).save();
 
         assertNull(
-                "no active treatment should be returned for experiment intended for different identity type",
-                experiments.getActiveTreatment("foo", identity));
+                experiments.getActiveTreatment("foo", identity),
+                "no active treatment should be returned for experiment intended for different identity type");
     }
 
     @Test
-    public void testGetActiveTreatments() throws ValidationException {
+    void testGetActiveTreatments() throws ValidationException {
         final Identity identity = new TestIdentity("test");
 
         experiments
@@ -249,47 +254,47 @@ public abstract class ExperimentsStoreProviderTest {
                 .setFilter(FilterExpression.of("test"))
                 .save();
 
-        assertTrue("no active experiments", experiments.getActiveTreatments(identity).isEmpty());
+        assertTrue(experiments.getActiveTreatments(identity).isEmpty(), "no active experiments");
 
         experiments.get("foo").activate().save();
 
         assertEquals(
-                "should have one experiment", 1, experiments.getActiveTreatments(identity).size());
+                1, experiments.getActiveTreatments(identity).size(), "should have one experiment");
         assertEquals(
-                "wrong experiment",
                 "foo",
-                experiments.getActiveTreatments(identity).keySet().iterator().next().getName());
+                experiments.getActiveTreatments(identity).keySet().iterator().next().getName(),
+                "wrong experiment");
 
         experiments.get("bar").activate().save();
 
         assertEquals(
-                "should have two experiments", 2, experiments.getActiveTreatments(identity).size());
+                2, experiments.getActiveTreatments(identity).size(), "should have two experiments");
 
         experiments.get("bar").setFilter(FilterExpression.of("bar")).save();
 
         assertEquals(
-                "should have one because of identity type",
                 1,
-                experiments.getActiveTreatments(identity).size());
+                experiments.getActiveTreatments(identity).size(),
+                "should have one because of identity type");
     }
 
     @Test
-    public void testGetActiveExperiments() throws ValidationException {
+    void testGetActiveExperiments() throws ValidationException {
         experiments.create("foo").save();
 
         assertFalse(
-                "should have no active experiments",
-                experiments.getActiveExperiments().iterator().hasNext());
+                experiments.getActiveExperiments().iterator().hasNext(),
+                "should have no active experiments");
 
         experiments.get("foo").activate().save();
 
         assertTrue(
-                "should have an active experiment",
-                experiments.getActiveExperiments().iterator().hasNext());
+                experiments.getActiveExperiments().iterator().hasNext(),
+                "should have an active experiment");
     }
 
     @Test
-    public void testExperimentObjectReference() throws ValidationException {
+    void testExperimentObjectReference() throws ValidationException {
         final Experiment obj1 =
                 experiments
                         .create("foo")
@@ -301,23 +306,23 @@ public abstract class ExperimentsStoreProviderTest {
         final Experiment obj2 = experiments.get("foo");
 
         assertNotSame(
-                "saved experiment object reference should not be same object reference from get()",
                 obj1,
-                obj2);
+                obj2,
+                "saved experiment object reference should not be same object reference from get()");
 
         final Experiment obj3 = experiments.find().iterator().next();
 
         assertNotSame(
-                "saved experiment object reference should not be same object reference from find()",
                 obj1,
-                obj3);
+                obj3,
+                "saved experiment object reference should not be same object reference from find()");
 
         final Experiment obj4 = experiments.getActiveExperiments().iterator().next();
 
         assertNotSame(
-                "saved experiment object reference should not be same object reference from getActiveExperiments()",
                 obj1,
-                obj4);
+                obj4,
+                "saved experiment object reference should not be same object reference from getActiveExperiments()");
 
         final Identity identity = mock(Identity.class);
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
@@ -325,8 +330,8 @@ public abstract class ExperimentsStoreProviderTest {
                 experiments.getActiveTreatments(identity).keySet().iterator().next();
 
         assertNotSame(
-                "saved experiment object reference should not be same object reference from getActiveTreatments()",
                 obj1,
-                obj5);
+                obj5,
+                "saved experiment object reference should not be same object reference from getActiveTreatments()");
     }
 }

@@ -1,9 +1,9 @@
 package io.rtr.alchemy.db.mongo.util;
 
 import org.joda.time.DateTime;
-import org.mongodb.morphia.converters.SimpleValueConverter;
-import org.mongodb.morphia.converters.TypeConverter;
-import org.mongodb.morphia.mapping.MappedField;
+import dev.morphia.converters.SimpleValueConverter;
+import dev.morphia.converters.TypeConverter;
+import dev.morphia.mapping.MappedField;
 
 /** A morphia converter for Joda Time */
 public class DateTimeConverter extends TypeConverter implements SimpleValueConverter {

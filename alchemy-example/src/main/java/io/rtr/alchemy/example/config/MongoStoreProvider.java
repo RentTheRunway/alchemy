@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.net.HostAndPort;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.service.config.StoreProviderConfiguration;
 
-import javax.validation.constraints.NotNull;
-import java.net.UnknownHostException;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 /** Configuration object for creating a MongoDB provider with given parameters */
 public class MongoStoreProvider extends StoreProviderConfiguration {
@@ -51,7 +52,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
     }
 
     @Override
-    public ExperimentsStoreProvider createProvider() throws UnknownHostException {
+    public ExperimentsStoreProvider createProvider() {
         final io.rtr.alchemy.db.mongo.MongoStoreProvider.Builder builder =
                 io.rtr.alchemy.db.mongo.MongoStoreProvider.newBuilder();
         for (final HostAndPort host : hosts) {
@@ -63,7 +64,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         }
 
         if (username != null) {
-            builder.addCredential(
+            builder.setCredential(
                     MongoCredential.createPlainCredential(username, db, password.toCharArray()));
         }
 

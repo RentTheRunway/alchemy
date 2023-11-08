@@ -1,21 +1,26 @@
 package io.rtr.alchemy.db.mongo;
 
-import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+
+import dev.morphia.AdvancedDatastore;
+import dev.morphia.Morphia;
+
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.ExperimentsStore;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.mongo.util.DateTimeConverter;
-import org.mongodb.morphia.AdvancedDatastore;
-import org.mongodb.morphia.Morphia;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /** A provider for MongoDB which implements the store and cache for using MongoDB as a backend */
-public class MongoStoreProvider implements ExperimentsStoreProvider {
+public final class MongoStoreProvider implements ExperimentsStoreProvider {
     private final MongoClient client;
     private final ExperimentsStore store;
     private final ExperimentsCache cache;
@@ -24,19 +29,7 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
         return new Builder();
     }
 
-    private MongoStoreProvider(
-            List<ServerAddress> hosts,
-            List<MongoCredential> credentials,
-            MongoClientOptions options,
-            String database) {
-        this(
-                options == null
-                        ? new MongoClient(hosts, credentials)
-                        : new MongoClient(hosts, credentials, options),
-                database);
-    }
-
-    public MongoStoreProvider(MongoClient client, String database) {
+    private MongoStoreProvider(final MongoClient client, final String database) {
         final Morphia morphia = new Morphia();
         morphia.getMapper().getOptions().setStoreEmpties(true);
         morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
@@ -64,45 +57,50 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
     }
 
     public static class Builder {
-        private List<ServerAddress> hosts;
-        private List<MongoCredential> credentials;
-        private MongoClientOptions options;
-        private String database;
+        private final List<ServerAddress> hosts = new ArrayList<>();
+        private String database = "experiments";
+        private MongoClientOptions options = MongoClientOptions.builder().build();
+        @Nullable private MongoClientURI uri;
+        @Nullable private MongoCredential credential;
 
-        public Builder() {
-            this.hosts = Lists.newArrayList();
-            this.credentials = Lists.newArrayList();
-            this.database = "experiments";
-        }
-
-        public Builder setDatabase(String database) {
-            this.database = database;
-            return this;
-        }
-
-        public Builder setOptions(MongoClientOptions options) {
-            this.options = options;
-            return this;
-        }
-
-        public Builder addCredential(MongoCredential credential) {
-            this.credentials.add(credential);
-            return this;
-        }
-
-        public Builder addHost(ServerAddress host) {
+        public Builder addHost(final ServerAddress host) {
             hosts.add(host);
             return this;
         }
 
+        public Builder setDatabase(final String database) {
+            this.database = database;
+            return this;
+        }
+
+        public Builder setOptions(final MongoClientOptions options) {
+            this.options = options;
+            return this;
+        }
+
+        /** Note that all other fields (besides {@code database}) will be ignored if this is set! */
+        public Builder setUri(final MongoClientURI uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        public Builder setCredential(final MongoCredential credential) {
+            this.credential = credential;
+            return this;
+        }
+
         public MongoStoreProvider build() {
-            if (hosts.isEmpty()) {
+            if (hosts.isEmpty() && uri == null) {
                 hosts.add(
                         new ServerAddress(
                                 ServerAddress.defaultHost(), ServerAddress.defaultPort()));
             }
 
-            return new MongoStoreProvider(hosts, credentials, options, database);
+            if (uri != null) {
+                return new MongoStoreProvider(new MongoClient(uri), database);
+            } else {
+                return new MongoStoreProvider(new MongoClient(hosts, credential, options), database);
+            }
         }
     }
 }
