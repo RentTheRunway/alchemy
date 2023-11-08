@@ -134,11 +134,7 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-legacy</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-sync</artifactId>
+      <artifactId>mongodb-driver-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -153,7 +149,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${maven-dependency-plugin.version}</version>
         <configuration>
-          <ignoredUnusedDeclaredDependencies>
+          <ignoredUnusedDeclaredDependencies combine.children="append">
             <!-- false negatives; not sure why -->
             <dep>ch.qos.logback:logback-classic</dep>
             <dep>com.fasterxml.jackson.core:jackson-databind</dep>
@@ -161,7 +157,7 @@
             <dep>io.dropwizard:dropwizard-configuration</dep>
             <dep>joda-time:joda-time</dep>
             <dep>org.slf4j:slf4j-api</dep>
-            <!-- also false negative; sometimes the plugin has trouble detecting annotations -->
+            <!-- also false negatives; sometimes the plugin has trouble detecting annotations -->
             <dep>com.fasterxml.jackson.core:jackson-annotations</dep>
             <dep>io.dropwizard:dropwizard-validation</dep>
             <dep>javax.validation:validation-api</dep>

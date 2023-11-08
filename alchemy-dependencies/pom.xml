@@ -177,6 +177,11 @@
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-core</artifactId>
+        <version>${mongodb-driver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-legacy</artifactId>
         <version>${mongodb-driver.version}</version>
       </dependency>
