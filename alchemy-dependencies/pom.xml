@@ -74,7 +74,11 @@
 
     <junit.version>4.13.1</junit.version>
 
+    <junit5.version>5.10.0</junit5.version>
+
     <mockito.version>2.24.5</mockito.version>
+
+    <testcontainers.version>1.19.1</testcontainers.version>
   </properties>
 
   <dependencyManagement>
@@ -226,10 +230,24 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit5.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
       <!-- must be below all of the above so that they can be pinned before this tries to pull them in -->
