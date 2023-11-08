@@ -3,6 +3,7 @@ package io.rtr.alchemy.dto.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
+
 import org.joda.time.DateTime;
 
 import java.util.List;

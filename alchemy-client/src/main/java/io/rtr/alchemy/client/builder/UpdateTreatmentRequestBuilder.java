@@ -2,10 +2,11 @@ package io.rtr.alchemy.client.builder;
 
 import io.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
 
+import java.util.Optional;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
-import java.util.Optional;
 
 public class UpdateTreatmentRequestBuilder {
     private final Invocation.Builder builder;

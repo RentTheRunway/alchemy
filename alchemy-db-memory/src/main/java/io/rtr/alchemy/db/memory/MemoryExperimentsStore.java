@@ -3,11 +3,12 @@ package io.rtr.alchemy.db.memory;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import io.rtr.alchemy.db.ExperimentsStore;
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.db.Ordering;
-import io.rtr.alchemy.db.Ordering.Field;
 import io.rtr.alchemy.db.Ordering.Direction;
+import io.rtr.alchemy.db.Ordering.Field;
 import io.rtr.alchemy.models.Experiment;
 
 import java.util.Collections;

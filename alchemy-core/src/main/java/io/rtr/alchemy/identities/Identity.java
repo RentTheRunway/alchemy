@@ -5,10 +5,11 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Sets;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+
+import javax.annotation.Nonnull;
 
 /** Identifies a unique entity whose hash code is used for treatments allocation */
 public abstract class Identity {

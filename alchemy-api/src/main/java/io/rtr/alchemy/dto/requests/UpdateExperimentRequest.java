@@ -2,10 +2,11 @@ package io.rtr.alchemy.dto.requests;
 
 import io.rtr.alchemy.dto.models.TreatmentDto;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.validation.Valid;
 
 /** Represents a request for updating an experiment */
 public class UpdateExperimentRequest {

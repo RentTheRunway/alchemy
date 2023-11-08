@@ -1,9 +1,11 @@
 package io.rtr.alchemy.db.mongo;
 
 import com.mongodb.DuplicateKeyException;
+
+import dev.morphia.AdvancedDatastore;
+
 import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
 import io.rtr.alchemy.db.mongo.models.MetadataEntity;
-import dev.morphia.AdvancedDatastore;
 
 /** Manages what revision experiments are at in order to check when experiments are stale */
 public class RevisionManager {

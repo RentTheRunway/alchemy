@@ -1,9 +1,10 @@
 package io.rtr.alchemy.db;
 
-import com.google.common.collect.ImmutableMap;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.Test;
 
 public class OrderingTest {
     @Test

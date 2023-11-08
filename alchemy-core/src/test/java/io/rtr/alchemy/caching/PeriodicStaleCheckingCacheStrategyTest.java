@@ -1,13 +1,14 @@
 package io.rtr.alchemy.caching;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.models.Experiment;
+
 import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 public class PeriodicStaleCheckingCacheStrategyTest {
     private PeriodicStaleCheckingCacheStrategy strategy;

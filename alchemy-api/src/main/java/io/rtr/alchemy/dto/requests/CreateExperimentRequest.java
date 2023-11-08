@@ -1,12 +1,14 @@
 package io.rtr.alchemy.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.rtr.alchemy.dto.models.TreatmentDto;
+
+import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
 
 /** Represents a request for creating an experiment */
 public class CreateExperimentRequest {

@@ -17,8 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class MongoStoreProviderTest extends ExperimentsStoreProviderTest {
     private static final String DATABASE_NAME = "test_experiments";
 
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.25");
+    @Container static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.25");
 
     private static MongoClientURI uri;
 

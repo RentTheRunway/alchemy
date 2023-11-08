@@ -1,18 +1,20 @@
 package io.rtr.alchemy.client.builder;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.requests.AllocateRequest;
 import io.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
 import java.util.List;
 import java.util.Set;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 
 public class CreateExperimentRequestBuilder {
     private final String name;

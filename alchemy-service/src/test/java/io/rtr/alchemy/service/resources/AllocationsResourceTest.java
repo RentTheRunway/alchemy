@@ -1,18 +1,20 @@
 package io.rtr.alchemy.service.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
 import io.rtr.alchemy.dto.models.AllocationDto;
 import io.rtr.alchemy.dto.requests.AllocationRequest;
 import io.rtr.alchemy.dto.requests.AllocationRequests;
-import org.junit.Test;
 
-import javax.ws.rs.core.Response.Status;
+import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import javax.ws.rs.core.Response.Status;
 
 public class AllocationsResourceTest extends ResourceTest {
     private static final String ALLOCATIONS_ENDPOINT = "/experiments/{experimentName}/allocations";

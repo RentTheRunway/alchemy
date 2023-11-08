@@ -1,12 +1,16 @@
 package io.rtr.alchemy.models;
 
-import io.rtr.alchemy.filtering.FilterExpression;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Test;
-import javax.validation.ValidationException;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+
+import io.rtr.alchemy.filtering.FilterExpression;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+
+import org.junit.Test;
+
+import javax.validation.ValidationException;
 
 public class TreatmentOverrideTest {
     final Treatment treatment = new Treatment("treatment");

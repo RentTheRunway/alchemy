@@ -1,7 +1,8 @@
 package io.rtr.alchemy.models;
 
-import javax.validation.ValidationException;
 import java.util.regex.Pattern;
+
+import javax.validation.ValidationException;
 
 public interface Named {
     Pattern NAME_PATTERN = Pattern.compile("^[A-Za-z0-9-_]+$");

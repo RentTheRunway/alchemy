@@ -1,6 +1,7 @@
 package io.rtr.alchemy.service.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import io.rtr.alchemy.caching.CacheStrategy;
 
 /** Base configuration object for creating a cache strategy */

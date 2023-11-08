@@ -1,16 +1,18 @@
 package io.rtr.alchemy.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.google.common.collect.Lists;
+
 import org.junit.Test;
 
-import javax.validation.ValidationException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import javax.validation.ValidationException;
 
 public class AllocationsTest {
     private static final Treatment control, withLogin, withoutLogin;

@@ -4,6 +4,11 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Preconditions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import io.dropwizard.Application;
+import io.dropwizard.Configuration;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 import io.rtr.alchemy.service.config.AlchemyServiceConfiguration;
 import io.rtr.alchemy.service.config.IdentityMapping;
 import io.rtr.alchemy.service.exceptions.RuntimeExceptionMapper;
@@ -17,10 +22,6 @@ import io.rtr.alchemy.service.resources.ExperimentsResource;
 import io.rtr.alchemy.service.resources.MetadataResource;
 import io.rtr.alchemy.service.resources.TreatmentOverridesResource;
 import io.rtr.alchemy.service.resources.TreatmentsResource;
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
 
 /** The entry point for the service */
 public abstract class AlchemyService<T extends Configuration & AlchemyServiceConfiguration>

@@ -1,7 +1,9 @@
 package io.rtr.alchemy.filtering;
 
 import com.google.common.base.Objects;
+
 import io.rtr.alchemy.identities.AttributesMap;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;

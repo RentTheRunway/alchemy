@@ -1,15 +1,17 @@
 package io.rtr.alchemy.service.resources;
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.common.collect.ImmutableMap;
+
 import io.rtr.alchemy.dto.models.TreatmentDto;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.core.Response.Status;
-
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import javax.ws.rs.core.Response.Status;
 
 public class ActiveTreatmentsResourceTest extends ResourceTest {
     private static final String ENDPOINT_ACTIVE_TREATMENT =

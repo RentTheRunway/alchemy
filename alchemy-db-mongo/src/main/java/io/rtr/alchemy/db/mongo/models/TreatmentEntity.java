@@ -1,7 +1,8 @@
 package io.rtr.alchemy.db.mongo.models;
 
-import io.rtr.alchemy.models.Treatment;
 import dev.morphia.annotations.Embedded;
+
+import io.rtr.alchemy.models.Treatment;
 
 /**
  * An entity that mirrors Treatment

@@ -6,12 +6,16 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+
+import io.dropwizard.setup.Environment;
 import io.rtr.alchemy.dto.identities.IdentityDto;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.mapping.Mappers;
 import io.rtr.alchemy.service.metadata.IdentitiesMetadata;
 import io.rtr.alchemy.service.metadata.IdentityMetadata;
-import io.dropwizard.setup.Environment;
+
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.validation.Valid;
@@ -21,8 +25,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Map;
-import java.util.Set;
 
 /** Resource for retrieving registered identity types and their schemas */
 @Path("/metadata")

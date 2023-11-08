@@ -1,7 +1,8 @@
 package io.rtr.alchemy.db.mongo.models;
 
-import io.rtr.alchemy.models.Allocation;
 import dev.morphia.annotations.Embedded;
+
+import io.rtr.alchemy.models.Allocation;
 
 /**
  * An entity that mirrors Allocation

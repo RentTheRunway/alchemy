@@ -1,14 +1,15 @@
 package io.rtr.alchemy.service.resources;
 
-import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
-import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
-import org.junit.Test;
-
-import javax.ws.rs.core.Response.Status;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
+import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
+
+import org.junit.Test;
+
+import javax.ws.rs.core.Response.Status;
 
 public class TreatmentOverridesResourceTest extends ResourceTest {
     private static final String ENDPOINT_OVERRIDES = "/experiments/{experimentName}/overrides";

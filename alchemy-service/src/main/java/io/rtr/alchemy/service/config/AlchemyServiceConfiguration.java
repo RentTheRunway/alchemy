@@ -1,6 +1,7 @@
 package io.rtr.alchemy.service.config;
 
 import io.rtr.alchemy.identities.Identity;
+
 import java.util.Map;
 
 /** The base configuration for the Alchemy Dropwizard service */

@@ -1,16 +1,18 @@
 package io.rtr.alchemy.caching;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import com.google.common.collect.Lists;
+
 import io.rtr.alchemy.models.Experiment;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
-
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class CacheStrategyIterableTest {
     private Iterator<Experiment> iterator;

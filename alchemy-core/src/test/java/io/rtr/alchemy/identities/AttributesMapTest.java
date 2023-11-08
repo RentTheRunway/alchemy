@@ -1,13 +1,14 @@
 package io.rtr.alchemy.identities;
 
-import com.google.common.collect.Sets;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import com.google.common.collect.Sets;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class AttributesMapTest {
     private AttributesMap map;

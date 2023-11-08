@@ -99,7 +99,8 @@ public final class MongoStoreProvider implements ExperimentsStoreProvider {
             if (uri != null) {
                 return new MongoStoreProvider(new MongoClient(uri), database);
             } else {
-                return new MongoStoreProvider(new MongoClient(hosts, credential, options), database);
+                return new MongoStoreProvider(
+                        new MongoClient(hosts, credential, options), database);
             }
         }
     }
