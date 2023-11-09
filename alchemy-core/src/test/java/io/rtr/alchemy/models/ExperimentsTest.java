@@ -1,23 +1,5 @@
 package io.rtr.alchemy.models;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-import io.rtr.alchemy.caching.CacheStrategy;
-import io.rtr.alchemy.db.ExperimentsCache;
-import io.rtr.alchemy.db.ExperimentsStore;
-import io.rtr.alchemy.db.ExperimentsStoreProvider;
-import io.rtr.alchemy.db.Filter;
-import io.rtr.alchemy.filtering.FilterExpression;
-import io.rtr.alchemy.identities.Attributes;
-import io.rtr.alchemy.identities.AttributesMap;
-import io.rtr.alchemy.identities.Identity;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.validation.ValidationException;
-import java.util.Collections;
-import java.util.Set;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
@@ -27,6 +9,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+
+import io.rtr.alchemy.caching.CacheStrategy;
+import io.rtr.alchemy.db.ExperimentsCache;
+import io.rtr.alchemy.db.ExperimentsStore;
+import io.rtr.alchemy.db.ExperimentsStoreProvider;
+import io.rtr.alchemy.db.Filter;
+import io.rtr.alchemy.filtering.FilterExpression;
+import io.rtr.alchemy.identities.Attributes;
+import io.rtr.alchemy.identities.AttributesMap;
+import io.rtr.alchemy.identities.Identity;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collections;
+import java.util.Set;
+
+import javax.validation.ValidationException;
 
 public class ExperimentsTest {
     private ExperimentsStore store;

@@ -2,11 +2,12 @@ package io.rtr.alchemy.service.exceptions;
 
 import com.google.common.collect.Maps;
 
+import java.util.Map;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-import java.util.Map;
 
 /** Maps common runtime exceptions to their respective HTTP status codes */
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {

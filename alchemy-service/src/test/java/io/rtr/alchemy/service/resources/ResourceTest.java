@@ -1,10 +1,20 @@
 package io.rtr.alchemy.service.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Types;
+
+import io.dropwizard.jackson.Jackson;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.testing.junit.ResourceTestRule;
 import io.rtr.alchemy.db.memory.MemoryStoreProvider;
 import io.rtr.alchemy.dto.identities.IdentityDto;
 import io.rtr.alchemy.filtering.FilterExpression;
@@ -19,20 +29,9 @@ import io.rtr.alchemy.service.mapping.CoreMappings;
 import io.rtr.alchemy.service.metadata.IdentitiesMetadata;
 import io.rtr.alchemy.service.metadata.IdentityMetadata;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.SyncInvoker;
-import javax.ws.rs.core.GenericType;
-
-import io.dropwizard.jackson.Jackson;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.Map;
@@ -41,12 +40,12 @@ import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.SyncInvoker;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 public abstract class ResourceTest {
     private static final MemoryStoreProvider PROVIDER;

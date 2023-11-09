@@ -1,19 +1,5 @@
 package io.rtr.alchemy.models;
 
-import com.google.common.collect.Lists;
-import io.rtr.alchemy.filtering.FilterExpression;
-import io.rtr.alchemy.identities.AttributesMap;
-import io.rtr.alchemy.identities.Identity;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import javax.validation.ValidationException;
-
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -24,6 +10,24 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import com.google.common.collect.Lists;
+
+import io.rtr.alchemy.filtering.FilterExpression;
+import io.rtr.alchemy.identities.AttributesMap;
+import io.rtr.alchemy.identities.Identity;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.ValidationException;
 
 public class ExperimentTest {
     private final Identity identity = mock(Identity.class);

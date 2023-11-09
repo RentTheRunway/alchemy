@@ -1,6 +1,7 @@
 package io.rtr.alchemy.db.mongo.models;
 
 import io.rtr.alchemy.models.Allocation;
+
 import org.mongodb.morphia.annotations.Embedded;
 
 /**

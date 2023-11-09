@@ -1,6 +1,7 @@
 package io.rtr.alchemy.db.mongo.util;
 
 import com.google.common.collect.AbstractIterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

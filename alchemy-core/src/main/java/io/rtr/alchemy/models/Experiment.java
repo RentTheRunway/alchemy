@@ -8,16 +8,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import io.rtr.alchemy.filtering.FilterExpression;
 import io.rtr.alchemy.identities.AttributesMap;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.identities.IdentityBuilder;
+
 import org.apache.commons.math3.util.FastMath;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import javax.annotation.Nullable;
-import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Nullable;
+import javax.validation.ValidationException;
 
 /** Represents a collection of user experiences being tested */
 public class Experiment implements Named {

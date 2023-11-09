@@ -1,6 +1,7 @@
 package io.rtr.alchemy.service.resources;
 
 import com.google.inject.Inject;
+
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
 import io.rtr.alchemy.mapping.Mappers;

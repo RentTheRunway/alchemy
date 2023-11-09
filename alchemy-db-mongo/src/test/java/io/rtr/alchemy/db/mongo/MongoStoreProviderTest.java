@@ -1,12 +1,14 @@
 package io.rtr.alchemy.db.mongo;
 
+import static org.junit.Assert.fail;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
+
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.testing.db.ExperimentsStoreProviderTest;
-import org.junit.Ignore;
 
-import static org.junit.Assert.fail;
+import org.junit.Ignore;
 
 @Ignore("must be run manually and requires a local Mongo instance")
 public class MongoStoreProviderTest extends ExperimentsStoreProviderTest {

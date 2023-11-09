@@ -2,6 +2,7 @@ package io.rtr.alchemy.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import io.rtr.alchemy.dto.identities.IdentityDto;
 
 /** An example DTO to be used for service payload */

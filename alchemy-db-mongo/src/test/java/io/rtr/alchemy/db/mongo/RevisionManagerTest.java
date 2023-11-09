@@ -1,16 +1,5 @@
 package io.rtr.alchemy.db.mongo;
 
-import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
-import io.rtr.alchemy.db.mongo.models.MetadataEntity;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.mongodb.morphia.AdvancedDatastore;
-import org.mongodb.morphia.query.FieldEnd;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +11,18 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
+import io.rtr.alchemy.db.mongo.models.MetadataEntity;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.mongodb.morphia.AdvancedDatastore;
+import org.mongodb.morphia.query.FieldEnd;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 public class RevisionManagerTest {
     private AdvancedDatastore ds;

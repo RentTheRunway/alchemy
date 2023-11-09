@@ -1,6 +1,11 @@
 package io.rtr.alchemy.service.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import com.google.common.collect.Lists;
+
 import io.rtr.alchemy.dto.models.ExperimentDto;
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.requests.AllocateRequest;
@@ -8,14 +13,12 @@ import io.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import io.rtr.alchemy.dto.requests.UpdateExperimentRequest;
 import io.rtr.alchemy.filtering.FilterExpression;
+
 import org.junit.Test;
 
-import javax.ws.rs.core.Response.Status;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import javax.ws.rs.core.Response.Status;
 
 public class ExperimentsResourceTest extends ResourceTest {
     private static final String EXPERIMENTS_ENDPOINT = "/experiments";

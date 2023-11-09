@@ -1,18 +1,18 @@
 package io.rtr.alchemy.identities;
 
-import org.apache.commons.math3.stat.inference.ChiSquareTest;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.util.Set;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.junit.Assert.assertEquals;
+
+import org.apache.commons.math3.stat.inference.ChiSquareTest;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Set;
 
 public class IdentityBuilderTest {
 

@@ -3,6 +3,7 @@ package io.rtr.alchemy.client.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import io.rtr.alchemy.dto.identities.IdentityDto;
 
 @JsonTypeName("user")

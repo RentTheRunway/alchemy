@@ -4,20 +4,24 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import io.rtr.alchemy.db.Ordering;
 import io.rtr.alchemy.db.mongo.util.DateTimeConverter;
 import io.rtr.alchemy.models.Allocation;
 import io.rtr.alchemy.models.Experiment;
 import io.rtr.alchemy.models.Treatment;
 import io.rtr.alchemy.models.TreatmentOverride;
+
 import org.joda.time.DateTime;
 import org.mongodb.morphia.annotations.Converters;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
-import javax.annotation.Nullable;
+
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * An entity that mirrors Experiment

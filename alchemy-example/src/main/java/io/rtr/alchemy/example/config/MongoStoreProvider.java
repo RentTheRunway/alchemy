@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.net.HostAndPort;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.service.config.StoreProviderConfiguration;
 
-import javax.validation.constraints.NotNull;
 import java.net.UnknownHostException;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 /** Configuration object for creating a MongoDB provider with given parameters */
 public class MongoStoreProvider extends StoreProviderConfiguration {
