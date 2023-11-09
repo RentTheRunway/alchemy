@@ -28,9 +28,8 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <java.version>8</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
@@ -38,7 +37,7 @@
 
         <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
 
-        <fmt-maven-plugin.version>2.9.1</fmt-maven-plugin.version>
+        <fmt-maven-plugin.version>2.21.1</fmt-maven-plugin.version>
 
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
 
@@ -81,7 +80,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.coveo</groupId>
+                    <groupId>com.spotify.fmt</groupId>
                     <artifactId>fmt-maven-plugin</artifactId>
                     <version>${fmt-maven-plugin.version}</version>
                     <configuration>
@@ -293,7 +292,7 @@
 
         <plugins>
             <plugin>
-                <groupId>com.coveo</groupId>
+                <groupId>com.spotify.fmt</groupId>
                 <artifactId>fmt-maven-plugin</artifactId>
                 <version>${fmt-maven-plugin.version}</version>
             </plugin>
