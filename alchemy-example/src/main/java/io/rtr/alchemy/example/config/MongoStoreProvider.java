@@ -9,7 +9,6 @@ import com.mongodb.ServerAddress;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.service.config.StoreProviderConfiguration;
 
-import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -26,10 +25,10 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
 
     @JsonCreator
     public MongoStoreProvider(
-            @JsonProperty("hosts") List<HostAndPort> hosts,
-            @JsonProperty("db") String db,
-            @JsonProperty("username") String username,
-            @JsonProperty("password") String password) {
+            @JsonProperty("hosts") final List<HostAndPort> hosts,
+            @JsonProperty("db") final String db,
+            @JsonProperty("username") final String username,
+            @JsonProperty("password") final String password) {
         this.hosts = hosts;
         this.db = db;
         this.username = username;
@@ -53,7 +52,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
     }
 
     @Override
-    public ExperimentsStoreProvider createProvider() throws UnknownHostException {
+    public ExperimentsStoreProvider createProvider() {
         final io.rtr.alchemy.db.mongo.MongoStoreProvider.Builder builder =
                 io.rtr.alchemy.db.mongo.MongoStoreProvider.newBuilder();
         for (final HostAndPort host : hosts) {
@@ -65,7 +64,7 @@ public class MongoStoreProvider extends StoreProviderConfiguration {
         }
 
         if (username != null) {
-            builder.addCredential(
+            builder.setCredential(
                     MongoCredential.createPlainCredential(username, db, password.toCharArray()));
         }
 

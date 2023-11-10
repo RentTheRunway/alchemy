@@ -2,11 +2,12 @@ package io.rtr.alchemy.db.mongo;
 
 import com.google.common.collect.Maps;
 
+import dev.morphia.Datastore;
+import dev.morphia.query.filters.Filters;
+
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
 import io.rtr.alchemy.models.Experiment;
-
-import org.mongodb.morphia.Datastore;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,15 +19,16 @@ public class MongoExperimentsCache implements ExperimentsCache {
     private final Datastore ds;
     private volatile Map<String, Experiment> cachedExperiments;
 
-    public MongoExperimentsCache(Datastore ds, RevisionManager revisionManager) {
+    public MongoExperimentsCache(final Datastore ds, final RevisionManager revisionManager) {
         this.ds = ds;
         this.revisionManager = revisionManager;
     }
 
     @Override
-    public void invalidateAll(Experiment.BuilderFactory factory) {
+    public void invalidateAll(final Experiment.BuilderFactory factory) {
         final Iterator<ExperimentEntity> iterator =
-                ds.find(ExperimentEntity.class).field("active").equal(true).iterator();
+                ds.find(ExperimentEntity.class).filter(Filters.eq("active", true)).stream()
+                        .iterator();
 
         final Map<String, Experiment> newMap = Maps.newConcurrentMap();
         Long maxRevision = null;
@@ -53,8 +55,12 @@ public class MongoExperimentsCache implements ExperimentsCache {
     }
 
     @Override
-    public void invalidate(String experimentName, Experiment.Builder builder) {
-        final ExperimentEntity entity = ds.get(ExperimentEntity.class, experimentName);
+    public void invalidate(final String experimentName, final Experiment.Builder builder) {
+        final ExperimentEntity entity =
+                ds.find(ExperimentEntity.class).filter(Filters.eq("name", experimentName)).first();
+        if (entity == null) {
+            return;
+        }
         final Experiment experiment = entity.toExperiment(builder);
         if (experiment.isActive()) {
             cachedExperiments.put(experimentName, experiment);
@@ -64,12 +70,12 @@ public class MongoExperimentsCache implements ExperimentsCache {
     }
 
     @Override
-    public void update(Experiment experiment) {
+    public void update(final Experiment experiment) {
         cachedExperiments.put(experiment.getName(), experiment);
     }
 
     @Override
-    public void delete(String experimentName) {
+    public void delete(final String experimentName) {
         cachedExperiments.remove(experimentName);
     }
 
@@ -79,7 +85,7 @@ public class MongoExperimentsCache implements ExperimentsCache {
     }
 
     @Override
-    public boolean checkIfStale(String experimentName) {
+    public boolean checkIfStale(final String experimentName) {
         return revisionManager.checkIfStale(experimentName);
     }
 }

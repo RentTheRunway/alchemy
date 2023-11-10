@@ -1,20 +1,27 @@
 package io.rtr.alchemy.db.mongo;
 
-import com.google.common.collect.Lists;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.connection.ClusterConnectionMode;
+
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.ExperimentsStore;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
-import io.rtr.alchemy.db.mongo.util.DateTimeConverter;
+import io.rtr.alchemy.db.mongo.util.DateTimeCodec;
 
-import org.mongodb.morphia.AdvancedDatastore;
-import org.mongodb.morphia.Morphia;
+import org.bson.codecs.configuration.CodecRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /** A provider for MongoDB which implements the store and cache for using MongoDB as a backend */
 public class MongoStoreProvider implements ExperimentsStoreProvider {
@@ -22,32 +29,16 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
     private final ExperimentsStore store;
     private final ExperimentsCache cache;
 
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    private MongoStoreProvider(
-            List<ServerAddress> hosts,
-            List<MongoCredential> credentials,
-            MongoClientOptions options,
-            String database) {
-        this(
-                options == null
-                        ? new MongoClient(hosts, credentials)
-                        : new MongoClient(hosts, credentials, options),
-                database);
-    }
-
-    public MongoStoreProvider(MongoClient client, String database) {
-        final Morphia morphia = new Morphia();
-        morphia.getMapper().getOptions().setStoreEmpties(true);
-        morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
-
+    private MongoStoreProvider(final MongoClient client) {
         this.client = client;
-        final AdvancedDatastore ds = (AdvancedDatastore) morphia.createDatastore(client, database);
+        final Datastore ds = Morphia.createDatastore(client);
         final RevisionManager revisionManager = new RevisionManager(ds);
         this.store = new MongoExperimentsStore(ds, revisionManager);
         this.cache = new MongoExperimentsCache(ds, revisionManager);
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     @Override
@@ -66,34 +57,39 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
     }
 
     public static class Builder {
-        private List<ServerAddress> hosts;
-        private List<MongoCredential> credentials;
-        private MongoClientOptions options;
-        private String database;
+        private List<ServerAddress> hosts = new ArrayList<>();
+        @Nullable private MongoCredential credential;
+        private MongoClientOptions options = MongoClientOptions.builder().build();
+        private ClusterConnectionMode connectionMode = ClusterConnectionMode.SINGLE;
 
-        public Builder() {
-            this.hosts = Lists.newArrayList();
-            this.credentials = Lists.newArrayList();
-            this.database = "experiments";
-        }
-
-        public Builder setDatabase(String database) {
-            this.database = database;
+        @Deprecated
+        public Builder setDatabase(final String database) {
+            // No-op: This is set through the properties file
             return this;
         }
 
-        public Builder setOptions(MongoClientOptions options) {
+        public Builder setOptions(final MongoClientOptions options) {
             this.options = options;
             return this;
         }
 
-        public Builder addCredential(MongoCredential credential) {
-            this.credentials.add(credential);
+        public Builder setCredential(final MongoCredential credential) {
+            this.credential = credential;
             return this;
         }
 
-        public Builder addHost(ServerAddress host) {
+        public Builder addHost(final ServerAddress host) {
             hosts.add(host);
+            return this;
+        }
+
+        public Builder setHosts(final List<ServerAddress> hosts) {
+            this.hosts = hosts;
+            return this;
+        }
+
+        public Builder setClusterConnectionMode(final ClusterConnectionMode connectionMode) {
+            this.connectionMode = connectionMode;
             return this;
         }
 
@@ -104,7 +100,16 @@ public class MongoStoreProvider implements ExperimentsStoreProvider {
                                 ServerAddress.defaultHost(), ServerAddress.defaultPort()));
             }
 
-            return new MongoStoreProvider(hosts, credentials, options, database);
+            final MongoClientSettings settings =
+                    MongoClientOptions.builder(options)
+                            .codecRegistry(
+                                    CodecRegistries.fromRegistries(
+                                            CodecRegistries.fromCodecs(new DateTimeCodec()),
+                                            MongoClientSettings.getDefaultCodecRegistry()))
+                            .build()
+                            .asMongoClientSettings(hosts, null, connectionMode, credential);
+
+            return new MongoStoreProvider(MongoClients.create(settings));
         }
     }
 }
