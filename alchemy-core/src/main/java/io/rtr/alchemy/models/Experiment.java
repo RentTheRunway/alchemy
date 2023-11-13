@@ -1,14 +1,5 @@
 package io.rtr.alchemy.models;
 
-import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import io.rtr.alchemy.filtering.FilterExpression;
 import io.rtr.alchemy.identities.AttributesMap;
 import io.rtr.alchemy.identities.Identity;
@@ -18,27 +9,35 @@ import org.apache.commons.math3.util.FastMath;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.Nullable;
 import javax.validation.ValidationException;
 
 /** Represents a collection of user experiences being tested */
 public class Experiment implements Named {
-    private static final Set<String> EMPTY_SET = Sets.newLinkedHashSet();
+    private static final Set<String> EMPTY_SET = new HashSet<>();
     private static final Function<TreatmentOverride, String> TREATMENT_INDEXER =
-            new Function<TreatmentOverride, String>() {
+            new Function<>() {
                 @Nullable
                 @Override
-                public String apply(@Nullable TreatmentOverride input) {
-                    return input != null ? input.getName() : null;
+                public String apply(@Nullable final TreatmentOverride input) {
+                    return Optional.ofNullable(input).map(TreatmentOverride::getName).orElse(null);
                 }
             };
 
@@ -59,64 +58,63 @@ public class Experiment implements Named {
 
     // used by Builder when loading experiment from store
     private Experiment(
-            Experiments owner,
-            String name,
-            int seed,
-            String description,
-            FilterExpression filter,
-            Set<String> hashAttributes,
-            boolean active,
-            DateTime created,
-            DateTime modified,
-            DateTime activated,
-            DateTime deactivated,
-            Map<String, Treatment> treatments,
-            Iterable<TreatmentOverride> overrides,
-            Iterable<Allocation> allocations) {
+            final Experiments owner,
+            final String name,
+            final int seed,
+            final String description,
+            final FilterExpression filter,
+            final Set<String> hashAttributes,
+            final boolean active,
+            final DateTime created,
+            final DateTime modified,
+            final DateTime activated,
+            final DateTime deactivated,
+            final Map<String, Treatment> treatments,
+            final Iterable<TreatmentOverride> overrides,
+            final Iterable<Allocation> allocations) {
         this.owner = owner;
         this.name = name;
         this.description = description;
-        this.filter = MoreObjects.firstNonNull(filter, FilterExpression.alwaysTrue());
-        this.hashAttributes = MoreObjects.firstNonNull(hashAttributes, EMPTY_SET);
+        this.filter = Optional.ofNullable(filter).orElse(FilterExpression.alwaysTrue());
+        this.hashAttributes = Optional.ofNullable(hashAttributes).orElse(EMPTY_SET);
         this.active = active;
         this.created = created;
         this.modified = modified;
         this.activated = activated;
         this.deactivated = deactivated;
         this.treatments = new ConcurrentHashMap<>(treatments);
-        this.overrides = new ConcurrentHashMap<>(Maps.uniqueIndex(overrides, TREATMENT_INDEXER));
+        this.overrides =
+                StreamSupport.stream(overrides.spliterator(), false)
+                        .collect(
+                                Collectors.toConcurrentMap(TREATMENT_INDEXER, Function.identity()));
         this.allocations = new Allocations(allocations);
         this.seed = seed;
     }
 
     // used when creating a new experiment
-    protected Experiment(Experiments owner, String name) {
+    protected Experiment(final Experiments owner, final String name) {
         this.owner = owner;
         this.name = name;
         this.filter = FilterExpression.alwaysTrue();
         this.hashAttributes = EMPTY_SET;
         this.allocations = new Allocations();
-        this.treatments = Maps.newConcurrentMap();
-        this.overrides = Maps.newConcurrentMap();
+        this.treatments = new ConcurrentHashMap<>();
+        this.overrides = new ConcurrentHashMap<>();
         this.seed = (int) IdentityBuilder.seed(0).putString(name).hash();
     }
 
-    public static Experiment copyOf(Experiment experiment) throws ValidationException {
-        return experiment != null ? new Experiment(experiment) : null;
-    }
-
-    private Experiment(Experiment toCopy) throws ValidationException {
+    private Experiment(final Experiment toCopy) throws ValidationException {
         this.owner = toCopy.owner;
         this.name = toCopy.name;
 
-        this.treatments = Maps.newConcurrentMap();
+        this.treatments = new ConcurrentHashMap<>();
         for (final Treatment treatment : toCopy.getTreatments()) {
             this.treatments.put(
                     treatment.getName(),
                     new Treatment(treatment.getName(), treatment.getDescription()));
         }
 
-        final List<Allocation> allocations = Lists.newArrayList();
+        final List<Allocation> allocations = new ArrayList<>();
         for (final Allocation allocation : toCopy.getAllocations()) {
             final Treatment treatment = this.treatments.get(allocation.getTreatment().getName());
             allocations.add(
@@ -125,7 +123,7 @@ public class Experiment implements Named {
 
         this.allocations = new Allocations(allocations);
 
-        this.overrides = Maps.newConcurrentMap();
+        this.overrides = new ConcurrentHashMap<>();
         for (final TreatmentOverride override : toCopy.getOverrides()) {
             final Treatment treatment = this.treatments.get(override.getTreatment().getName());
             final TreatmentOverride newOverride =
@@ -136,12 +134,16 @@ public class Experiment implements Named {
         this.seed = toCopy.seed;
         this.description = toCopy.description;
         this.filter = toCopy.filter;
-        this.hashAttributes = Sets.newLinkedHashSet(toCopy.getHashAttributes());
+        this.hashAttributes = new LinkedHashSet<>(toCopy.getHashAttributes());
         this.active = toCopy.active;
         this.created = toCopy.created;
         this.modified = toCopy.modified;
         this.activated = toCopy.activated;
         this.deactivated = toCopy.deactivated;
+    }
+
+    public static Experiment copyOf(final Experiment experiment) throws ValidationException {
+        return experiment != null ? new Experiment(experiment) : null;
     }
 
     public String getName() {
@@ -152,7 +154,7 @@ public class Experiment implements Named {
         return description;
     }
 
-    public Experiment setDescription(String description) {
+    public Experiment setDescription(final String description) {
         this.description = description;
         return this;
     }
@@ -161,44 +163,44 @@ public class Experiment implements Named {
         return filter;
     }
 
-    public Set<String> getHashAttributes() {
-        return Collections.unmodifiableSet(hashAttributes);
-    }
-
-    public Experiment setFilter(FilterExpression filter) {
+    public Experiment setFilter(final FilterExpression filter) {
         this.filter = filter;
         return this;
     }
 
-    public Experiment setHashAttributes(Set<String> hashAttributes) {
+    public Set<String> getHashAttributes() {
+        return Collections.unmodifiableSet(hashAttributes);
+    }
+
+    public Experiment setHashAttributes(final Set<String> hashAttributes) {
         if (hashAttributes == null) {
             this.hashAttributes = EMPTY_SET;
         } else {
-            this.hashAttributes = Sets.newLinkedHashSet(hashAttributes);
+            this.hashAttributes = new LinkedHashSet<>(hashAttributes);
         }
         return this;
     }
 
-    public Experiment setHashAttributes(String... hashAttributes) {
+    public Experiment setHashAttributes(final String... hashAttributes) {
         if (hashAttributes == null) {
             this.hashAttributes = EMPTY_SET;
         } else {
-            this.hashAttributes = Sets.newLinkedHashSet(Lists.newArrayList(hashAttributes));
+            this.hashAttributes = new LinkedHashSet<>(List.of(hashAttributes));
         }
         return this;
+    }
+
+    public int getSeed() {
+        return seed;
     }
 
     /**
      * Sets the seed used to compute hashes from identities. WARNING: Changing this value will
      * change what users are assigned to what treatments
      */
-    public Experiment setSeed(int seed) {
+    public Experiment setSeed(final int seed) {
         this.seed = seed;
         return this;
-    }
-
-    public int getSeed() {
-        return seed;
     }
 
     public boolean isActive() {
@@ -228,17 +230,17 @@ public class Experiment implements Named {
 
     /** Gets all treatments defined on this experiment */
     public List<Treatment> getTreatments() {
-        return Collections.unmodifiableList(Lists.newArrayList(treatments.values()));
+        return List.copyOf(treatments.values());
     }
 
     /** Get a treatment with the given name */
-    public Treatment getTreatment(String treatmentName) {
+    public Treatment getTreatment(final String treatmentName) {
         return treatments.get(treatmentName);
     }
 
     /** Gets all overrides defined on this experiment */
     public List<TreatmentOverride> getOverrides() {
-        return ImmutableList.copyOf(overrides.values());
+        return List.copyOf(overrides.values());
     }
 
     /**
@@ -246,7 +248,7 @@ public class Experiment implements Named {
      *
      * @param overrideName The name
      */
-    public TreatmentOverride getOverride(String overrideName) {
+    public TreatmentOverride getOverride(final String overrideName) {
         return overrides.get(overrideName);
     }
 
@@ -277,7 +279,7 @@ public class Experiment implements Named {
      *
      * @param name The name
      */
-    public Experiment addTreatment(String name) throws ValidationException {
+    public Experiment addTreatment(final String name) throws ValidationException {
         treatments.put(name, new Treatment(name));
         return this;
     }
@@ -288,14 +290,15 @@ public class Experiment implements Named {
      * @param name The name
      * @param description The description
      */
-    public Experiment addTreatment(String name, String description) throws ValidationException {
+    public Experiment addTreatment(final String name, final String description)
+            throws ValidationException {
         treatments.put(name, new Treatment(name, description));
         return this;
     }
 
     /** Removes all treatments */
     public Experiment clearTreatments() {
-        final List<Treatment> toRemove = Lists.newArrayList(treatments.values());
+        final List<Treatment> toRemove = List.copyOf(treatments.values());
         for (final Treatment treatment : toRemove) {
             removeTreatment(treatment.getName());
         }
@@ -317,7 +320,8 @@ public class Experiment implements Named {
      * @param filter A filter expression that describes which attributes this override should apply
      *     for
      */
-    public Experiment addOverride(String overrideName, String treatmentName, String filter)
+    public Experiment addOverride(
+            final String overrideName, final String treatmentName, final String filter)
             throws ValidationException {
         final FilterExpression filterExp = FilterExpression.of(filter);
         final TreatmentOverride override =
@@ -332,7 +336,7 @@ public class Experiment implements Named {
      *
      * @param overrideName The name of the override to remove
      */
-    public Experiment removeOverride(String overrideName) {
+    public Experiment removeOverride(final String overrideName) {
         overrides.remove(overrideName);
         return this;
     }
@@ -342,20 +346,14 @@ public class Experiment implements Named {
      *
      * @param treatmentName The treatment to remove overrides for
      */
-    public Experiment removeOverrides(String treatmentName) {
+    public Experiment removeOverrides(final String treatmentName) {
         final Treatment treatment = treatments.get(treatmentName);
 
         if (treatment == null) {
             return this;
         }
 
-        final Iterator<Entry<String, TreatmentOverride>> iterator = overrides.entrySet().iterator();
-        while (iterator.hasNext()) {
-            final Entry<String, TreatmentOverride> entry = iterator.next();
-            if (entry.getValue().getTreatment().equals(treatment)) {
-                iterator.remove();
-            }
-        }
+        overrides.entrySet().removeIf(entry -> entry.getValue().getTreatment().equals(treatment));
 
         return this;
     }
@@ -365,7 +363,7 @@ public class Experiment implements Named {
      *
      * @param name The treatment
      */
-    public Experiment removeTreatment(String name) {
+    public Experiment removeTreatment(final String name) {
         final Treatment treatment = treatments.get(name);
         if (treatment == null) {
             return this;
@@ -378,9 +376,12 @@ public class Experiment implements Named {
         return this;
     }
 
-    private Treatment treatment(String name) {
+    private Treatment treatment(final String name) {
         final Treatment treatment = treatments.get(name);
-        Preconditions.checkArgument(treatment != null, "no treatment with name %s defined", name);
+        if (treatment == null) {
+            throw new IllegalArgumentException(
+                    String.format("no treatment with name %s defined", name));
+        }
         return treatment;
     }
 
@@ -408,7 +409,7 @@ public class Experiment implements Named {
      * @param treatmentName The treatment
      * @param size The number of bins
      */
-    public Experiment allocate(String treatmentName, int size) {
+    public Experiment allocate(final String treatmentName, final int size) {
         allocations.allocate(treatment(treatmentName), size);
 
         return this;
@@ -420,7 +421,7 @@ public class Experiment implements Named {
      * @param treatmentName The treatment
      * @param size The number of bins
      */
-    public Experiment deallocate(String treatmentName, int size) {
+    public Experiment deallocate(final String treatmentName, final int size) {
         allocations.deallocate(treatment(treatmentName), size);
         return this;
     }
@@ -433,7 +434,9 @@ public class Experiment implements Named {
      * @param size The number of bins
      */
     public Experiment reallocate(
-            String sourceTreatmentName, String destinationTreatmentName, int size) {
+            final String sourceTreatmentName,
+            final String destinationTreatmentName,
+            final int size) {
         allocations.reallocate(
                 treatment(sourceTreatmentName), treatment(destinationTreatmentName), size);
 
@@ -446,7 +449,7 @@ public class Experiment implements Named {
         return this;
     }
 
-    private int identityToBin(Identity identity, AttributesMap attributes) {
+    private int identityToBin(final Identity identity, final AttributesMap attributes) {
         return (int)
                 (FastMath.abs(identity.computeHash(seed, hashAttributes, attributes))
                         % Allocations.NUM_BINS);
@@ -458,49 +461,51 @@ public class Experiment implements Named {
      * @param identity The identity
      * @return the treatment assigned to given identity
      */
-    public Treatment getTreatment(Identity identity, AttributesMap attributes) {
+    public Treatment getTreatment(final Identity identity, final AttributesMap attributes) {
         return allocations.getTreatment(identityToBin(identity, attributes));
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Experiment)) return false;
+        final Experiment that = (Experiment) o;
+        return Objects.equals(getName(), that.getName());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Experiment)) {
-            return false;
-        }
-
-        final Experiment other = (Experiment) obj;
-        return Objects.equal(name, other.name);
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", name)
-                .add("description", description)
-                .add("filter", filter)
-                .add("hashAttributes", hashAttributes)
-                .add("active", active)
-                .add("created", created)
-                .add("modified", modified)
-                .add("activated", activated)
-                .add("deactivated", deactivated)
-                .add("seed", seed)
+        return new StringJoiner(", ", Experiment.class.getSimpleName() + "[", "]")
+                .add("owner=" + owner)
+                .add("name='" + name + "'")
+                .add("allocations=" + allocations)
+                .add("treatments=" + treatments)
+                .add("overrides=" + overrides)
+                .add("seed=" + seed)
+                .add("description='" + description + "'")
+                .add("filter=" + filter)
+                .add("hashAttributes=" + hashAttributes)
+                .add("active=" + active)
+                .add("created=" + created)
+                .add("modified=" + modified)
+                .add("activated=" + activated)
+                .add("deactivated=" + deactivated)
                 .toString();
     }
 
     public static class BuilderFactory {
         private final Experiments owner;
 
-        BuilderFactory(Experiments owner) {
+        BuilderFactory(final Experiments owner) {
             this.owner = owner;
         }
 
-        public Builder createBuilder(String experimentName) {
+        public Builder createBuilder(final String experimentName) {
             return new Builder(owner, experimentName);
         }
     }
@@ -509,6 +514,9 @@ public class Experiment implements Named {
     public static class Builder {
         private final Experiments owner;
         private final String name;
+        private final Map<String, Treatment> treatments;
+        private final List<TreatmentOverride> overrides;
+        private final List<Allocation> allocations;
         private int seed;
         private String description;
         private FilterExpression filter;
@@ -518,81 +526,82 @@ public class Experiment implements Named {
         private DateTime modified = DateTime.now(DateTimeZone.UTC);
         private DateTime activated;
         private DateTime deactivated;
-        private final Map<String, Treatment> treatments;
-        private final List<TreatmentOverride> overrides;
-        private final List<Allocation> allocations;
 
-        Builder(Experiments owner, String name) {
+        Builder(final Experiments owner, final String name) {
             this.owner = owner;
             this.name = name;
-            treatments = Maps.newHashMap();
-            overrides = Lists.newArrayList();
-            allocations = Lists.newArrayList();
+            treatments = new HashMap<>();
+            overrides = new ArrayList<>();
+            allocations = new ArrayList<>();
         }
 
-        public Builder description(String description) {
+        public Builder description(final String description) {
             this.description = description;
             return this;
         }
 
-        public Builder filter(String filter) {
+        public Builder filter(final String filter) {
             this.filter = FilterExpression.of(filter);
             return this;
         }
 
-        public Builder hashAttributes(String... hashAttributes) {
-            this.hashAttributes = Sets.newLinkedHashSet(Arrays.asList(hashAttributes));
+        public Builder hashAttributes(final String... hashAttributes) {
+            this.hashAttributes = new LinkedHashSet<>(Arrays.asList(hashAttributes));
             return this;
         }
 
-        public Builder hashAttributes(Set<String> hashAttributes) {
-            this.hashAttributes = Sets.newLinkedHashSet(hashAttributes);
+        public Builder hashAttributes(final Set<String> hashAttributes) {
+            this.hashAttributes = new LinkedHashSet<>(hashAttributes);
             return this;
         }
 
-        public Builder active(boolean active) {
+        public Builder active(final boolean active) {
             this.active = active;
             return this;
         }
 
-        public Builder created(DateTime created) {
+        public Builder created(final DateTime created) {
             this.created = created;
             return this;
         }
 
-        public Builder modified(DateTime modified) {
+        public Builder modified(final DateTime modified) {
             this.modified = modified;
             return this;
         }
 
-        public Builder activated(DateTime activated) {
+        public Builder activated(final DateTime activated) {
             this.activated = activated;
             return this;
         }
 
-        public Builder deactivated(DateTime deactivated) {
+        public Builder deactivated(final DateTime deactivated) {
             this.deactivated = deactivated;
             return this;
         }
 
-        public Builder seed(int seed) {
+        public Builder seed(final int seed) {
             this.seed = seed;
             return this;
         }
 
-        private Treatment getTreatment(String name) {
+        private Treatment getTreatment(final String name) {
             final Treatment treatment = treatments.get(name);
-            Preconditions.checkArgument(
-                    treatment != null, "treatment with name %s must be defined first", name);
+            if (treatment == null) {
+                throw new IllegalArgumentException(
+                        String.format("treatment with name %s must be defined first", name));
+            }
             return treatment;
         }
 
-        public Builder addTreatment(String name, String description) throws ValidationException {
+        public Builder addTreatment(final String name, final String description)
+                throws ValidationException {
             treatments.put(name, new Treatment(name, description));
             return this;
         }
 
-        public Builder addOverride(String name, String filter, String treatmentName)
+        public Builder addOverride(
+                final String name, final String filter, final String treatmentName)
                 throws ValidationException {
             overrides.add(
                     new TreatmentOverride(
@@ -600,7 +609,7 @@ public class Experiment implements Named {
             return this;
         }
 
-        public Builder addAllocation(String treatmentName, int offset, int size) {
+        public Builder addAllocation(final String treatmentName, final int offset, final int size) {
             allocations.add(new Allocation(getTreatment(treatmentName), offset, size));
             return this;
         }

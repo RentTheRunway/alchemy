@@ -1,17 +1,17 @@
 package io.rtr.alchemy.identities;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class AttributesMap implements Map<String, Object> {
-    private static final AttributesMap EMPTY = new AttributesMap(ImmutableMap.<String, Object>of());
-    private final ImmutableMap<String, Object> values;
+    private static final AttributesMap EMPTY = new AttributesMap(Collections.emptyMap());
+    private final Map<String, Object> values;
 
-    private AttributesMap(ImmutableMap<String, Object> values) {
-        this.values = values;
+    private AttributesMap(final Map<String, Object> values) {
+        this.values = Map.copyOf(values);
     }
 
     public static Builder newBuilder() {
@@ -23,7 +23,8 @@ public class AttributesMap implements Map<String, Object> {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T getValue(String name, Class<?> expectedClass, Object defaultValue) {
+    private <T> T getValue(
+            final String name, final Class<?> expectedClass, final Object defaultValue) {
         final Object value = values.get(name);
 
         if (value == null || value.getClass() != expectedClass) {
@@ -33,31 +34,31 @@ public class AttributesMap implements Map<String, Object> {
         return (T) value;
     }
 
-    public String getString(String name) {
+    public String getString(final String name) {
         return getValue(name, String.class, null);
     }
 
-    public String getString(String name, String defaultValue) {
+    public String getString(final String name, final String defaultValue) {
         return getValue(name, String.class, defaultValue);
     }
 
-    public Long getNumber(String name) {
+    public Long getNumber(final String name) {
         return getValue(name, Long.class, null);
     }
 
-    public Long getNumber(String name, long defaultValue) {
+    public Long getNumber(final String name, final long defaultValue) {
         return getValue(name, Long.class, defaultValue);
     }
 
-    public Boolean getBoolean(String name) {
+    public Boolean getBoolean(final String name) {
         return getValue(name, Boolean.class, null);
     }
 
-    public Boolean getBoolean(String name, boolean defaultValue) {
+    public Boolean getBoolean(final String name, final boolean defaultValue) {
         return getValue(name, Boolean.class, defaultValue);
     }
 
-    public Class<?> getType(String name) {
+    public Class<?> getType(final String name) {
         final Object value = values.get(name);
         return value != null ? value.getClass() : null;
     }
@@ -73,32 +74,32 @@ public class AttributesMap implements Map<String, Object> {
     }
 
     @Override
-    public boolean containsKey(Object o) {
+    public boolean containsKey(final Object o) {
         return values.containsKey(o);
     }
 
     @Override
-    public boolean containsValue(Object o) {
+    public boolean containsValue(final Object o) {
         return values.containsValue(o);
     }
 
     @Override
-    public Object get(Object o) {
+    public Object get(final Object o) {
         return values.get(o);
     }
 
     @Override
-    public Object put(String s, Object o) {
+    public Object put(final String s, final Object o) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object remove(Object o) {
+    public Object remove(final Object o) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void putAll(Map<? extends String, ?> map) {
+    public void putAll(final Map<? extends String, ?> map) {
         throw new UnsupportedOperationException();
     }
 
@@ -122,53 +123,53 @@ public class AttributesMap implements Map<String, Object> {
         return values.entrySet();
     }
 
-    public AttributesMap filter(Set<String> keys) {
-        final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
-        for (Entry<String, Object> entry : entrySet()) {
+    public AttributesMap filter(final Set<String> keys) {
+        final Map<String, Object> builder = new HashMap<>();
+        for (final Entry<String, Object> entry : entrySet()) {
             if (keys.contains(entry.getKey())) {
-                builder.put(entry);
+                builder.put(entry.getKey(), entry.getValue());
             }
         }
 
-        return new AttributesMap(builder.build());
+        return new AttributesMap(Map.copyOf(builder));
     }
 
     public static class Builder {
-        private final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+        private final Map<String, Object> builder = new HashMap<>();
 
-        public Builder put(String name, String value) {
+        public Builder put(final String name, final String value) {
             if (value != null) {
                 builder.put(name, value);
             }
             return this;
         }
 
-        public Builder put(String name, byte value) {
+        public Builder put(final String name, final byte value) {
             builder.put(name, (long) value);
             return this;
         }
 
-        public Builder put(String name, short value) {
+        public Builder put(final String name, final short value) {
             builder.put(name, (long) value);
             return this;
         }
 
-        public Builder put(String name, int value) {
+        public Builder put(final String name, final int value) {
             builder.put(name, (long) value);
             return this;
         }
 
-        public Builder put(String name, long value) {
+        public Builder put(final String name, final long value) {
             builder.put(name, value);
             return this;
         }
 
-        public Builder put(String name, boolean value) {
+        public Builder put(final String name, final boolean value) {
             builder.put(name, value);
             return this;
         }
 
-        public Builder put(Identity identity) {
+        public Builder put(final Identity identity) {
             if (identity != null) {
                 builder.putAll(identity.computeAttributes().values);
             }
@@ -176,7 +177,7 @@ public class AttributesMap implements Map<String, Object> {
         }
 
         public AttributesMap build() {
-            return new AttributesMap(builder.build());
+            return new AttributesMap(Map.copyOf(builder));
         }
     }
 }

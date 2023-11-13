@@ -147,4 +147,17 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- backwards compatibility with Java 8 services -->
+          <release>8</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

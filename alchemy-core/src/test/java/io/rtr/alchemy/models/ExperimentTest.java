@@ -11,8 +11,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.collect.Lists;
-
 import io.rtr.alchemy.filtering.FilterExpression;
 import io.rtr.alchemy.identities.AttributesMap;
 import io.rtr.alchemy.identities.Identity;
@@ -24,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -156,37 +155,37 @@ public class ExperimentTest {
                         .allocate("pie", 10)
                         .addOverride("control_override", "control", "true");
 
-        List<Treatment> treatments = Lists.newArrayList(experiment.getTreatments());
+        List<Treatment> treatments = new ArrayList<>(experiment.getTreatments());
         assertEquals("should contain expected number of treatments", 3, treatments.size());
 
-        List<Allocation> allocations = Lists.newArrayList(experiment.getAllocations());
+        List<Allocation> allocations = new ArrayList<>(experiment.getAllocations());
         assertEquals("should contain expected number of allocations", 6, allocations.size());
 
-        List<TreatmentOverride> overrides = Lists.newArrayList(experiment.getOverrides());
+        List<TreatmentOverride> overrides = new ArrayList<>(experiment.getOverrides());
         assertEquals("should contain override", 1, overrides.size());
 
         experiment.removeTreatment("pie");
 
-        treatments = Lists.newArrayList(experiment.getTreatments());
+        treatments = new ArrayList<>(experiment.getTreatments());
         assertEquals("should contain fewer treatments", 2, treatments.size());
 
-        allocations = Lists.newArrayList(experiment.getAllocations());
+        allocations = new ArrayList<>(experiment.getAllocations());
         assertEquals("should contain fewer allocations", 4, allocations.size());
 
-        overrides = Lists.newArrayList(experiment.getOverrides());
+        overrides = new ArrayList<>(experiment.getOverrides());
         assertEquals("should contain same override", 1, overrides.size());
 
         experiment.removeTreatment("control");
 
-        treatments = Lists.newArrayList(experiment.getTreatments());
+        treatments = new ArrayList<>(experiment.getTreatments());
         assertEquals("should contain fewer treatments", 1, treatments.size());
 
-        allocations = Lists.newArrayList(experiment.getAllocations());
+        allocations = new ArrayList<>(experiment.getAllocations());
         // (it's 1 allocation rather than 2, because the remaining 'cake' allocations merge into
         // one)
         assertEquals("should contain fewer allocations", 1, allocations.size());
 
-        overrides = Lists.newArrayList(experiment.getOverrides());
+        overrides = new ArrayList<>(experiment.getOverrides());
         assertEquals("should contain no overrides", 0, overrides.size());
     }
 

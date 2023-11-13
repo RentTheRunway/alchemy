@@ -2,7 +2,6 @@ package io.rtr.alchemy.models;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 
 import io.rtr.alchemy.caching.BasicCacheStrategy;
 import io.rtr.alchemy.caching.CacheStrategy;
@@ -17,6 +16,7 @@ import io.rtr.alchemy.identities.Identity;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -89,7 +89,7 @@ public class Experiments implements Closeable {
      */
     public Map<Experiment, Treatment> getActiveTreatments(Identity identity) {
         strategy.onCacheRead(context);
-        final Map<Experiment, Treatment> result = Maps.newHashMap();
+        final Map<Experiment, Treatment> result = new HashMap<>();
         final AttributesMap attributes =
                 identity.computeAttributes()
                         .filter(Identity.getSupportedAttributes(identity.getClass()));

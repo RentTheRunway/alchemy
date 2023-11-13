@@ -1,9 +1,10 @@
 package io.rtr.alchemy.db;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -29,7 +30,7 @@ public class Ordering {
         }
 
         final StringTokenizer tokenizer = new StringTokenizer(ordering, ",");
-        final Map<Field, Direction> fields = Maps.newLinkedHashMap();
+        final Map<Field, Direction> fields = new LinkedHashMap<>();
 
         while (tokenizer.hasMoreTokens()) {
             final String token = tokenizer.nextToken();
@@ -46,7 +47,7 @@ public class Ordering {
     }
 
     public static Ordering empty() {
-        return new Ordering(Maps.<Field, Direction>newHashMap());
+        return new Ordering(new HashMap<>());
     }
 
     public static Builder newBuilder() {
@@ -71,7 +72,7 @@ public class Ordering {
         private static final Map<String, Field> FIELDS_BY_NAME;
 
         static {
-            FIELDS_BY_NAME = Maps.newHashMap();
+            FIELDS_BY_NAME = new HashMap<>();
             for (Field field : Field.values()) {
                 FIELDS_BY_NAME.put(field.name, field);
             }
@@ -91,7 +92,7 @@ public class Ordering {
     }
 
     public static class Builder {
-        private final Map<Field, Direction> ordering = Maps.newLinkedHashMap();
+        private final Map<Field, Direction> ordering = new LinkedHashMap<>();
 
         public Builder orderBy(Field field) {
             ordering.put(field, Direction.ASCENDING);

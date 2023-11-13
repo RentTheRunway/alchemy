@@ -8,9 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.ExperimentsStore;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
@@ -21,7 +18,9 @@ import io.rtr.alchemy.models.Experiments;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class BasicCacheStrategyTest {
@@ -49,7 +48,7 @@ public class BasicCacheStrategyTest {
         doReturn(false).when(inactiveExperiment).isActive();
         doReturn(inactiveExperiment).when(store).load(eq("bar"), any(Experiment.Builder.class));
 
-        doReturn(Lists.newArrayList(activeExperiment, inactiveExperiment))
+        doReturn(List.of(activeExperiment, inactiveExperiment))
                 .when(store)
                 .find(any(Filter.class), any(Experiment.BuilderFactory.class));
 
@@ -79,7 +78,7 @@ public class BasicCacheStrategyTest {
         final Iterator<Experiment> iterator = result.iterator();
 
         final Set<String> experimentNames =
-                Sets.newHashSet(activeExperiment.getName(), inactiveExperiment.getName());
+                new HashSet<>(List.of(activeExperiment.getName(), inactiveExperiment.getName()));
         assertTrue(
                 "expected valid experiment name",
                 experimentNames.remove(iterator.next().getName()));

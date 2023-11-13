@@ -1,12 +1,11 @@
 package io.rtr.alchemy.caching;
 
-import com.google.common.collect.Maps;
-
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.models.Experiment;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,7 +33,7 @@ public class CachingContext implements Closeable {
         this.executorService =
                 executorService != null ? executorService : Executors.newSingleThreadExecutor();
         this.ownsExecutorService = executorService == null;
-        this.experimentLocks = Maps.newConcurrentMap();
+        this.experimentLocks = new ConcurrentHashMap<>();
         this.lock = new AtomicBoolean(false);
     }
 

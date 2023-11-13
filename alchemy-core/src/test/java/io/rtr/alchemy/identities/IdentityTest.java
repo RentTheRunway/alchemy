@@ -6,11 +6,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import org.junit.Test;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Attributes(
@@ -21,7 +20,7 @@ public class IdentityTest extends Identity {
     public void testAttributes() {
         final AttributesMap attributes = computeAttributes();
 
-        assertEquals(Sets.newHashSet("foo", "bar", "baz"), attributes.keySet());
+        assertEquals(Set.of("foo", "bar", "baz"), attributes.keySet());
         assertTrue(attributes.getBoolean("foo"));
         assertFalse(attributes.getBoolean("bar"));
         assertEquals(Long.valueOf(1), attributes.getNumber("baz"));
@@ -33,8 +32,8 @@ public class IdentityTest extends Identity {
         final IdentityTest identity = new IdentityTest();
         final AttributesMap map =
                 AttributesMap.newBuilder().put("foo", "foo").put("bar", "bar").build();
-        final Set<String> fooBar = Sets.newLinkedHashSet(Lists.newArrayList("foo", "bar"));
-        final Set<String> barFoo = Sets.newLinkedHashSet(Lists.newArrayList("bar", "foo"));
+        final Set<String> fooBar = new LinkedHashSet<>(List.of("foo", "bar"));
+        final Set<String> barFoo = new LinkedHashSet<>(List.of("bar", "foo"));
         final int seed = 0;
 
         assertEquals(
