@@ -134,11 +134,7 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-legacy</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-sync</artifactId>
+      <artifactId>mongodb-driver-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
