@@ -1,6 +1,6 @@
 package io.rtr.alchemy.db.mongo;
 
-import com.mongodb.DuplicateKeyException;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.model.ReturnDocument;
 
 import dev.morphia.Datastore;
@@ -39,7 +39,7 @@ public class RevisionManager {
         try {
             ds.insert(MetadataEntity.of(NAME, Long.MIN_VALUE));
             return Long.MIN_VALUE;
-        } catch (final DuplicateKeyException e) {
+        } catch (final MongoWriteException e) {
             return getValue();
         }
     }
@@ -62,7 +62,7 @@ public class RevisionManager {
                                 new ModifyOptions().returnDocument(ReturnDocument.AFTER),
                                 UpdateOperators.inc("value"));
 
-        return Optional.ofNullable(incremented).map(i -> (Long) i.value).orElse(1L);
+        return Optional.ofNullable(incremented).map(i -> (Long) i.value).orElse(Long.MIN_VALUE);
     }
 
     public void setLatestRevision(final Long revision) {
