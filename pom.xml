@@ -84,7 +84,6 @@
                     <artifactId>fmt-maven-plugin</artifactId>
                     <version>${fmt-maven-plugin.version}</version>
                     <configuration>
-                        <skipSortingImports>true</skipSortingImports>
                         <style>aosp</style>
                     </configuration>
                     <executions>
