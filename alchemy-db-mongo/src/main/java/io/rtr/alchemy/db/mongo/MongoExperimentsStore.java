@@ -56,8 +56,8 @@ public class MongoExperimentsStore implements ExperimentsStore {
         if (filter.getFilter() != null) {
             query.filter(
                     Filters.or(
-                            Filters.regex("name", filter.getFilter()),
-                            Filters.regex("description", filter.getFilter())));
+                            Filters.regex("name", filter.getFilter()).caseInsensitive(),
+                            Filters.regex("description", filter.getFilter()).caseInsensitive()));
         }
 
         final FindOptions findOptions = new FindOptions();
