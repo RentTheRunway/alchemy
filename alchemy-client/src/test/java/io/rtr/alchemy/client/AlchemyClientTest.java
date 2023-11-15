@@ -1,7 +1,15 @@
 package io.rtr.alchemy.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.google.common.collect.Sets;
+
+import io.dropwizard.testing.junit.DropwizardAppRule;
 import io.rtr.alchemy.client.dto.UserDto;
 import io.rtr.alchemy.client.identities.User;
 import io.rtr.alchemy.dto.identities.IdentityDto;
@@ -12,14 +20,12 @@ import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.service.AlchemyService;
 import io.rtr.alchemy.service.config.AlchemyServiceConfigurationImpl;
-import io.dropwizard.testing.junit.DropwizardAppRule;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,11 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 public class AlchemyClientTest {
     private static final ArrayList<String> experimentsToBeDeleted = new ArrayList<>();

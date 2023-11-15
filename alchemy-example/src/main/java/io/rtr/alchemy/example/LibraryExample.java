@@ -2,9 +2,11 @@ package io.rtr.alchemy.example;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.memory.MemoryStoreProvider;
 import io.rtr.alchemy.example.identities.Composite;
@@ -16,6 +18,7 @@ import io.rtr.alchemy.models.Experiment;
 import io.rtr.alchemy.models.Experiments;
 import io.rtr.alchemy.models.Treatment;
 import io.rtr.alchemy.models.TreatmentOverride;
+
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;

@@ -1,6 +1,7 @@
 package io.rtr.alchemy.db.mongo.util;
 
 import com.google.common.collect.AbstractIterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class ExceptionSafeIterator<T> implements Iterator<T> {
                         while (iterator.hasNext()) {
                             try {
                                 return iterator.next();
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 LOG.error(
                                         "failed to retrieve next item from iterator, skipping item",
                                         e);
@@ -39,7 +40,7 @@ public class ExceptionSafeIterator<T> implements Iterator<T> {
         this.iterator = iterator;
     }
 
-    public static <T> ExceptionSafeIterator<T> wrap(Iterator<T> iterator) {
+    public static <T> ExceptionSafeIterator<T> wrap(final Iterator<T> iterator) {
         return new ExceptionSafeIterator<>(iterator);
     }
 

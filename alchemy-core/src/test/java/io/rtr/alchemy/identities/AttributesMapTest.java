@@ -1,13 +1,14 @@
 package io.rtr.alchemy.identities;
 
-import com.google.common.collect.Sets;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashSet;
 
 public class AttributesMapTest {
     private AttributesMap map;
@@ -51,7 +52,7 @@ public class AttributesMapTest {
     @Test
     public void testFilter() {
         assertEquals(map.entrySet(), map.filter(map.keySet()).entrySet());
-        assertTrue(map.filter(Sets.<String>newHashSet()).isEmpty());
+        assertTrue(map.filter(new HashSet<>()).isEmpty());
     }
 
     private void assertImmutable(String method, Runnable testMethod) {

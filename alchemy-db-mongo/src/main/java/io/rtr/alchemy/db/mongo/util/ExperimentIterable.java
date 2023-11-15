@@ -14,7 +14,7 @@ public class ExperimentIterable implements Iterable<Experiment> {
     private final Experiment.BuilderFactory factory;
 
     public ExperimentIterable(
-            Iterator<ExperimentEntity> iterator, Experiment.BuilderFactory factory) {
+            final Iterator<ExperimentEntity> iterator, final Experiment.BuilderFactory factory) {
         this.iterator = iterator;
         this.factory = factory;
     }

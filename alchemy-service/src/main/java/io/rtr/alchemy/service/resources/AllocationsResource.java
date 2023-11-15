@@ -1,11 +1,14 @@
 package io.rtr.alchemy.service.resources;
 
 import com.google.inject.Inject;
+
 import io.rtr.alchemy.dto.models.AllocationDto;
 import io.rtr.alchemy.dto.requests.AllocationRequest;
 import io.rtr.alchemy.mapping.Mappers;
 import io.rtr.alchemy.models.Experiment;
 import io.rtr.alchemy.models.Experiments;
+
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -16,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Path("/experiments/{experimentName}/allocations")
 @Consumes(MediaType.APPLICATION_JSON)

@@ -3,12 +3,14 @@ package io.rtr.alchemy.service.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.Maps;
+
+import io.dropwizard.Configuration;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.service.jackson.ClassKeyDeserializer;
-import io.dropwizard.Configuration;
+
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 public class AlchemyServiceConfigurationImpl extends Configuration
         implements AlchemyServiceConfiguration {

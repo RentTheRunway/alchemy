@@ -1,23 +1,5 @@
 package io.rtr.alchemy.models;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-import io.rtr.alchemy.caching.CacheStrategy;
-import io.rtr.alchemy.db.ExperimentsCache;
-import io.rtr.alchemy.db.ExperimentsStore;
-import io.rtr.alchemy.db.ExperimentsStoreProvider;
-import io.rtr.alchemy.db.Filter;
-import io.rtr.alchemy.filtering.FilterExpression;
-import io.rtr.alchemy.identities.Attributes;
-import io.rtr.alchemy.identities.AttributesMap;
-import io.rtr.alchemy.identities.Identity;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.validation.ValidationException;
-import java.util.Collections;
-import java.util.Set;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
@@ -28,30 +10,29 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import io.rtr.alchemy.caching.CacheStrategy;
+import io.rtr.alchemy.db.ExperimentsCache;
+import io.rtr.alchemy.db.ExperimentsStore;
+import io.rtr.alchemy.db.ExperimentsStoreProvider;
+import io.rtr.alchemy.db.Filter;
+import io.rtr.alchemy.filtering.FilterExpression;
+import io.rtr.alchemy.identities.Attributes;
+import io.rtr.alchemy.identities.AttributesMap;
+import io.rtr.alchemy.identities.Identity;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+import javax.validation.ValidationException;
+
 public class ExperimentsTest {
     private ExperimentsStore store;
     private ExperimentsCache cache;
     private Experiments experiments;
-
-    @Attributes({"foo", "bar"})
-    private static class MyIdentity extends Identity {
-        private final Set<String> attributes;
-
-        public MyIdentity(String... attributes) {
-            this.attributes = Sets.newHashSet(attributes);
-        }
-
-        @Override
-        public AttributesMap computeAttributes() {
-            final AttributesMap.Builder builder = attributes();
-
-            for (String name : attributes) {
-                builder.put(name, true);
-            }
-
-            return builder.build();
-        }
-    }
 
     @Before
     public void setUp() {
@@ -72,7 +53,7 @@ public class ExperimentsTest {
         final Experiment experiment = mock(Experiment.class);
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
         doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
-        doReturn(ImmutableMap.of("foo", experiment)).when(cache).getActiveExperiments();
+        doReturn(Map.of("foo", experiment)).when(cache).getActiveExperiments();
         experiments.getActiveTreatment("foo", identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
@@ -102,12 +83,7 @@ public class ExperimentsTest {
                         .activate()
                         .save();
 
-        doReturn(
-                        ImmutableMap.of(
-                                "exp1", exp1,
-                                "exp2", exp2))
-                .when(cache)
-                .getActiveExperiments();
+        doReturn(Map.of("exp1", exp1, "exp2", exp2)).when(cache).getActiveExperiments();
 
         // baz was not specified in @Attributes
         assertNull(experiments.getActiveTreatment("exp1", identity1));
@@ -133,7 +109,7 @@ public class ExperimentsTest {
                         .activate()
                         .save();
 
-        doReturn(ImmutableMap.of("exp", exp)).when(cache).getActiveExperiments();
+        doReturn(Map.of("exp", exp)).when(cache).getActiveExperiments();
 
         // identity does not have @Attributes
         assertNull(experiments.getActiveTreatment("exp", identity));
@@ -145,7 +121,7 @@ public class ExperimentsTest {
         final Identity identity = mock(Identity.class);
         doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
-        doReturn(ImmutableMap.of("foo", experiment)).when(cache).getActiveExperiments();
+        doReturn(Map.of("foo", experiment)).when(cache).getActiveExperiments();
         experiments.getActiveTreatments(identity);
         verifyZeroInteractions(store);
         verify(cache).getActiveExperiments();
@@ -208,5 +184,25 @@ public class ExperimentsTest {
         verify(experiment).validateName();
         verify(treatment).validateName();
         verify(override).validateName();
+    }
+
+    @Attributes({"foo", "bar"})
+    private static class MyIdentity extends Identity {
+        private final Set<String> attributes;
+
+        public MyIdentity(final String... attributes) {
+            this.attributes = Set.of(attributes);
+        }
+
+        @Override
+        public AttributesMap computeAttributes() {
+            final AttributesMap.Builder builder = attributes();
+
+            for (final String name : attributes) {
+                builder.put(name, true);
+            }
+
+            return builder.build();
+        }
     }
 }

@@ -1,11 +1,17 @@
 package io.rtr.alchemy.dto;
 
+import static junit.framework.TestCase.fail;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import io.dropwizard.jackson.Jackson;
 import io.rtr.alchemy.dto.identities.IdentityDto;
 import io.rtr.alchemy.dto.models.AllocationDto;
@@ -17,6 +23,7 @@ import io.rtr.alchemy.dto.requests.AllocationRequest;
 import io.rtr.alchemy.dto.requests.CreateExperimentRequest;
 import io.rtr.alchemy.dto.requests.TreatmentOverrideRequest;
 import io.rtr.alchemy.dto.requests.UpdateExperimentRequest;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +33,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class JsonSerializationDeserializationTest {
     private ObjectMapper mapper;

@@ -1,19 +1,22 @@
 package io.rtr.alchemy.service.resources;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import io.rtr.alchemy.dto.models.AllocationDto;
-import io.rtr.alchemy.dto.models.TreatmentDto;
-import io.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
-import org.junit.Test;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.Response.Status;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+import io.rtr.alchemy.dto.models.AllocationDto;
+import io.rtr.alchemy.dto.models.TreatmentDto;
+import io.rtr.alchemy.dto.requests.UpdateTreatmentRequest;
+
+import org.junit.Test;
+
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.core.Response.Status;
 
 public class TreatmentsResourceTest extends ResourceTest {
     private static final String TREATMENTS_ENDPOINT = "/experiments/{experimentName}/treatments";

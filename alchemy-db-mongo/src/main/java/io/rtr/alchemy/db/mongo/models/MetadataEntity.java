@@ -1,26 +1,27 @@
 package io.rtr.alchemy.db.mongo.models;
 
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Property;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Property;
 
 /** An entity for storing additional metadata */
-@Entity(value = "Metadata", noClassnameStored = true)
+@Entity(value = "Metadata", useDiscriminator = false)
 public class MetadataEntity {
 
     @Id public String name;
 
     @Property public Object value;
 
-    public static MetadataEntity of(String name, Object value) {
-        return new MetadataEntity(name, value);
-    }
-
     // Required by Morphia
+    @SuppressWarnings("unused")
     private MetadataEntity() {}
 
-    private MetadataEntity(String name, Object value) {
+    private MetadataEntity(final String name, final Object value) {
         this.name = name;
         this.value = value;
+    }
+
+    public static MetadataEntity of(final String name, final Object value) {
+        return new MetadataEntity(name, value);
     }
 }

@@ -3,6 +3,9 @@ package io.rtr.alchemy.service.guice;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
+
+import io.dropwizard.lifecycle.Managed;
+import io.dropwizard.setup.Environment;
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.identities.Identity;
 import io.rtr.alchemy.mapping.Mapper;
@@ -13,8 +16,6 @@ import io.rtr.alchemy.service.config.IdentityMapping;
 import io.rtr.alchemy.service.mapping.CoreMappings;
 import io.rtr.alchemy.service.metadata.IdentitiesMetadata;
 import io.rtr.alchemy.service.metadata.IdentityMetadata;
-import io.dropwizard.lifecycle.Managed;
-import io.dropwizard.setup.Environment;
 
 import java.util.Map.Entry;
 

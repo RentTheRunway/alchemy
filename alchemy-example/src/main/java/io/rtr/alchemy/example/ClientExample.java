@@ -2,11 +2,14 @@ package io.rtr.alchemy.example;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.dropwizard.configuration.ConfigurationFactory;
 import io.dropwizard.configuration.DefaultConfigurationFactoryFactory;
+import io.dropwizard.jackson.Jackson;
 import io.dropwizard.validation.BaseValidator;
 import io.rtr.alchemy.client.AlchemyClient;
 import io.rtr.alchemy.client.AlchemyClientConfiguration;
@@ -15,13 +18,14 @@ import io.rtr.alchemy.dto.models.ExperimentDto;
 import io.rtr.alchemy.dto.models.TreatmentDto;
 import io.rtr.alchemy.dto.models.TreatmentOverrideDto;
 import io.rtr.alchemy.example.dto.UserDto;
-import io.dropwizard.jackson.Jackson;
+
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Map;
 
 import javax.validation.Validator;
 import javax.ws.rs.WebApplicationException;
-import java.io.File;
-import java.util.Map;
 
 /**
  * Example code that utilizes the alchemy-client library to talk to an instance of Alchemy service

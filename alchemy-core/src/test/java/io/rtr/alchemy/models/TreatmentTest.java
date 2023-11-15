@@ -1,11 +1,13 @@
 package io.rtr.alchemy.models;
 
-import javax.validation.ValidationException;
+import static org.junit.Assert.assertEquals;
+
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import javax.validation.ValidationException;
 
 public class TreatmentTest {
     @Test

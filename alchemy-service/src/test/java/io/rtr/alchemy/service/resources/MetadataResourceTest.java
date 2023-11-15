@@ -1,16 +1,18 @@
 package io.rtr.alchemy.service.resources;
 
-import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import org.junit.Test;
-
-import javax.ws.rs.core.Response.Status;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
+import org.junit.Test;
+
+import java.util.Map;
+
+import javax.ws.rs.core.Response.Status;
 
 public class MetadataResourceTest extends ResourceTest {
     private static final String METADATA_IDENTITY_TYPES_ENDPOINT = "/metadata/identityTypes";

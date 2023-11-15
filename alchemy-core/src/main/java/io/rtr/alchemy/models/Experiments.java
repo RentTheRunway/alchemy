@@ -2,23 +2,25 @@ package io.rtr.alchemy.models;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
+
 import io.rtr.alchemy.caching.BasicCacheStrategy;
 import io.rtr.alchemy.caching.CacheStrategy;
+import io.rtr.alchemy.caching.CacheStrategyIterable;
 import io.rtr.alchemy.caching.CachingContext;
 import io.rtr.alchemy.db.ExperimentsCache;
-import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.ExperimentsStore;
+import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.identities.AttributesMap;
 import io.rtr.alchemy.identities.Identity;
-import io.rtr.alchemy.caching.CacheStrategyIterable;
 
-import javax.validation.ValidationException;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
+import javax.validation.ValidationException;
 
 /** The main class for accessing experiments */
 public class Experiments implements Closeable {
@@ -87,7 +89,7 @@ public class Experiments implements Closeable {
      */
     public Map<Experiment, Treatment> getActiveTreatments(Identity identity) {
         strategy.onCacheRead(context);
-        final Map<Experiment, Treatment> result = Maps.newHashMap();
+        final Map<Experiment, Treatment> result = new HashMap<>();
         final AttributesMap attributes =
                 identity.computeAttributes()
                         .filter(Identity.getSupportedAttributes(identity.getClass()));

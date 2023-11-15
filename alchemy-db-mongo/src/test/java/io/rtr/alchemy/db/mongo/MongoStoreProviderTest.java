@@ -1,34 +1,50 @@
 package io.rtr.alchemy.db.mongo;
 
+import static io.rtr.alchemy.db.mongo.util.MongoDbTestHelper.MONGODB_DATABASE;
+import static io.rtr.alchemy.db.mongo.util.MongoDbTestHelper.MONGODB_IMAGE;
+
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
+import com.mongodb.ServerAddress;
+
 import io.rtr.alchemy.db.ExperimentsStoreProvider;
 import io.rtr.alchemy.testing.db.ExperimentsStoreProviderTest;
-import org.junit.Ignore;
 
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.BeforeAll;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Ignore("must be run manually and requires a local Mongo instance")
+import java.util.stream.Collectors;
+
+@Testcontainers
 public class MongoStoreProviderTest extends ExperimentsStoreProviderTest {
-    private static final String DATABASE_NAME = "test_experiments";
+    @Container static MongoDBContainer mongoDBContainer = new MongoDBContainer(MONGODB_IMAGE);
+
+    private static MongoClientURI uri;
+
+    @BeforeAll
+    static void setUpClass() {
+        uri = new MongoClientURI(mongoDBContainer.getReplicaSetUrl(MONGODB_DATABASE));
+    }
 
     @Override
     protected ExperimentsStoreProvider createProvider() {
-        return MongoStoreProvider.newBuilder().setDatabase(DATABASE_NAME).build();
+        return MongoStoreProvider.newBuilder()
+                .setHosts(
+                        uri.getHosts().stream()
+                                .map(ServerAddress::new)
+                                .collect(Collectors.toList()))
+                .build();
     }
 
     @Override
     protected void resetStore() {
-        MongoClient client = null;
-        try {
-            client = new MongoClient();
-            client.dropDatabase(DATABASE_NAME);
-        } catch (MongoException e) {
-            fail("could not delete database");
-        } finally {
-            if (client != null) {
-                client.close();
-            }
+        try (final MongoClient client = new MongoClient(uri)) {
+            client.dropDatabase(MONGODB_DATABASE);
+        } catch (final MongoException e) {
+            throw new IllegalStateException(e);
         }
     }
 }

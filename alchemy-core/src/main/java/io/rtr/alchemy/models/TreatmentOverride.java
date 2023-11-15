@@ -2,6 +2,7 @@ package io.rtr.alchemy.models;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+
 import io.rtr.alchemy.filtering.FilterExpression;
 
 /** Represents a treatment override assigned to a specific hash value */

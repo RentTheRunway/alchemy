@@ -1,29 +1,31 @@
 package io.rtr.alchemy.db.mongo.models;
 
+import dev.morphia.annotations.Entity;
+
 import io.rtr.alchemy.models.TreatmentOverride;
-import org.mongodb.morphia.annotations.Embedded;
 
 /**
  * An entity that mirrors TreatmentOverride
  *
  * @see io.rtr.alchemy.models.TreatmentOverride
  */
-@Embedded
+@Entity
 public class TreatmentOverrideEntity {
     public String name;
     public String treatment;
     public String filter;
 
-    public static TreatmentOverrideEntity from(TreatmentOverride override) {
-        return new TreatmentOverrideEntity(override);
-    }
-
     // Required by Morphia
+    @SuppressWarnings("unused")
     private TreatmentOverrideEntity() {}
 
-    private TreatmentOverrideEntity(TreatmentOverride override) {
+    private TreatmentOverrideEntity(final TreatmentOverride override) {
         this.name = override.getName();
         this.treatment = override.getTreatment().getName();
         this.filter = override.getFilter().toString();
+    }
+
+    public static TreatmentOverrideEntity from(final TreatmentOverride override) {
+        return new TreatmentOverrideEntity(override);
     }
 }

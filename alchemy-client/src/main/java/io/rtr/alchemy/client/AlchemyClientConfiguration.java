@@ -2,12 +2,14 @@ package io.rtr.alchemy.client;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.rtr.alchemy.dto.identities.IdentityDto;
-import io.dropwizard.client.JerseyClientConfiguration;
 
-import javax.validation.constraints.NotNull;
+import io.dropwizard.client.JerseyClientConfiguration;
+import io.rtr.alchemy.dto.identities.IdentityDto;
+
 import java.net.URI;
 import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 /** The client configuration */
 public class AlchemyClientConfiguration extends JerseyClientConfiguration {

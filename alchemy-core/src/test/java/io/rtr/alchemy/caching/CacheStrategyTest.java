@@ -1,22 +1,5 @@
 package io.rtr.alchemy.caching;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import io.rtr.alchemy.db.ExperimentsCache;
-import io.rtr.alchemy.db.ExperimentsStore;
-import io.rtr.alchemy.db.ExperimentsStoreProvider;
-import io.rtr.alchemy.db.Filter;
-import io.rtr.alchemy.filtering.FilterExpression;
-import io.rtr.alchemy.identities.AttributesMap;
-import io.rtr.alchemy.identities.Identity;
-import io.rtr.alchemy.models.Experiment;
-import io.rtr.alchemy.models.Experiments;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Iterator;
-import java.util.Set;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -29,6 +12,24 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+
+import io.rtr.alchemy.db.ExperimentsCache;
+import io.rtr.alchemy.db.ExperimentsStore;
+import io.rtr.alchemy.db.ExperimentsStoreProvider;
+import io.rtr.alchemy.db.Filter;
+import io.rtr.alchemy.filtering.FilterExpression;
+import io.rtr.alchemy.identities.AttributesMap;
+import io.rtr.alchemy.identities.Identity;
+import io.rtr.alchemy.models.Experiment;
+import io.rtr.alchemy.models.Experiments;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class CacheStrategyTest {
     private CacheStrategy strategy;
@@ -56,7 +57,7 @@ public class CacheStrategyTest {
         doReturn(FilterExpression.alwaysTrue()).when(experiment2).getFilter();
         doReturn(experiment2).when(store).load(eq("bar"), any(Experiment.Builder.class));
 
-        doReturn(Lists.newArrayList(experiment1, experiment2))
+        doReturn(List.of(experiment1, experiment2))
                 .when(store)
                 .find(any(Filter.class), any(Experiment.BuilderFactory.class));
 
@@ -75,7 +76,7 @@ public class CacheStrategyTest {
         final Iterable<Experiment> result = experiments.find();
         final Iterator<Experiment> iterator = result.iterator();
         final Set<String> experimentNames =
-                Sets.newHashSet(experiment1.getName(), experiment2.getName());
+                new HashSet<>(List.of(experiment1.getName(), experiment2.getName()));
 
         // no interactions until we actually iterate over results
         verifyZeroInteractions(strategy);

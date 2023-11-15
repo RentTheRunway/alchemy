@@ -1,27 +1,20 @@
 package io.rtr.alchemy.models;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /** Represents allocations of treatments for an experiment */
 public class Allocations {
     public static final int NUM_BINS = 100;
     private static final Comparator<Allocation> COMPARATOR =
-            new Comparator<Allocation>() {
-                @Override
-                public int compare(Allocation lhs, Allocation rhs) {
-                    return Integer.compare(lhs.getOffset(), rhs.getOffset());
-                }
-            };
+            Comparator.comparingInt(Allocation::getOffset);
 
     private Byte[] allocationMap;
     private List<Allocation> allocations;
@@ -29,42 +22,42 @@ public class Allocations {
     private int size;
 
     public Allocations() {
-        this(Lists.<Allocation>newArrayList());
+        this(new ArrayList<>());
     }
 
-    public Allocations(Iterable<Allocation> allocations) {
-        this.allocations = Lists.newArrayList(allocations);
+    public Allocations(final Iterable<Allocation> allocations) {
+        this.allocations =
+                StreamSupport.stream(allocations.spliterator(), false).collect(Collectors.toList());
         sortAllocations();
         rebuildAllocationTables();
     }
 
     private void sortAllocations() {
-        Collections.sort(allocations, COMPARATOR);
+        allocations.sort(COMPARATOR);
     }
 
     private void rebuildAllocationTables() {
-        final Map<Treatment, Integer> treatments = Maps.newHashMap();
+        final Map<Treatment, Integer> treatments = new HashMap<>();
         int size = 0;
         allocationMap = new Byte[NUM_BINS];
 
-        for (Allocation allocation : allocations) {
-            Integer treatment = treatments.get(allocation.getTreatment());
-            if (treatment == null) {
-                treatment = treatments.size();
-                treatments.put(allocation.getTreatment(), treatment);
-            }
+        for (final Allocation allocation : allocations) {
+            final Integer treatment =
+                    treatments.computeIfAbsent(allocation.getTreatment(), k -> treatments.size());
 
             for (int i = allocation.getOffset();
                     i < allocation.getOffset() + allocation.getSize();
                     i++, size++) {
-                Preconditions.checkState(allocationMap[i] == null, "overlapping allocations");
+                if (allocationMap[i] != null) {
+                    throw new IllegalStateException("overlapping allocations");
+                }
                 allocationMap[i] = treatment.byteValue();
             }
         }
 
         this.size = size;
         this.treatmentsMap = new Treatment[treatments.size()];
-        for (Entry<Treatment, Integer> entry : treatments.entrySet()) {
+        for (final Entry<Treatment, Integer> entry : treatments.entrySet()) {
             this.treatmentsMap[entry.getValue()] = entry.getKey();
         }
     }
@@ -74,7 +67,7 @@ public class Allocations {
      *
      * @param bin The bin
      */
-    public Treatment getTreatment(int bin) {
+    public Treatment getTreatment(final int bin) {
         final Byte treatmentIndex = allocationMap[bin];
 
         if (treatmentIndex == null) {
@@ -91,7 +84,7 @@ public class Allocations {
             return;
         }
 
-        final List<Allocation> newList = Lists.newArrayList();
+        final List<Allocation> newList = new ArrayList<>();
         int totalSize = allocations.get(0).getSize();
         int offset = allocations.get(0).getOffset();
         Treatment treatment = allocations.get(0).getTreatment();
@@ -120,16 +113,16 @@ public class Allocations {
      * @param treatment The treatment
      * @param size The number of bins
      */
-    public void allocate(Treatment treatment, int size) {
-        Preconditions.checkArgument(
-                getUnallocatedSize() >= size,
-                "not enough free bins to allocate treatment %s with size %s given %s unallocated bin(s)",
-                treatment.getName(),
-                size,
-                getUnallocatedSize());
+    public void allocate(final Treatment treatment, final int size) {
+        if (getUnallocatedSize() < size) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "not enough free bins to allocate treatment %s with size %s given %s unallocated bin(s)",
+                            treatment.getName(), size, getUnallocatedSize()));
+        }
 
         // turn contiguous unallocated blocks into allocated blocks
-        final List<Allocation> pieces = Lists.newArrayList();
+        final List<Allocation> pieces = new ArrayList<>();
         int sizeLeft = size;
         int offset = 0;
         int index = 0;
@@ -162,7 +155,7 @@ public class Allocations {
      * @param treatment The treatment
      * @param size The number of bins
      */
-    public void deallocate(Treatment treatment, int size) {
+    public void deallocate(final Treatment treatment, final int size) {
         final Iterator<Allocation> iter = allocations.iterator();
         int sizeLeft = size;
 
@@ -198,9 +191,9 @@ public class Allocations {
      * @param destination The destination treatment
      * @param size The number of bins
      */
-    public void reallocate(Treatment source, Treatment destination, int size) {
+    public void reallocate(final Treatment source, final Treatment destination, final int size) {
         final Iterator<Allocation> iter = allocations.iterator();
-        final List<Allocation> pieces = Lists.newArrayList();
+        final List<Allocation> pieces = new ArrayList<>();
         int sizeLeft = size;
         int lastOffset = 0;
 
@@ -240,7 +233,7 @@ public class Allocations {
     }
 
     public List<Allocation> getAllocations() {
-        return ImmutableList.copyOf(allocations);
+        return List.copyOf(allocations);
     }
 
     public int getSize() {

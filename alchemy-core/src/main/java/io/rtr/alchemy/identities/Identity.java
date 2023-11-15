@@ -3,40 +3,26 @@ package io.rtr.alchemy.identities;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Sets;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Nonnull;
+
 /** Identifies a unique entity whose hash code is used for treatments allocation */
 public abstract class Identity {
-    protected static final Set<String> EMPTY =
-            Collections.unmodifiableSet(Sets.<String>newHashSet());
-    private static final LoadingCache<Class<?>, Set<String>> ATTRIBUTES_CACHE =
-            CacheBuilder.newBuilder()
-                    .build(
-                            new CacheLoader<Class<?>, Set<String>>() {
-                                @Override
-                                public Set<String> load(@Nonnull Class<?> clazz) throws Exception {
-                                    final Attributes annotation =
-                                            clazz.getAnnotation(Attributes.class);
-                                    if (annotation == null) {
-                                        return EMPTY;
-                                    }
+    protected static final Set<String> EMPTY = Collections.emptySet();
 
-                                    final Set<String> result = Sets.newHashSet();
-                                    Collections.addAll(result, annotation.value());
-
-                                    for (final Class<? extends Identity> identity :
-                                            annotation.identities()) {
-                                        result.addAll(ATTRIBUTES_CACHE.get(identity));
-                                    }
-
-                                    return result;
-                                }
-                            });
+    /** Get a list of possible attribute values that can be returned by this identity */
+    public static <T extends Identity> Set<String> getSupportedAttributes(Class<T> clazz) {
+        try {
+            return ATTRIBUTES_CACHE.get(clazz);
+        } catch (final ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * generates a hash code used to assign identity to treatment
@@ -79,12 +65,27 @@ public abstract class Identity {
         return AttributesMap.newBuilder();
     }
 
-    /** Get a list of possible attribute values that can be returned by this identity */
-    public static <T extends Identity> Set<String> getSupportedAttributes(Class<T> clazz) {
-        try {
-            return ATTRIBUTES_CACHE.get(clazz);
-        } catch (final ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final LoadingCache<Class<?>, Set<String>> ATTRIBUTES_CACHE =
+            CacheBuilder.newBuilder()
+                    .build(
+                            new CacheLoader<>() {
+                                @Override
+                                public Set<String> load(@Nonnull Class<?> clazz) throws Exception {
+                                    final Attributes annotation =
+                                            clazz.getAnnotation(Attributes.class);
+                                    if (annotation == null) {
+                                        return EMPTY;
+                                    }
+
+                                    final Set<String> result = new HashSet<>();
+                                    Collections.addAll(result, annotation.value());
+
+                                    for (final Class<? extends Identity> identity :
+                                            annotation.identities()) {
+                                        result.addAll(ATTRIBUTES_CACHE.get(identity));
+                                    }
+
+                                    return result;
+                                }
+                            });
 }

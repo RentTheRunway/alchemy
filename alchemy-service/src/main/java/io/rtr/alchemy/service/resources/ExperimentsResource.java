@@ -2,6 +2,7 @@ package io.rtr.alchemy.service.resources;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.db.Ordering;
 import io.rtr.alchemy.dto.models.ExperimentDto;
@@ -16,6 +17,8 @@ import io.rtr.alchemy.models.Experiment;
 import io.rtr.alchemy.models.Experiments;
 import io.rtr.alchemy.models.Treatment;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -28,7 +31,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Set;
 
 /** Resource for interacting with experiments */
 @Path("/experiments")

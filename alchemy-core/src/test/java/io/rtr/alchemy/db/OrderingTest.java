@@ -1,9 +1,10 @@
 package io.rtr.alchemy.db;
 
-import com.google.common.collect.ImmutableMap;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Map;
 
 public class OrderingTest {
     @Test
@@ -16,17 +17,17 @@ public class OrderingTest {
 
         // single field expression
         assertEquals(
-                ImmutableMap.of(Ordering.Field.NAME, Ordering.Direction.ASCENDING),
+                Map.of(Ordering.Field.NAME, Ordering.Direction.ASCENDING),
                 Ordering.parse("name").getFields());
 
         // single descending field expression
         assertEquals(
-                ImmutableMap.of(Ordering.Field.NAME, Ordering.Direction.DESCENDING),
+                Map.of(Ordering.Field.NAME, Ordering.Direction.DESCENDING),
                 Ordering.parse("-name").getFields());
 
         // multiple fields
         assertEquals(
-                ImmutableMap.of(
+                Map.of(
                         Ordering.Field.ACTIVE, Ordering.Direction.ASCENDING,
                         Ordering.Field.NAME, Ordering.Direction.DESCENDING,
                         Ordering.Field.CREATED, Ordering.Direction.ASCENDING),
@@ -45,12 +46,12 @@ public class OrderingTest {
 
         // single field expression
         assertEquals(
-                ImmutableMap.of(Ordering.Field.NAME, Ordering.Direction.ASCENDING),
+                Map.of(Ordering.Field.NAME, Ordering.Direction.ASCENDING),
                 Ordering.newBuilder().orderBy(Ordering.Field.NAME).build().getFields());
 
         // single descending field expression
         assertEquals(
-                ImmutableMap.of(Ordering.Field.NAME, Ordering.Direction.DESCENDING),
+                Map.of(Ordering.Field.NAME, Ordering.Direction.DESCENDING),
                 Ordering.newBuilder()
                         .orderBy(Ordering.Field.NAME, Ordering.Direction.DESCENDING)
                         .build()
@@ -58,7 +59,7 @@ public class OrderingTest {
 
         // multiple fields
         assertEquals(
-                ImmutableMap.of(
+                Map.of(
                         Ordering.Field.ACTIVE, Ordering.Direction.ASCENDING,
                         Ordering.Field.NAME, Ordering.Direction.DESCENDING,
                         Ordering.Field.CREATED, Ordering.Direction.ASCENDING),

@@ -1,85 +1,91 @@
 package io.rtr.alchemy.db.mongo;
 
+import dev.morphia.Datastore;
+import dev.morphia.query.FindOptions;
+import dev.morphia.query.Query;
+import dev.morphia.query.Sort;
+import dev.morphia.query.filters.Filters;
+
 import io.rtr.alchemy.db.ExperimentsStore;
 import io.rtr.alchemy.db.Filter;
 import io.rtr.alchemy.db.Ordering;
-import io.rtr.alchemy.db.Ordering.Field;
 import io.rtr.alchemy.db.Ordering.Direction;
+import io.rtr.alchemy.db.Ordering.Field;
 import io.rtr.alchemy.db.mongo.models.ExperimentEntity;
 import io.rtr.alchemy.db.mongo.util.ExperimentIterable;
 import io.rtr.alchemy.models.Experiment;
-import org.mongodb.morphia.AdvancedDatastore;
-import org.mongodb.morphia.query.Query;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 /** A store backed by MongoDB which allows storing Experiments */
 public class MongoExperimentsStore implements ExperimentsStore {
-    private final AdvancedDatastore ds;
+    private final Datastore ds;
     private final RevisionManager revisionManager;
 
-    public MongoExperimentsStore(AdvancedDatastore ds, RevisionManager revisionManager) {
+    public MongoExperimentsStore(final Datastore ds, final RevisionManager revisionManager) {
         this.ds = ds;
         this.revisionManager = revisionManager;
     }
 
     @Override
-    public void save(Experiment experiment) {
+    public void save(final Experiment experiment) {
         final ExperimentEntity entity = ExperimentEntity.from(experiment);
         entity.revision = revisionManager.nextRevision();
         ds.save(entity);
     }
 
     @Override
-    public Experiment load(String experimentName, Experiment.Builder builder) {
-        final ExperimentEntity entity = ds.get(ExperimentEntity.class, experimentName);
+    public Experiment load(final String experimentName, final Experiment.Builder builder) {
+        final ExperimentEntity entity =
+                ds.find(ExperimentEntity.class).filter(Filters.eq("name", experimentName)).first();
         return entity == null ? null : entity.toExperiment(builder);
     }
 
     @Override
-    public void delete(String experimentName) {
-        ds.delete(ExperimentEntity.class, experimentName);
+    public void delete(final String experimentName) {
+        ds.find(ExperimentEntity.class).filter(Filters.eq("name", experimentName)).delete();
     }
 
     @Override
-    public Iterable<Experiment> find(Filter filter, Experiment.BuilderFactory factory) {
+    public Iterable<Experiment> find(final Filter filter, final Experiment.BuilderFactory factory) {
 
         final Query<ExperimentEntity> query = ds.find(ExperimentEntity.class);
 
         if (filter.getFilter() != null) {
-            query.or(
-                    query.criteria("name").containsIgnoreCase(filter.getFilter()),
-                    query.criteria("description").containsIgnoreCase(filter.getFilter()));
+            query.filter(
+                    Filters.or(
+                            Filters.regex("name", filter.getFilter()).caseInsensitive(),
+                            Filters.regex("description", filter.getFilter()).caseInsensitive()));
         }
 
+        final FindOptions findOptions = new FindOptions();
         final Ordering ordering = filter.getOrdering();
         if (ordering != null && !ordering.isEmpty()) {
-            final StringBuilder orderingString = new StringBuilder();
-            for (Entry<Field, Direction> entry : ordering.getFields().entrySet()) {
+            final List<Sort> sorts = new ArrayList<>();
+            for (final Entry<Field, Direction> entry : ordering.getFields().entrySet()) {
                 final String field = ExperimentEntity.getFieldName(entry.getKey());
 
-                if (orderingString.length() > 0) {
-                    orderingString.append(',');
-                }
+                final Sort sort =
+                        entry.getValue() == Direction.DESCENDING
+                                ? Sort.descending(field)
+                                : Sort.ascending(field);
 
-                if (entry.getValue() == Direction.DESCENDING) {
-                    orderingString.append('-');
-                }
-
-                orderingString.append(field);
+                sorts.add(sort);
             }
 
-            query.order(orderingString.toString());
+            findOptions.sort(sorts.toArray(new Sort[] {}));
         }
 
         if (filter.getOffset() != null) {
-            query.offset(filter.getOffset());
+            findOptions.skip(filter.getOffset());
         }
 
         if (filter.getLimit() != null) {
-            query.limit(filter.getLimit());
+            findOptions.limit(filter.getLimit());
         }
 
-        return new ExperimentIterable(query.iterator(), factory);
+        return new ExperimentIterable(query.stream(findOptions).iterator(), factory);
     }
 }
