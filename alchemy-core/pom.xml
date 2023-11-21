@@ -13,7 +13,7 @@
 
   <properties>
     <!-- this is the last version with org.antlr.v4.runtime.misc.Nullable -->
-    <antlr.version>4.5</antlr.version>
+    <antlr.version>4.13.1</antlr.version>
   </properties>
 
   <dependencyManagement>
