@@ -39,7 +39,7 @@
 
     <apache-httpclient.version>4.5.13</apache-httpclient.version>
 
-    <apache-math3.version>3.6</apache-math3.version>
+    <apache-math3.version>3.6.1</apache-math3.version>
 
     <apache-lang.version>3.8.1</apache-lang.version>
 
