@@ -34,23 +34,6 @@ jobs:
         with:
           maven-version: 3.9.5
 
-      - name: Set up Nexus authentication and GPG passphrase
-        uses: whelk-io/maven-settings-xml-action@v21
-        with:
-          servers: |
-            [
-              {
-                "id": "sonatype-nexus-staging",
-                "username": "${{ secrets.OSS_NEXUS_USERNAME }}",
-                "password": "${{ secrets.OSS_NEXUS_PASSWORD }}"
-              },
-              {
-                "id": "sonatype-nexus-snapshots",
-                "username": "${{ secrets.OSS_NEXUS_USERNAME }}",
-                "password": "${{ secrets.OSS_NEXUS_PASSWORD }}"
-              }
-            ]
-
       - name: Resolve dependencies
         run: mvn -B dependency:go-offline
 
