@@ -81,7 +81,7 @@
 
     <mockito.version>2.24.5</mockito.version>
 
-    <testcontainers.version>1.19.1</testcontainers.version>
+    <testcontainers.version>1.19.3</testcontainers.version>
   </properties>
 
   <dependencyManagement>
