@@ -29,7 +29,7 @@
 
     <hibernate-validator.version>5.4.3.Final</hibernate-validator.version>
 
-    <javax.validation.version>1.1.0.Final</javax.validation.version>
+    <javax.validation.version>2.0.1.Final</javax.validation.version>
 
     <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
 
