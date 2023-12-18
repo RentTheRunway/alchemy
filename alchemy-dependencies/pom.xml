@@ -59,7 +59,7 @@
 
     <hk2.version>2.5.0</hk2.version>
 
-    <morphia.version>2.4.8</morphia.version>
+    <morphia.version>2.4.10</morphia.version>
 
     <mongodb-driver.version>4.11.1</mongodb-driver.version>
 
