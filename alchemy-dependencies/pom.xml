@@ -21,7 +21,7 @@
 
     <!-- transitive dependencies pinned for security bumps or other issues -->
 
-    <javassist.version>3.29.2-GA</javassist.version>
+    <javassist.version>3.30.1-GA</javassist.version>
 
     <jetty.version>9.4.52.v20230823</jetty.version>
 
