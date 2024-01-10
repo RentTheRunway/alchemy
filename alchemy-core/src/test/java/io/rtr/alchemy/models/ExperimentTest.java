@@ -4,9 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -20,11 +19,9 @@ import nl.jqno.equalsverifier.Warning;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.ValidationException;
 
@@ -140,7 +137,7 @@ public class ExperimentTest {
     public void testRemoveTreatment() throws ValidationException {
         doReturn(0L)
                 .when(identity)
-                .computeHash(anyInt(), Mockito.<Set<String>>any(), any(AttributesMap.class));
+                .computeHash(anyInt(), any(), any(AttributesMap.class));
 
         final Experiment experiment =
                 new Experiment(null, "foo")
@@ -238,14 +235,14 @@ public class ExperimentTest {
     @Test
     public void testSave() throws ValidationException {
         final Experiment experiment = new Experiment(experiments, "foo").save();
-        verify(experiments).save(eq(experiment));
+        verify(experiments).save(experiment);
     }
 
     @Test
     public void testDelete() throws ValidationException {
         final Experiment experiment = new Experiment(experiments, "foo");
         experiment.delete();
-        verify(experiments).delete(eq(experiment.getName()));
+        verify(experiments).delete(experiment.getName());
     }
 
     @Test

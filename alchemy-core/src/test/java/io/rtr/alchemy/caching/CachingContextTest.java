@@ -1,12 +1,10 @@
 package io.rtr.alchemy.caching;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.models.Experiment;
@@ -32,7 +30,7 @@ public class CachingContextTest {
     @Test
     public void testInvalidateAll() {
         context.invalidateAll(false);
-        verifyZeroInteractions(executorService);
+        verifyNoMoreInteractions(executorService);
         verify(cache).invalidateAll(any(Experiment.BuilderFactory.class));
     }
 

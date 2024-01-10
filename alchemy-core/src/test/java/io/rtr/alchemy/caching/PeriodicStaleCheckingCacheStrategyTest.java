@@ -1,6 +1,5 @@
 package io.rtr.alchemy.caching;
-
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import io.rtr.alchemy.db.ExperimentsCache;
@@ -45,7 +44,7 @@ public class PeriodicStaleCheckingCacheStrategyTest {
         doReturn(true).when(cache).checkIfAnyStale();
         strategy = new PeriodicStaleCheckingCacheStrategy(Duration.standardDays(1));
         strategy.onCacheRead(context);
-        verifyZeroInteractions(context);
-        verifyZeroInteractions(cache);
+        verifyNoMoreInteractions(context);
+        verifyNoMoreInteractions(cache);
     }
 }
