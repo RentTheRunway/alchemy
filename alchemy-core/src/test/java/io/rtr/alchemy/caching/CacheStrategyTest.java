@@ -2,16 +2,16 @@ package io.rtr.alchemy.caching;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import io.rtr.alchemy.db.ExperimentsCache;
 import io.rtr.alchemy.db.ExperimentsStore;
@@ -67,7 +67,7 @@ public class CacheStrategyTest {
     @Test
     public void testOnLoad() {
         experiments.get("bad_experiment");
-        verifyZeroInteractions(strategy);
+        verifyNoMoreInteractions(strategy);
 
         experiments.get(experiment1.getName());
         verify(strategy).onLoad(eq(experiment1), any(CachingContext.class));
@@ -79,7 +79,7 @@ public class CacheStrategyTest {
                 new HashSet<>(List.of(experiment1.getName(), experiment2.getName()));
 
         // no interactions until we actually iterate over results
-        verifyZeroInteractions(strategy);
+        verifyNoMoreInteractions(strategy);
 
         assertTrue(
                 "expected valid experiment name",

@@ -2,13 +2,13 @@ package io.rtr.alchemy.models;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import io.rtr.alchemy.caching.CacheStrategy;
 import io.rtr.alchemy.db.ExperimentsCache;
@@ -55,7 +55,7 @@ public class ExperimentsTest {
         doReturn(FilterExpression.alwaysTrue()).when(experiment).getFilter();
         doReturn(Map.of("foo", experiment)).when(cache).getActiveExperiments();
         experiments.getActiveTreatment("foo", identity);
-        verifyZeroInteractions(store);
+        verifyNoMoreInteractions(store);
         verify(cache).getActiveExperiments();
     }
 
@@ -123,36 +123,36 @@ public class ExperimentsTest {
         doReturn(AttributesMap.empty()).when(identity).computeAttributes();
         doReturn(Map.of("foo", experiment)).when(cache).getActiveExperiments();
         experiments.getActiveTreatments(identity);
-        verifyZeroInteractions(store);
+        verifyNoMoreInteractions(store);
         verify(cache).getActiveExperiments();
     }
 
     @Test
     public void testGetActiveExperiments() {
         experiments.getActiveExperiments();
-        verifyZeroInteractions(store);
+        verifyNoMoreInteractions(store);
         verify(cache).getActiveExperiments();
     }
 
     @Test
     public void testCreate() throws ValidationException {
         experiments.create("foo");
-        verifyZeroInteractions(store);
-        verifyZeroInteractions(cache);
+        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(cache);
     }
 
     @Test
     public void testSave() throws ValidationException {
         final Experiment experiment = experiments.create("foo").save();
         verify(store).save(eq(experiment));
-        verifyZeroInteractions(cache);
+        verifyNoMoreInteractions(cache);
     }
 
     @Test
     public void testFind() {
         experiments.find();
         verify(store).find(eq(Filter.NONE), any(Experiment.BuilderFactory.class));
-        verifyZeroInteractions(cache);
+        verifyNoMoreInteractions(cache);
     }
 
     @Test
@@ -160,14 +160,14 @@ public class ExperimentsTest {
         final Filter filter = Filter.criteria().filter("foo").offset(1).limit(2).build();
         experiments.find(filter);
         verify(store).find(eq(filter), any(Experiment.BuilderFactory.class));
-        verifyZeroInteractions(cache);
+        verifyNoMoreInteractions(cache);
     }
 
     @Test
     public void testDelete() {
         experiments.delete("foo");
         verify(store).delete(eq("foo"));
-        verifyZeroInteractions(cache);
+        verifyNoMoreInteractions(cache);
     }
 
     @Test
