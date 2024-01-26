@@ -1,0 +1,82 @@
+# This workflow is managed by application-workflows, any changes to it will be lost.
+# Source: https://github.com/RentTheRunway/application-workflows/tree/main/workflow-templates/github-helpers/stale-branches.yaml.tpl
+---
+name: GitHub Helper (Clean Stale Branches)
+
+concurrency:
+  # only one of this action may run per branch + event (the job will filter down to the correct event)
+  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+on:
+  schedule:
+    - cron: "1 1 * * *"
+  workflow_dispatch:
+    inputs:
+      days-before-stale:
+        description: "Days before a PR becomes Stale"
+        required: true
+        type: choice
+        default: '30'
+        options:
+          - '30'
+          - '20'
+          - '10'
+          - '60'
+      days-before-close:
+        description: "Days before we close an inactive Stale"
+        required: true
+        type: choice
+        default: '5'
+        options:
+          - '5'
+          - '10'
+          - '20'
+          - '30'
+env:
+  REPOSITORY: ${{ github.event.repository.name }}
+  COMMIT: ${{ github.sha }}
+    
+jobs:
+  stale_branches:
+    name: Clean Stale Branches
+    runs-on: [self-hosted, default]
+    
+    steps:
+      - uses: actions/stale@v8
+        id: stale
+        continue-on-error: true
+        with:
+          days-before-stale: ${{ inputs.days-before-stale || 60 }}
+          days-before-close: ${{ inputs.days-before-close || 10 }}
+          stale-pr-message: 'This pull request is stale because it has been open for ${{ inputs.days-before-stale }} days with no activity.'
+          close-pr-message: 'This pull request was closed because it was inactive for ${{ inputs.days-before-close }} days since being marked as stale.' 
+          exempt-pr-labels: 'dependencies'
+          delete-branch: true
+          debug-only: true
+          operations-per-run: 100
+
+      - name: Send Signalfx Custom Metrics
+        id: send-custom-metrics
+        uses: RentTheRunway/signalfx-reporting-action@v2
+        continue-on-error: true
+        with:
+          token: ${{ secrets.SIGNALFX_TOKEN }}
+          metrics: |
+            - type: "gauge"
+              name: "gha.staleness.stale_prs"
+              value: "${{ steps.stale.outputs.staled-issues-prs }}"
+              dimensions:
+                repository: "${{ env.REPOSITORY }}"
+                commit: "${{ env.COMMIT }}"
+                closed_prs: "${{ steps.stale.outputs.closed-issues-prs }}"
+
+      - uses: RentTheRunway/github-action-slack-notify-build@v2
+        name: Notify Slack Fail
+        id: slack_failure
+        if: steps.stale.outcome != 'success'
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel_id: infra-notifications
+          status: FAILED
+          color: danger
