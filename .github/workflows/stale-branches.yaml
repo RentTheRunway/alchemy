@@ -43,7 +43,7 @@ jobs:
     runs-on: [self-hosted, default]
     
     steps:
-      - uses: actions/stale@v8
+      - uses: actions/stale@v9
         id: stale
         continue-on-error: true
         with:
