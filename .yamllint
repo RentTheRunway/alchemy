@@ -1,0 +1,8 @@
+---
+
+extends: default
+rules:
+  empty-lines: disable
+  # the GHA 'on' key is treated like it means on/off; only relevant for values
+  truthy:
+    check-keys: false
