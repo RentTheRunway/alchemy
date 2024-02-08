@@ -1,6 +1,8 @@
-# This workflow is managed by application-workflows, any changes to it will be lost.
+# This workflow is managed by application-workflows; any changes will be lost.
+# yamllint disable-line rule:line-length
 # Source: https://github.com/RentTheRunway/application-workflows/tree/main/workflow-templates/github-helpers/actions-audit.yaml.tpl
 ---
+
 name: Github Actions Audit
 run-name: Audit ${{ github.event.repository.name }}
 
@@ -11,5 +13,6 @@ on:
 
 jobs:
   actions-audit:
+    # yamllint disable-line rule:line-length
     uses: RentTheRunway/infrastructure-workflows/.github/workflows/github-actions.yaml@main
     secrets: inherit
