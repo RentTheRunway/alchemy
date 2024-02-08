@@ -1,10 +1,13 @@
-# This workflow is managed by application-workflows, any changes to it will be lost.
+# This workflow is managed by application-workflows; any changes will be lost.
+# yamllint disable-line rule:line-length
 # Source: https://github.com/RentTheRunway/application-workflows/tree/main/workflow-templates/github-helpers/stale-branches.yaml.tpl
 ---
+
 name: GitHub Helper (Clean Stale Branches)
 
 concurrency:
-  # only one of this action may run per branch + event (the job will filter down to the correct event)
+  # only one of this action may run per branch + event (the job will filter
+  # down to the correct event)
   group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}
   cancel-in-progress: true
 
@@ -36,12 +39,12 @@ on:
 env:
   REPOSITORY: ${{ github.event.repository.name }}
   COMMIT: ${{ github.sha }}
-    
+
 jobs:
   stale_branches:
     name: Clean Stale Branches
     runs-on: [self-hosted, default]
-    
+
     steps:
       - uses: actions/stale@v8
         id: stale
@@ -49,8 +52,10 @@ jobs:
         with:
           days-before-stale: ${{ inputs.days-before-stale || 60 }}
           days-before-close: ${{ inputs.days-before-close || 10 }}
+          # yamllint disable-line rule:line-length
           stale-pr-message: 'This pull request is stale because it has been open for ${{ inputs.days-before-stale }} days with no activity.'
-          close-pr-message: 'This pull request was closed because it was inactive for ${{ inputs.days-before-close }} days since being marked as stale.' 
+          # yamllint disable-line rule:line-length
+          close-pr-message: 'This pull request was closed because it was inactive for ${{ inputs.days-before-close }} days since being marked as stale.'
           exempt-pr-labels: 'dependencies'
           delete-branch: true
           debug-only: true
