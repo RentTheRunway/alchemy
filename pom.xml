@@ -53,7 +53,7 @@
 
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
 
-        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.0</maven-gpg-plugin.version>
 
         <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
 
