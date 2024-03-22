@@ -47,7 +47,7 @@
 
     <guava.version>33.1.0-jre</guava.version>
 
-    <jackson.version>2.9.10</jackson.version>
+    <jackson.version>2.17.0</jackson.version>
 
     <jboss-logging.version>3.5.3.Final</jboss-logging.version>
 
@@ -64,6 +64,8 @@
     <mongodb-driver.version>4.11.1</mongodb-driver.version>
 
     <slf4j.version>1.7.36</slf4j.version>
+
+    <snakeyaml.version>2.2</snakeyaml.version>
 
     <!-- transitive test dependencies pinned to resolve conflicts -->
 
@@ -231,6 +233,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${apache-lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${snakeyaml.version}</version>
       </dependency>
 
       <!-- test dependencies -->
