@@ -1,0 +1,3 @@
+workflows:
+  actions-audit:
+    omitJob: true
