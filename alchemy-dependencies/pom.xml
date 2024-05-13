@@ -81,7 +81,7 @@
 
     <junit5.version>5.10.2</junit5.version>
 
-    <mockito.version>5.11.0</mockito.version>
+    <mockito.version>5.12.0</mockito.version>
 
     <testcontainers.version>1.19.7</testcontainers.version>
   </properties>
