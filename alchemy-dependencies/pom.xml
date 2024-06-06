@@ -69,7 +69,7 @@
 
     <!-- transitive test dependencies pinned to resolve conflicts -->
 
-    <objenesis.version>3.3</objenesis.version>
+    <objenesis.version>3.4</objenesis.version>
 
     <!-- test dependency versions -->
 
