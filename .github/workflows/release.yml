@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      STAGING_PROFILE_ID: ${{ secrets.OSS_NEXUS_STAGING_PROFILE_ID }}
       NEXUS_USER: ${{ secrets.OSS_NEXUS_USERNAME }}
       NEXUS_PASS: ${{ secrets.OSS_NEXUS_PASSWORD }}
 

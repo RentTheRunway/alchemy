@@ -412,7 +412,6 @@
     <profiles>
         <profile>
             <id>release</id>
-
             <build>
                 <plugins>
                     <plugin>
@@ -445,7 +444,7 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <stagingProfileId>5db1fdef03b4db</stagingProfileId>
+                            <stagingProfileId>${env.STAGING_PROFILE_ID}</stagingProfileId>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                             <detectBuildFailures>true</detectBuildFailures>
                             <keepStagingRepositoryOnFailure>false</keepStagingRepositoryOnFailure>
