@@ -79,7 +79,7 @@
 
     <junit.version>4.13.2</junit.version>
 
-    <junit5.version>5.11.0</junit5.version>
+    <junit5.version>5.11.1</junit5.version>
 
     <mockito.version>5.13.0</mockito.version>
 
