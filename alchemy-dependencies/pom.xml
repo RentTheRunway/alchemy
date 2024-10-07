@@ -83,7 +83,7 @@
 
     <mockito.version>5.13.0</mockito.version>
 
-    <testcontainers.version>1.20.1</testcontainers.version>
+    <testcontainers.version>1.20.2</testcontainers.version>
   </properties>
 
   <dependencyManagement>
