@@ -57,7 +57,7 @@
 
     <guice.version>7.0.0</guice.version>
 
-    <hk2.version>2.5.0</hk2.version>
+    <hk2.version>3.0.0</hk2.version>
 
     <morphia.version>2.4.14</morphia.version>
 
