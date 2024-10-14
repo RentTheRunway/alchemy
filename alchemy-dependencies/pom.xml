@@ -27,7 +27,7 @@
 
     <!-- annotations and processors -->
 
-    <hibernate-validator.version>5.4.3.Final</hibernate-validator.version>
+    <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
 
     <javax.validation.version>2.0.1.Final</javax.validation.version>
 
