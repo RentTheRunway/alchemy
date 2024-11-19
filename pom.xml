@@ -73,7 +73,7 @@
 
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
 
-        <spotbugs-maven-plugin.version>4.8.6.4</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
     </properties>
 
     <build>
