@@ -47,7 +47,7 @@
 
     <guava.version>33.3.1-jre</guava.version>
 
-    <jackson.version>2.18.1</jackson.version>
+    <jackson.version>2.18.2</jackson.version>
 
     <jboss-logging.version>3.6.1.Final</jboss-logging.version>
 
