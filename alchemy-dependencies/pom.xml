@@ -45,7 +45,7 @@
 
     <dropwizard.version>1.3.29</dropwizard.version>
 
-    <guava.version>33.3.1-jre</guava.version>
+    <guava.version>33.4.0-jre</guava.version>
 
     <jackson.version>2.18.2</jackson.version>
 
