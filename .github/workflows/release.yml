@@ -58,18 +58,18 @@ jobs:
       - name: Setup Nexus authentication and GPG passphrase
         uses: whelk-io/maven-settings-xml-action@v22
         with:
-          profiles: '[
-          {
-            "id": "gpg",
-            "activation": { "activeByDefault": "true" },
-            "properties": { "gpg.executable": "gpg", "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"}
-          }]'
-          servers: '[
-          {
-            "id": "ossrh",
-            "username": "${{ env.NEXUS_USER }}",
-            "password": "${{ env.NEXUS_PASS }}"
-          }]'
+          githubServer: false
+          servers: |
+            [{
+              "id": "ossrh",
+              "username": "${{ env.NEXUS_USER }}",
+              "password": "${{ env.NEXUS_PASS }}"
+            },
+            {
+              "id": "gpg.passphrase",
+              "passphrase": "${{ secrets.GPG_PASSPHRASE }}",
+              "configuration": {}
+            }]
 
       - name: Setup Github SSH key
         uses: webfactory/ssh-agent@v0.9.0
