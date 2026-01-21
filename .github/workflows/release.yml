@@ -14,11 +14,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
-    env:
-      STAGING_PROFILE_ID: ${{ secrets.OSS_NEXUS_STAGING_PROFILE_ID }}
-      NEXUS_USER: ${{ secrets.OSS_NEXUS_USERNAME }}
-      NEXUS_PASS: ${{ secrets.OSS_NEXUS_PASSWORD }}
-
     steps:
       - name: Fail if not on valid branch
         if: github.ref != 'refs/heads/master'
@@ -29,23 +24,6 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: temurin
-          check-latest: false
-
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v5
-        with:
-          maven-version: 3.9.5
-
-      - name: Configure git
-        run: |
-          git config --global user.email "infrastructure+deploy@renttherunway.com"
-          git config --global user.name "rtr-deploy"
-
       - name: Setup GPG
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
@@ -55,21 +33,25 @@ jobs:
           rm ./private.key
           gpg -k
 
-      - name: Setup Nexus authentication and GPG passphrase
-        uses: whelk-io/maven-settings-xml-action@v22
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          profiles: '[
-          {
-            "id": "gpg",
-            "activation": { "activeByDefault": "true" },
-            "properties": { "gpg.executable": "gpg", "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"}
-          }]'
-          servers: '[
-          {
-            "id": "ossrh",
-            "username": "${{ env.NEXUS_USER }}",
-            "password": "${{ env.NEXUS_PASS }}"
-          }]'
+          java-version: 21
+          distribution: temurin
+          check-latest: false
+          server-id: ossrh
+          server-username: NEXUS_USER
+          server-password: NEXUS_PASS
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.9
+
+      - name: Configure git
+        run: |
+          git config --global user.email "infrastructure+deploy@renttherunway.com"
+          git config --global user.name "rtr-deploy"
 
       - name: Setup Github SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -96,6 +78,11 @@ jobs:
         id: perform-release
         continue-on-error: true
         if: ${{ steps.prepare-release.outcome == 'success' }}
+        env:
+          STAGING_PROFILE_ID: ${{ secrets.OSS_NEXUS_STAGING_PROFILE_ID }}
+          NEXUS_USER: ${{ secrets.OSS_NEXUS_USERNAME }}
+          NEXUS_PASS: ${{ secrets.OSS_NEXUS_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: mvn -B release:perform -Darguments='-DskipTests -DskipITs'
 
       - name: Rollback on release failure
